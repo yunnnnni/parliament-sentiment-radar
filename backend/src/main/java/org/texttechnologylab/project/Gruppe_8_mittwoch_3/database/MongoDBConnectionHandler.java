@@ -40,7 +40,6 @@ public class MongoDBConnectionHandler {
     }
 
     public void writeDocument(Document document){
-        // MongoCollection<Document> collection = this.database.getCollection(collectionName);
         this.protocolCollection.insertOne(document);
     }
 
