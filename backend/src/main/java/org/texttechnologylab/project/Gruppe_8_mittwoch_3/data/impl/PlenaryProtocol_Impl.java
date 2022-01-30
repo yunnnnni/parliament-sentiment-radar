@@ -78,6 +78,11 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
     }
 
     @Override
+    public List<AgendaItem> getAgendaItems() {
+        return null;
+    }
+
+    @Override
     public Document toDocument() {
         return null;
     }

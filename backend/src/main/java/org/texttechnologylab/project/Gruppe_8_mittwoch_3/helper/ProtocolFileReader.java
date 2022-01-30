@@ -11,15 +11,27 @@ import java.util.List;
 public class ProtocolFileReader {
     public static void main(String[] args) {
         String protocolDirectory = "./Daten/test/";
-        File d = new File(protocolDirectory);
-        File[] files = d.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
-        List<PlenaryProtocol> protocolList = new ArrayList<>();
-        List<Speaker> speakerList = new ArrayList<>();
-        for (File file : files) {
-            PlenaryProtocol protocol = new PlenaryProtocol_Impl(file);
-            protocolList.add(protocol);
-            speakerList.addAll(protocol.getSpeakerList());
+        readProtocols(protocolDirectory);
+    }
+
+    /**
+     * read plenary protocol xml files from directory
+     * @param protocolDirectory path of the directory
+     * @return list of plenary protocols
+     */
+    public static List<PlenaryProtocol> readProtocols(String protocolDirectory){
+        try{
+            File d = new File(protocolDirectory);
+            File[] files = d.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
+            List<PlenaryProtocol> protocolList = new ArrayList<>();
+            for (File file: files){
+                System.out.println("------------------------ " + file + "------------------------");
+                protocolList.add(new PlenaryProtocol_Impl(file));
+            }
+            return protocolList;
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
-        System.out.println();
     }
 }
