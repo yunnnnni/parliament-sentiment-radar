@@ -1,9 +1,14 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 
 import org.bson.Document;
+import org.dom4j.Element;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
 
 public class Speaker_Impl implements Speaker {
+    public Speaker_Impl(Element speakerElement){
+
+    }
+
     @Override
     public String getId() {
         return null;

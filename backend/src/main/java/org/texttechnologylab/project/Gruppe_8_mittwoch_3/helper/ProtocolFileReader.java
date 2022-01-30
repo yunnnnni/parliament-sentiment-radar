@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ProtocolFileReader {
     public static void main(String[] args) {
-        String protocolDirectory = "./Daten/Bundestag_19/";
+        String protocolDirectory = "./Daten/test/";
         File d = new File(protocolDirectory);
         File[] files = d.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
         List<PlenaryProtocol> protocolList = new ArrayList<>();
