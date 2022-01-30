@@ -20,10 +20,10 @@ public class MongoDBConnectionHandler {
     private MongoDatabase database;
     private Map<String, MongoCollection<Document>> collections = new HashMap<>();
 
-    public MongoDBConnectionHandler(String configPath) throws IOException {
+    public MongoDBConnectionHandler(String configPath){
         // Properties config = this.readConfig("Daten/config.json");
-        this.config = this.readConfig(configPath);
         try {
+            this.config = this.readConfig(configPath);
             MongoCredential credential = MongoCredential.createCredential(this.config.getRemoteUser(), this.config.getRemoteDatabase(), this.config.getRemotePassword().toCharArray());
             MongoClient mongoClient = new MongoClient(new ServerAddress(this.config.getRemoteHost(), this.config.getRemotePort()),credential, MongoClientOptions.builder().build());
             this.database = mongoClient.getDatabase(this.config.getRemoteDatabase());
@@ -62,7 +62,7 @@ public class MongoDBConnectionHandler {
         MongoCollection<Document> collection = this.getCollection(collectionName);
         try{
             UpdateResult result = collection.replaceOne(query, newDocument);
-            if (result != null && result.getModifiedCount() == 0 && result.getMatchedCount() == 0{
+            if (result != null && result.getModifiedCount() == 0 && result.getMatchedCount() == 0){
                 try {
                     this.getCollection(collectionName).insertOne(newDocument);
                     return true;

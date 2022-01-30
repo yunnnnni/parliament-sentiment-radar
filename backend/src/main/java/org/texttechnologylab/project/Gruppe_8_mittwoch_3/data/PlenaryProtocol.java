@@ -26,5 +26,7 @@ public interface PlenaryProtocol {
      */
     AgendaItem getAgendaItem(String numberIndex);
 
+    List<AgendaItem> getAgendaItems();
+
     Document toDocument();
 }
