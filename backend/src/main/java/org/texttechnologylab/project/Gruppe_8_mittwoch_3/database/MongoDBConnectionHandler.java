@@ -6,12 +6,11 @@ import java.util.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.*;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
-import static com.mongodb.client.model.Filters.eq;
 
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -59,8 +58,23 @@ public class MongoDBConnectionHandler {
         }
     }
 
-    public void updataDocument(String collectionName, Bson query, Document document){
-
+    public boolean updataDocument(String collectionName, Bson query, Document newDocument){
+        MongoCollection<Document> collection = this.getCollection(collectionName);
+        try{
+            UpdateResult result = collection.replaceOne(query, newDocument);
+            if (result != null && result.getModifiedCount() == 0 && result.getMatchedCount() == 0{
+                try {
+                    this.getCollection(collectionName).insertOne(newDocument);
+                    return true;
+                }
+                catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public Boolean deleteDocument(String collectionName, Bson query){
@@ -69,8 +83,9 @@ public class MongoDBConnectionHandler {
             DeleteResult result = collection.deleteOne(query);
             System.out.println("Deleted document count: " + result.getDeletedCount());
             return true;
-        } catch (MongoException me) {
-            System.err.println("Unable to delete due to an error: " + me);
+        } catch (Exception e) {
+//            System.err.println("Unable to delete due to an error: " + e);
+            e.printStackTrace();
             return false;
         }
     }
