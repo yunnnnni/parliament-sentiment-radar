@@ -1,0 +1,8 @@
+{
+  "remoteHost": "prg2021.texttechnologylab.org",
+  "remoteDatabase": "PRG_WiSe21_002",
+  "remoteUser": "PRG_WiSe21_002",
+  "remotePassword": "VPyHfa39",
+  "remotePort": "27020",
+  "remoteCollections": ["protocol", "speaker", "speech"]
+}
