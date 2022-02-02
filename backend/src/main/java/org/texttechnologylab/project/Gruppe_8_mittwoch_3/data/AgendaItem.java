@@ -9,7 +9,7 @@ public interface AgendaItem {
      * getter for attribute id
      * @return id of the tagesordnungspunkt
      */
-    String getId();
+    public abstract String getId();
 
     /**
      * print all texts in the tagesordnungspunkt
@@ -21,12 +21,12 @@ public interface AgendaItem {
      * getter for attribute Reden
      * @return list of reden in this Tagesordnungspunkt
      */
-    List<Speech> getSpeeches();
+    public abstract List<Speech> getSpeeches();
 
     /**
      * convert class instance to BSON Document,
      * so that it can be written to MongoDB
      * @return class instance in BSON Document form
      */
-    Document toDocument();
+    public abstract Document toDocument();
 }

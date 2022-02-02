@@ -9,24 +9,24 @@ public interface PlenaryProtocol {
      * getter for attribute this.rednerList
      * @return redner list in the protocol
      */
-    List<Speaker> getSpeakerList();
+    public abstract List<Speaker> getSpeakerList();
 
-    List<Speech> getSpeechList();
+    public abstract List<Speech> getSpeechList();
 
     /**
      * getter for attribute sitzungsNr
      * @return sitzungsNr of this protocol
      */
-    String getPlenaryNr();
+    public abstract String getPlenaryNr();
 
     /**
      * getter for a target tagesordnungspunkt in this protocol
      * @param numberIndex index of the tagesordnungspunkt
      * @return target tagesordnungspunkt
      */
-    AgendaItem getAgendaItem(String numberIndex);
+    public abstract AgendaItem getAgendaItem(String numberIndex);
 
-    List<AgendaItem> getAgendaItems();
+    public abstract List<AgendaItem> getAgendaItems();
 
-    Document toDocument();
+    public abstract Document toDocument();
 }
