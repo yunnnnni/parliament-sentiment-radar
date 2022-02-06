@@ -1,3 +1,4 @@
 .idea
 /Daten/
-target/*
+/target/
+Abschlussprojekt.iml
