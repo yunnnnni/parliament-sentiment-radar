@@ -16,9 +16,7 @@ import scala.xml.Elem;
 public class Speech_Impl implements Speech {
 
     private String speechID;
-    private String theSpeakerFirstname;
-    private String theSpeakerLastname;
-    private String theSpeakerID;
+    private Speaker speaker;
     private List<Text> textList = new ArrayList<>();
     private List<String> speechComment = new ArrayList<>();
 
@@ -31,12 +29,12 @@ public class Speech_Impl implements Speech {
                     continue;
                 }
                 if (elementS.attributeValue("klasse").equals("redner")){
-                    this.theSpeakerID = elementS.element("redner").attributeValue("id");
-                    theSpeakerFirstname = elementS.element("redner").element("name").elementText("vorname");
-                    theSpeakerLastname = elementS.element("redner").element("name").elementText("nachname");
-                } else if (elementS.getName().equals("kommentar")) {
-                    speechComment.add(elementS.getText());
+                    this.speaker = new Speaker_Impl(elementS);
+                } else{
+                    this.textList.add(new Text_Impl(elementS));
                 }
+            } else if (elementS.getName().equals("kommentar")) {
+                speechComment.add(elementS.getText());
             }
         }
 
@@ -49,12 +47,12 @@ public class Speech_Impl implements Speech {
 
     @Override
     public Speaker getSpeaker() {
-        return null;
+        return this.speaker;
     }
 
     @Override
     public List<Text> getTexts() {
-        return null;
+        return this.textList;
     }
 
     @Override

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProtocolFileReader {
+
     public static void main(String[] args) {
         String protocolDirectory = "./Daten/test/";
         readProtocols(protocolDirectory);
@@ -33,5 +34,6 @@ public class ProtocolFileReader {
             e.printStackTrace();
             return null;
         }
+
     }
 }

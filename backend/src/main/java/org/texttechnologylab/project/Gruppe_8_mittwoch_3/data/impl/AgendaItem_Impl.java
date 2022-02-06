@@ -17,7 +17,7 @@ public class AgendaItem_Impl implements AgendaItem {
   private List<String> agendaItemComment = new ArrayList<>();
 
   public AgendaItem_Impl(Element agendaElement) {
-    List<String> pKlasse = Arrays
+    List<String> agendaTextLabel = Arrays
         .asList("J", "J_1", "O", "A_TOP", "T_Beratung", "T_Drs", "T_E_Drs", "T_E_E_Drs", "T_E_fett",
             "uF020 T_NaS", "T_NaS_NaS", "T_ZP_NaS", "T_ZP_NaS_NaS", "T_ZP_NaS_NaS_Strich",
             "T_Ueberweisung", "T_fett", "T_ohne_NaS");
@@ -29,7 +29,7 @@ public class AgendaItem_Impl implements AgendaItem {
         speechList.add(new Speech_Impl(elementsA));
       } else if (elementsA.getName().equals("kommentar")) {
         agendaItemComment.add(elementsA.getText());
-      } else if (elementsA.getName().equals("p") && pKlasse
+      } else if (elementsA.getName().equals("p") && agendaTextLabel
           .contains(elementsA.attributeValue("klasse"))){
           agendaText.add(elementsA.getText());
       }
