@@ -47,8 +47,8 @@
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
-
-            <!-- Nav Item - Speeches -->
+            
+            <!-- Nav Item - Charts -->
             <li class="nav-item">
                 <a class="nav-link" href="speech.html">
                     <i class="fas fa-fw fa-chart-area"></i>
@@ -85,76 +85,26 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Übersicht</h1>
-    
+                        <h1 class="h3 mb-0 text-gray-800">Redner</h1>
                     </div>
 
                     <!-- Content Row -->
                     <div class="row">
-                        <div class="col-xl-12 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Verteilung der Token</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas height="100%" id="token-visualisation"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <p id = "information"></p>
                     </div>
 
                     <!-- Content Row -->
                     <div class="row">
-                        <div class="col-xl-12 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Verteilung der Pos</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas height="100%" id="pos-visualisation"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <p id = "speech-visualisation"></p>
+                        <!-- Use D3 library-->
+                        <script src="https://d3js.org/d3.v7.min.js"></script>
+                        <script src="scripts/visualisations/speech.js"></script>
                     </div>
 
-                    <!-- Content Row -->
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Verteilung der Sentiments</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas height="100%" id="sentiments-visualisation"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Verteilung der Named Entities</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas height="100%", id="namedentities-visualisation"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                </div>
                 <!-- /.container-fluid -->
 
+                
             </div>
             <!-- End of Main Content -->
 
@@ -215,13 +165,8 @@
     <!-- Page level custom scripts -->
     <script src="scripts/konstants.js"></script>
     <script src="scripts/functions.js"></script>
-
-	<script src="scripts/visualisations/sentiments.js"></script>
-	<script src="scripts/visualisations/token.js"></script>
-	<script src="scripts/visualisations/namedentities.js"></script>
-	<script src="scripts/visualisations/pos.js"></script>
-    <script src="scripts/visualisations/speaker.js"></script>
-
+    <script src="scripts/speech.js"></script>
+    
 </body>
 
 </html>
