@@ -11,7 +11,7 @@ import java.util.List;
 public class ProtocolFileReader {
 
     public static void main(String[] args) {
-        String protocolDirectory = "./Daten/test/";
+        String protocolDirectory = "backend/Daten/test/";
         readProtocols(protocolDirectory);
     }
 
