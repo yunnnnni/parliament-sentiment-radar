@@ -1,27 +1,73 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.helper;
 
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl.Image_Impl;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+import java.net.http.HttpClient;
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Map;
 
 /**
  * find image from bundestag database
  */
 public class ImageFinder {
-    public ImageFinder(String firstName, String lastName){
-        String filterName = "filterQuery[name][]=" + lastName + ",+" + firstName;
-        String filterOthers = "filterQuery[ereignis][]=Plenarsitzung,+Redner&sortVal=2#group-1";
-        String url = filterName + "&" + filterOthers;
-        try{
-            String urlEncodes = encodeValue(url);
-        } catch (Exception e){
+    private String html;
+    private String srcUrl;
+    private String imgUrl;
+    private String description;
 
+    public ImageFinder(String firstName, String lastName) throws IOException, InterruptedException {
+        String urlEncoded = "https://bilddatenbank.bundestag.de/search/picture-result?"
+                            + "filterQuery%5Bname%5D%5B%5D=" + lastName + "%2C+" + firstName
+                            + "&filterQuery%5Bereignis%5D%5B%5D=Plenarsitzung%2C+Redner&sortVal=2";
+        this.srcUrl = urlEncoded;
+        this.html = this.getHttpResponse(this.srcUrl);
+        this.parseHtml(this.html);
+    }
+
+    public String getImgUrl(){
+        return this.imgUrl;
+    }
+
+    public String getDescription(){
+        return this.description;
+    }
+
+    private void parseHtml(String html){
+        Document doc = Jsoup.parse(html);
+        Elements elems = doc.getElementsByAttribute("data-fancybox");
+        if (elems.size() > 0){
+            try{
+                Element elem = elems.get(0);
+                Element imgElement = elem.getElementsByTag("img").get(0);
+                String urlPart = imgElement.attr("src");
+                this.description = imgElement.attr("alt");
+                this.imgUrl = "https://bilddatenbank.bundestag.de" + urlPart;
+            }catch (Exception e){
+            }
         }
     }
 
-    private String encodeValue(String value) throws UnsupportedEncodingException {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+    private String getHttpResponse(String url){
+        try{
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .GET() // GET is default
+                    .build();
+
+            HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString());
+
+            return response.body();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
+
 }
