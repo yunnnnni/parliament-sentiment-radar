@@ -22,8 +22,11 @@ public class ImageFinder {
     private String description;
 
     public ImageFinder(String firstName, String lastName) throws IOException, InterruptedException {
+        String fullName = firstName + " " + lastName;
+        fullName = fullName.replace(" ", "+");
         String urlEncoded = "https://bilddatenbank.bundestag.de/search/picture-result?"
-                            + "filterQuery%5Bname%5D%5B%5D=" + lastName + "%2C+" + firstName
+                            + "query=" + fullName
+//                            + "filterQuery%5Bname%5D%5B%5D=" + lastName + "%2C+" + firstName
                             + "&filterQuery%5Bereignis%5D%5B%5D=Plenarsitzung%2C+Redner&sortVal=2";
         this.srcUrl = urlEncoded;
         this.html = this.getHttpResponse(this.srcUrl);

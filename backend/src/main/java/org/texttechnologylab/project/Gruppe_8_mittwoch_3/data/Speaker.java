@@ -1,8 +1,12 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data;
 
 import org.bson.Document;
+import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl.Image_Impl;
 
 public interface Speaker {
+
+    void setImage(Image_Impl image);
+
     /**
      * return id of the redner
      * @return id String of the redner

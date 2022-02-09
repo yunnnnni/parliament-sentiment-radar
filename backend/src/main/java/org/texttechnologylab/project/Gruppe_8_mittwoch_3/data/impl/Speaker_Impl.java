@@ -5,6 +5,7 @@ import org.dom4j.Element;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Fraction;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Party;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
+import org.texttechnologylab.project.Gruppe_8_mittwoch_3.helper.ImageFinder;
 
 public class Speaker_Impl implements Speaker {
     private String id = "";
@@ -14,6 +15,7 @@ public class Speaker_Impl implements Speaker {
     private Fraction fraction = new Fraction_Impl("");
 //    private Party party = new Party_Impl("");
     private String role = "";
+    private Image_Impl img = new Image_Impl("", "");
 
     public Speaker_Impl(Element speakerElement){
         // init from element
@@ -76,12 +78,9 @@ public class Speaker_Impl implements Speaker {
                     e.printStackTrace();
                 }
             }
-//            if (this.id.startsWith("1100")){
-//                this.initAbgeordnete(redner);
-//            }
-//            else{
-//                this.initOtherRedner(redner);
-//            }
+//            ImageFinder finder = new ImageFinder(this.firstName, this.lastName);
+//            this.img = new Image_Impl(finder.getImgUrl(), finder.getDescription());
+
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -89,8 +88,8 @@ public class Speaker_Impl implements Speaker {
 
     }
 
-    private void setPicture(){
-
+    public void setImage(Image_Impl image){
+        this.img = image;
     }
 
     @Override
@@ -105,7 +104,7 @@ public class Speaker_Impl implements Speaker {
 
     @Override
     public String getLastName() {
-        return getLastName();
+        return this.lastName;
     }
 
     @Override
@@ -139,8 +138,8 @@ public class Speaker_Impl implements Speaker {
         document.append("firstName", this.firstName);
         document.append("lastName", this.lastName);
         document.append("fraction", this.fraction.toDocument());
-//        document.append("party", this.party.toDocument());
         document.append("role", this.role);
+        document.append("image", this.img.toDocument());
         return document;
     }
 }

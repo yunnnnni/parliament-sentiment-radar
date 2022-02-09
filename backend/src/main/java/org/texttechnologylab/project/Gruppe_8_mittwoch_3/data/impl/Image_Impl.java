@@ -10,28 +10,35 @@ import org.bson.types.Binary;
 
 public class Image_Impl {
     private byte [] imageBin;
+    private String imageUrl;
+    private String imageDescription;
     private String takenOn;
     private String pictureNr;
     private String photographer;
 
-    public Image_Impl(String imgUrl, String takenOn, String pictureNr, String photographer){
-//        this.imageBin = getImageFromUrl("https://bilddatenbank.bundestag.de/fotos/file7c4hdt1pwkw7haed3bj.jpg");
-        this.imageBin = getImageFromUrl(imgUrl);
-        this.takenOn = takenOn;
-        this.pictureNr = pictureNr;
-        this.photographer = photographer;
+    public Image_Impl(String imgUrl, String description){
+        this.imageUrl = imgUrl;
+        this.imageDescription = description;
+//        this.imageBin = getImageFromUrl(imgUrl);
     }
 
     public Image_Impl(Document imageDocument){
-        this.imageBin = imageDocument.get("imageBin", Binary.class).getData();
+        if (imageDocument.containsKey("imageBin")){
+            this.imageBin = imageDocument.get("imageBin", Binary.class).getData();
+        }
+        if (imageDocument.containsKey("imageUrl")){
+            this.imageUrl = imageDocument.getString("imageUrl");
+        }
+        if (imageDocument.containsKey("imageDescription")){
+            this.imageDescription = imageDocument.getString("imageDescription");
+        }
     }
 
     public Document toDocument(){
         Document document = new Document();
-        document.append("imageBin", new Binary(this.imageBin));
-        document.append("pictureNr", this.pictureNr);
-        document.append("takenOn", this.takenOn);
-        document.append("photographer", this.photographer);
+//        document.append("imageBin", new Binary(this.imageBin));
+        document.append("imageUrl", this.imageUrl);
+        document.append("imageDescription", this.imageDescription);
         return document;
     }
 
@@ -47,7 +54,6 @@ public class Image_Impl {
     }
 
     public byte [] getImageFromUrl(String urlStr){
-//        URL url = new URL("https://bilddatenbank.bundestag.de/fotos/file7c4hdt1pwkw7haed3bj.jpg");
         try{
             URL url = new URL(urlStr);
             BufferedImage image = ImageIO.read(url);

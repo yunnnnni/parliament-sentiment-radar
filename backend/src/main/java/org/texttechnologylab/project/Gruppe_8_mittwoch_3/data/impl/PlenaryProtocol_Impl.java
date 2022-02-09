@@ -59,7 +59,7 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
 
     @Override
     public List<Speaker> getSpeakerList() {
-        return null;
+        return this.speakerList;
     }
 
     @Override

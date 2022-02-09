@@ -35,13 +35,16 @@ public class Test {
 //        imgGet.toFile("imgGet.jpg");
 
         // test ImageFinder
-        try{
-            ImageFinder finder = new ImageFinder("Anja", "Karliczek");
-            String imgUrl = finder.getImgUrl();
-            String description = finder.getDescription();
-            System.out.println();
-        }catch (Exception e){
+//        try{
+//            ImageFinder finder = new ImageFinder("Anja", "Karliczek");
+//            String imgUrl = finder.getImgUrl();
+//            String description = finder.getDescription();
+//            System.out.println();
+//        }catch (Exception e){
+//
+//        }
 
-        }
+
+        // TODO: test write speaker list into mongodb
     }
 }
