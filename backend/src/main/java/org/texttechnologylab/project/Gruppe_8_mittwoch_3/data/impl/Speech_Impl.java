@@ -29,7 +29,7 @@ public class Speech_Impl implements Speech {
                     continue;
                 }
                 if (elementS.attributeValue("klasse").equals("redner")){
-                    this.speaker = new Speaker_Impl(elementS);
+                    this.speaker = new Speaker_Impl(elementS.element("redner"));
                 } else{
                     this.textList.add(new Text_Impl(elementS));
                 }

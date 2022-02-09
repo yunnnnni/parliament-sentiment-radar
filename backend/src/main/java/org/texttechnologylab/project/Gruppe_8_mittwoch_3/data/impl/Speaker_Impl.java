@@ -11,11 +11,12 @@ public class Speaker_Impl implements Speaker {
     private String titel = "";
     private String firstName = "";
     private String lastName = "";
-    private Fraction fraction = new Fraction_Impl();
-    private Party party = new Party_Impl();
+    private Fraction fraction = new Fraction_Impl("");
+//    private Party party = new Party_Impl("");
     private String role = "";
 
     public Speaker_Impl(Element speakerElement){
+        // init from element
         try{
             this.id = speakerElement.attributeValue("id");
             if (this.id.isEmpty()){
@@ -60,8 +61,14 @@ public class Speaker_Impl implements Speaker {
                             }
                             this.role = ele.elementText("rolle_lang");
                             continue;
+                        case "ortszusatz":
+                            // jump ortszusatz
+                            continue;
+                        case "namenszusatz":
+                            // jump
+                            continue;
                         default:
-                            // System.out.printf("Redner.name_process case: %s\n", name);
+                            System.out.printf("Speaker.name_process case: %s\n", name);
                             continue;
                     }
 
@@ -78,6 +85,12 @@ public class Speaker_Impl implements Speaker {
         } catch (Exception e){
             e.printStackTrace();
         }
+        // add picture
+
+    }
+
+    private void setPicture(){
+
     }
 
     @Override
@@ -126,7 +139,7 @@ public class Speaker_Impl implements Speaker {
         document.append("firstName", this.firstName);
         document.append("lastName", this.lastName);
         document.append("fraction", this.fraction.toDocument());
-        document.append("party", this.party.toDocument());
+//        document.append("party", this.party.toDocument());
         document.append("role", this.role);
         return document;
     }
