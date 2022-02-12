@@ -57,6 +57,69 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
         }
     }
 
+    public PlenaryProtocol_Impl(File xmlFile){
+        try {
+            SAXReader saxReader = new SAXReader();
+            org.dom4j.Document document = saxReader.read(xmlFile);
+
+            Element root = document.getRootElement();
+            Element sitzungsverlauf = root.element("sitzungsverlauf");
+
+            // -------------------------- attributes -----------------------------
+            this.date = root.attributeValue("sitzung-datum");
+            this.term = Integer.parseInt(root.attributeValue("wahlperiode"));
+            this.session = Integer.parseInt(root.attributeValue("sitzung-nr"));
+            this.startTime = LocalTime.parse(root.attributeValue("sitzung-start-uhrzeit"));
+            this.endTime = LocalTime.parse(root.attributeValue("sitzung-ende-uhrzeit"));
+            this.titel = this.session + ". Sitzung";
+
+            // -------------------------- build speaker list --------------------------------
+            List<Element> rednerElements = root.element("rednerliste").elements("redner");
+            for (Element rednerElement : rednerElements){
+                speakerList.add(new Speaker_Impl(rednerElement));
+            }
+
+            // -------------------------- build agendaItem list --------------------------------
+            List<Element> tagesordnungespunktElementList = sitzungsverlauf.elements("tagesordnungspunkt");
+            for (Element tagesordnungspunktElement : tagesordnungespunktElementList){
+                this.agendaItems.add(new AgendaItem_Impl(tagesordnungspunktElement));
+            }
+
+            System.out.format("Finish reading %s\n", xmlFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public PlenaryProtocol_Impl(Element protocolElement){
+        try {
+            Element sitzungsverlauf = protocolElement.element("sitzungsverlauf");
+
+            // -------------------------- attributes -----------------------------
+            this.date = protocolElement.attributeValue("sitzung-datum");
+            this.term = Integer.parseInt(protocolElement.attributeValue("wahlperiode"));
+            this.session = Integer.parseInt(protocolElement.attributeValue("sitzung-nr"));
+            this.startTime = LocalTime.parse(protocolElement.attributeValue("sitzung-start-uhrzeit"));
+            this.endTime = LocalTime.parse(protocolElement.attributeValue("sitzung-ende-uhrzeit"));
+            this.titel = this.session + ". Sitzung";
+
+            // -------------------------- build speaker list --------------------------------
+            List<Element> rednerElements = protocolElement.element("rednerliste").elements("redner");
+            for (Element rednerElement : rednerElements){
+                speakerList.add(new Speaker_Impl(rednerElement));
+            }
+
+            // -------------------------- build agendaItem list --------------------------------
+            List<Element> tagesordnungespunktElementList = sitzungsverlauf.elements("tagesordnungspunkt");
+            for (Element tagesordnungspunktElement : tagesordnungespunktElementList){
+                this.agendaItems.add(new AgendaItem_Impl(tagesordnungspunktElement));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public List<Speaker> getSpeakerList() {
         return this.speakerList;
@@ -68,8 +131,13 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
     }
 
     @Override
-    public String getPlenaryNr() {
-        return null;
+    public int getSession() {
+        return this.session;
+    }
+
+    @Override
+    public int getTerm() {
+        return this.term;
     }
 
     @Override

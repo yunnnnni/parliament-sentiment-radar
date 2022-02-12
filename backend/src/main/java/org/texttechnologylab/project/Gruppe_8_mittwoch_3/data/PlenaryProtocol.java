@@ -13,11 +13,9 @@ public interface PlenaryProtocol {
 
     public abstract List<Speech> getSpeechList();
 
-    /**
-     * getter for attribute sitzungsNr
-     * @return sitzungsNr of this protocol
-     */
-    public abstract String getPlenaryNr();
+    int getSession();
+
+    int getTerm();
 
     /**
      * getter for a target tagesordnungspunkt in this protocol
