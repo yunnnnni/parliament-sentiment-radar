@@ -3,9 +3,7 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 import org.bson.Document;
 import org.dom4j.Element;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Fraction;
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Party;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.helper.ImageFinder;
 
 public class Speaker_Impl implements Speaker {
     private String id = "";

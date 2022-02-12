@@ -44,7 +44,5 @@ public class Test {
 //
 //        }
 
-
-        // TODO: test write speaker list into mongodb
     }
 }

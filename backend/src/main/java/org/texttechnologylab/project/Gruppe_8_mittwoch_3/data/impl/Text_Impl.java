@@ -5,11 +5,16 @@ import org.dom4j.Element;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Text;
 
 public class Text_Impl implements Text {
-
     private String text;
+    private String label;
 
     public Text_Impl(Element textElement){
         this.text = textElement.getText();
+    }
+
+    public Text_Impl(Element textElement, String label){
+        this.text = textElement.getText();
+        this.label = label;
     }
 
     @Override

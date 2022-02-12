@@ -18,7 +18,7 @@ public class Speech_Impl implements Speech {
     private String speechID;
     private Speaker speaker;
     private List<Text> textList = new ArrayList<>();
-    private List<String> speechComment = new ArrayList<>();
+//    private List<String> speechComment = new ArrayList<>();
 
     public Speech_Impl(Element speechElement){
         this.speechID = speechElement.attributeValue("id");
@@ -34,7 +34,8 @@ public class Speech_Impl implements Speech {
                     this.textList.add(new Text_Impl(elementS));
                 }
             } else if (elementS.getName().equals("kommentar")) {
-                speechComment.add(elementS.getText());
+//                speechComment.add(elementS.getText());
+                this.textList.add(new Text_Impl(elementS, "comment"));
             }
         }
 
