@@ -35,7 +35,7 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
             this.date = root.attributeValue("sitzung-datum");
             this.term = Integer.parseInt(root.attributeValue("wahlperiode"));
             this.session = Integer.parseInt(root.attributeValue("sitzung-nr"));
-            this.startTime = LocalTime.parse(root.attributeValue("sitzung-start-uhrzeit"));
+//            this.startTime = LocalTime.parse(root.attributeValue("sitzung-start-uhrzeit"));
             this.endTime = LocalTime.parse(root.attributeValue("sitzung-ende-uhrzeit"));
             this.titel = this.session + ". Sitzung";
 

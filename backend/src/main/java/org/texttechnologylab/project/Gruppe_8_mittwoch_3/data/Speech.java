@@ -55,4 +55,6 @@ public interface Speech {
     void clearJcas();
 
     void setSitzungsNr(String nr);
+
+    Document toDocumentWithNLP() throws UIMAException; //添加了新的
 }
