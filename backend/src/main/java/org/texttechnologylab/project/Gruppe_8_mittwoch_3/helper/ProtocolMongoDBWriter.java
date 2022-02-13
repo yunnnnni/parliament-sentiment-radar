@@ -1,21 +1,24 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.helper;
 
 import org.bson.Document;
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.AgendaItem;
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.PlenaryProtocol;
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speech;
+import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
+import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl.ParliamentFactory_Impl;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.database.MongoDBConnectionHandler;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import static com.mongodb.client.model.Filters.eq;
 
 public class ProtocolMongoDBWriter {
-
     public static void main(String[] args) {
-        String protocolDirectory = "./Daten/test/";
-        List<PlenaryProtocol> protocolList = ProtocolFileReader.readProtocols(protocolDirectory);
         MongoDBConnectionHandler handler = new MongoDBConnectionHandler("config/config.json");
-        writeProtocols(protocolList, handler);
+        String protocolDirectory = "Daten/test";
+        ParliamentFactory factory = new ParliamentFactory_Impl();
+        factory.initFromDirectory(protocolDirectory);
+        writeSpeakers(factory.getParliamentMembers(), handler);
+
     }
 
     /**
@@ -31,16 +34,40 @@ public class ProtocolMongoDBWriter {
     }
 
     /**
-     * write plenary members into mongodb
-     * @param protocolList list of protocols
-     * @param handler mongodb handler
+     * write speakers into mongodb
+     * @param speakerList list of speakers
      */
-    public static void writePlenaryMemebers(List<PlenaryProtocol> protocolList, MongoDBConnectionHandler handler){
-        for(PlenaryProtocol protocol: protocolList) {
-            for (Speaker plenaryMember: protocol.getSpeakerList()){
-                handler.writeDocument("speaker", plenaryMember.toDocument());
+    public static void writeSpeakers(List<Speaker> speakerList, MongoDBConnectionHandler handler){
+        int bufferSize = 20;
+        List<Document> speakerDocuments = new ArrayList<>();
+        Random r = new Random();
+        for (int i=0; i<speakerList.size(); i++){
+            Speaker speaker = speakerList.get(i);
+            // check if document exists
+            Document rDocument = handler.getCollection("parliament_members").
+                    find(eq("id", speaker.getId())).first();
+            // if not, build document, add to buffer
+            if (rDocument == null){
+                int randomTimeout = r.nextInt(1000) + 500;
+                System.out.println(i + "/" + speakerList.size() + " Add speaker " + speaker.getId() + " in buffer. Random timeout: " + randomTimeout);
+                Document speakerDocument = speaker.toDocument();
+                speakerDocuments.add(speakerDocument);
+                try{
+                    Thread.sleep(randomTimeout);
+                }catch (Exception e){}
+            }
+            // if buffer full, write documents in buffer to mongodb
+            if (speakerDocuments.size() >= bufferSize){
+                System.out.println("Write buffer into mongodb");
+                handler.writeDocuments("parliament_members", speakerDocuments);
+                speakerDocuments.clear();  // clear buffer after writing
             }
         }
+        // write rest documents in buffer
+        if (speakerDocuments.size() > 0){
+            handler.writeDocuments("parliament_members", speakerDocuments);
+        }
+//        System.out.println();
     }
 
     /**

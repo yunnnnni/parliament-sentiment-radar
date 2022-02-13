@@ -13,6 +13,8 @@ public interface ParliamentFactory {
     List<PlenaryProtocol> getProtocols();
     List<Speech> getSpeeches();
     List<Speaker> getSpeakers();
+    List<Speaker> getParliamentMembers();
+    List<Speaker> getOtherSpeakers();
     List<Fraction> getFractions();
 
     PlenaryProtocol getProtocol(int session, int term);

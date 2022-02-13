@@ -74,6 +74,16 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     @Override
+    public List<Speaker> getParliamentMembers() {
+        return this.parliamentMemberList;
+    }
+
+    @Override
+    public List<Speaker> getOtherSpeakers() {
+        return this.otherSpeakerList;
+    }
+
+    @Override
     public List<Fraction> getFractions() {
         return this.fractionList;
     }

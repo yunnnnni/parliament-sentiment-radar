@@ -144,10 +144,10 @@ public class Speaker_Impl implements Speaker {
     @Override
     public Document toDocument() {
         Document document = new Document();
+        document.append("firstname", this.firstName);
+        document.append("name", this.lastName);
         document.append("id", this.id);
         document.append("titel", this.titel);
-        document.append("firstName", this.firstName);
-        document.append("lastName", this.lastName);
         document.append("fraction", this.fractionName);
         document.append("role", this.role);
         try {
