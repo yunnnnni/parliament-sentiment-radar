@@ -9,7 +9,6 @@ import org.dom4j.Element;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class ParliamentFactory_Impl implements ParliamentFactory {
     /**
@@ -112,7 +111,7 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     @Override
     public Fraction getFraction(String name) {
         for (Fraction fraction: this.fractionList){
-            if (fraction.getName().equals(name)){
+            if (fraction.getName().equals(name) || fraction.getName().contains(name)){
                 return fraction;
             }
         }

@@ -1,20 +1,18 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
+
 import org.bson.Document;
 import org.dom4j.Element;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.AgendaItem;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.ParliamentFactory;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speech;
 
-import java.util.List;
-
 public class AgendaItem_Impl implements AgendaItem {
-
     private String topID;
     private List<String> agendaText = new ArrayList<>();
     private List<Speech> speechList = new ArrayList<>();
+    private Set<String> speechIdSet = new TreeSet<>();
     private List<String> agendaItemComment = new ArrayList<>();
     private ParliamentFactory factory = null;
 
@@ -37,7 +35,12 @@ public class AgendaItem_Impl implements AgendaItem {
         List<Element> agendaItemElements = agendaElement.elements();
         for (Element elementsA : agendaItemElements) {
             if (elementsA.getName().equals("rede")) {
-                speechList.add(new Speech_Impl(elementsA));
+                if (this.factory != null){
+                    Speech speech = this.factory.addSpeech(elementsA);
+                    this.speechIdSet.add(speech.getId());
+                } else{
+                    speechList.add(new Speech_Impl(elementsA));
+                }
             } else if (elementsA.getName().equals("kommentar")) {
                 agendaItemComment.add(elementsA.getText());
             } else if (elementsA.getName().equals("p") && agendaTextLabel

@@ -18,6 +18,7 @@ public class Speech_Impl implements Speech {
 
     private String speechID;
     private Speaker speaker;
+    private String speakerId;
     private List<Text> textList = new ArrayList<>();
     private ParliamentFactory factory = null;
 //    private List<String> speechComment = new ArrayList<>();
@@ -41,9 +42,11 @@ public class Speech_Impl implements Speech {
                 }
                 if (elementS.attributeValue("klasse").equals("redner")){
                     if (this.factory != null) {
-                        this.speaker = this.factory.addSpeaker(new Speaker_Impl(elementS.element("redner"), this.factory));
+                        Speaker speaker = this.factory.addSpeaker(elementS.element("redner"));
+                        this.speakerId = speaker.getId();
                     }else{
-                        this.speaker = new Speaker_Impl(elementS.element("redner"));
+                        Speaker speaker = new Speaker_Impl(elementS.element("redner"));
+                        this.speakerId = speaker.getId();
                     }
                 } else{
                     this.textList.add(new Text_Impl(elementS));

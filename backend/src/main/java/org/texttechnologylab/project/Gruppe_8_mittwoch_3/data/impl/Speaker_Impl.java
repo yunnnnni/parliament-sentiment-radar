@@ -5,6 +5,9 @@ import org.dom4j.Element;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Fraction;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.ParliamentFactory;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
+import org.texttechnologylab.project.Gruppe_8_mittwoch_3.helper.ImageFinder;
+
+import java.io.IOException;
 
 public class Speaker_Impl implements Speaker {
     private String id = "";
@@ -12,7 +15,6 @@ public class Speaker_Impl implements Speaker {
     private String firstName = "";
     private String lastName = "";
     private String fractionName = "";
-//    private Fraction fraction = new Fraction_Impl("");
     private String role = "";
     private Image_Impl img = new Image_Impl("", "");
     private ParliamentFactory factory = null;
@@ -57,16 +59,11 @@ public class Speaker_Impl implements Speaker {
                             this.titel = ele.getText();
                             continue;
                         case "fraktion":
-                            String fractionName = ele.getText().replace("\u00a0"," ");
+                            String fractionName = ele.getText();
                             // TODO: check abgeordnete without fraktion
-                            //process special cases
-                            if (fractionName.equals("CDU/ CSU")){fractionName="CDU/CSU";}
-                            else if (fractionName.equals("fraktionslos")){fractionName="Fraktionslos";}
-
-//                            Fraction fraction = this.factory.addFraction(new Fraction_Impl(fractionName, this.factory));
                             Fraction fraction = this.factory.addFraction(fractionName);
                             fraction.addSpeaker(this);
-                            this.fractionName = fractionName;
+                            this.fractionName = fraction.getName();
 
                             continue;
                         case "rolle":
@@ -153,6 +150,14 @@ public class Speaker_Impl implements Speaker {
         document.append("lastName", this.lastName);
         document.append("fraction", this.fractionName);
         document.append("role", this.role);
+        try {
+            ImageFinder finder = new ImageFinder(this.firstName, this.lastName);
+            this.img = new Image_Impl(finder.getImgUrl(), finder.getDescription());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         document.append("image", this.img.toDocument());
         return document;
     }

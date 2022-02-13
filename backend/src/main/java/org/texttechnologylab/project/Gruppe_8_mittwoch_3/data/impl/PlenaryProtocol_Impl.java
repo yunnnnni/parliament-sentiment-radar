@@ -16,7 +16,6 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
     private String date = "";
     private LocalTime startTime = null;
     private LocalTime endTime = null;
-    private List<Speaker> speakerList = new ArrayList<>();
     private Set<String> speakerIdSet = new TreeSet<>();
     private List<AgendaItem> agendaItems = new ArrayList<>(0);
     private ParliamentFactory factory = null;
@@ -49,16 +48,14 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
             // -------------------------- build speaker list --------------------------------
             List<Element> rednerElements = root.element("rednerliste").elements("redner");
             for (Element rednerElement : rednerElements){
-//                speakerList.add(new Speaker_Impl(rednerElement));
                 Speaker speaker = this.factory.addSpeaker(rednerElement);
-//                this.speakerList.add(speaker);
                 this.speakerIdSet.add(speaker.getId());
             }
 
             // -------------------------- build agendaItem list --------------------------------
             List<Element> tagesordnungespunktElementList = sitzungsverlauf.elements("tagesordnungspunkt");
             for (Element tagesordnungspunktElement : tagesordnungespunktElementList){
-                this.agendaItems.add(new AgendaItem_Impl(tagesordnungspunktElement));
+                this.agendaItems.add(new AgendaItem_Impl(tagesordnungspunktElement, this.factory));
             }
 
             System.out.format("Finish reading %s\n", xmlFile);
@@ -69,13 +66,8 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
     }
 
     @Override
-    public List<Speaker> getSpeakerList() {
-        return this.speakerList;
-    }
-
-    @Override
-    public List<Speech> getSpeechList() {
-        return null;
+    public Set<String> getSpeakerIdSet() {
+        return this.speakerIdSet;
     }
 
     @Override
