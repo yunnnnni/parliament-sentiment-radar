@@ -1,13 +1,16 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 
+import com.mongodb.client.FindIterable;
 import edu.washington.cs.knowitall.logic.Expression;
 import org.apache.uima.ruta.type.html.P;
+import org.bson.Document;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.database.MongoDBConnectionHandler;
 import org.dom4j.Element;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ParliamentFactory_Impl implements ParliamentFactory {
@@ -55,8 +58,23 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
 
     @Override
     public void initFromMongoDB(MongoDBConnectionHandler handler) {
-
+        this.handler = handler;
+        initSpeakersFromMongoDB();
     }
+
+    private void initSpeakersFromMongoDB(){
+        FindIterable<Document> iterDoc = this.handler.getCollection("parliament_members").find();
+        Iterator it = iterDoc.iterator();
+        try {
+            while (it.hasNext()) {
+                Document docu = (Document) it.next();
+                this.addSpeaker(docu);
+            }
+        }catch (Exception e){
+            System.out.println(e);
+        }
+    }
+
 
     @Override
     public List<PlenaryProtocol> getProtocols() {
@@ -195,5 +213,26 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     public Fraction addFraction(String name) {
         Fraction fraction = new Fraction_Impl(name, this);
         return addFraction(fraction);
+    }
+
+    @Override
+    public PlenaryProtocol addProtocol(Document protocolDocument) {
+        return null;
+    }
+
+    @Override
+    public Speech addSpeech(Document speechDocument) {
+        return null;
+    }
+
+    @Override
+    public Speaker addSpeaker(Document speakerDocument) {
+        Speaker speaker = new Speaker_Impl(speakerDocument, this);
+        return this.addSpeaker(speaker);
+    }
+
+    @Override
+    public Fraction addFraction(Document fractionDocument) {
+        return null;
     }
 }
