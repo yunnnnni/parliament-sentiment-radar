@@ -15,5 +15,7 @@ public interface Fraction {
      */
     void setName(String name);
 
+    void addSpeaker(Speaker speaker);
+
     Document toDocument();
 }

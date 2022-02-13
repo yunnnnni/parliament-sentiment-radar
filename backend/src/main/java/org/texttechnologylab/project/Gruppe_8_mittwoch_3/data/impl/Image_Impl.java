@@ -26,19 +26,19 @@ public class Image_Impl {
         if (imageDocument.containsKey("imageBin")){
             this.imageBin = imageDocument.get("imageBin", Binary.class).getData();
         }
-        if (imageDocument.containsKey("imageUrl")){
-            this.imageUrl = imageDocument.getString("imageUrl");
+        if (imageDocument.containsKey("url")){
+            this.imageUrl = imageDocument.getString("url");
         }
-        if (imageDocument.containsKey("imageDescription")){
-            this.imageDescription = imageDocument.getString("imageDescription");
+        if (imageDocument.containsKey("description")){
+            this.imageDescription = imageDocument.getString("description");
         }
     }
 
     public Document toDocument(){
         Document document = new Document();
 //        document.append("imageBin", new Binary(this.imageBin));
-        document.append("imageUrl", this.imageUrl);
-        document.append("imageDescription", this.imageDescription);
+        document.append("url", this.imageUrl);
+        document.append("description", this.imageDescription);
         return document;
     }
 
