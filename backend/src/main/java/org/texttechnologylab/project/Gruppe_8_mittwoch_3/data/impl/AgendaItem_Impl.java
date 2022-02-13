@@ -2,8 +2,13 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import javax.print.Doc;
 import org.bson.Document;
 import org.dom4j.Element;
+
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.AgendaItem;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speech;
 
@@ -15,6 +20,8 @@ public class AgendaItem_Impl implements AgendaItem {
   private List<String> agendaText = new ArrayList<>();
   private List<Speech> speechList = new ArrayList<>();
   private List<String> agendaItemComment = new ArrayList<>();
+  private Set<String> speechIdSet = new TreeSet<>();
+  private Set<String> speakerIDSet = new TreeSet<>();
 
   public AgendaItem_Impl(Element agendaElement) {
     List<String> agendaTextLabel = Arrays
@@ -32,6 +39,23 @@ public class AgendaItem_Impl implements AgendaItem {
       } else if (elementsA.getName().equals("p") && agendaTextLabel
           .contains(elementsA.attributeValue("klasse"))){
           agendaText.add(elementsA.getText());
+      }
+    }
+  }
+
+  public AgendaItem_Impl(Document agendaDocument){
+    if (agendaDocument.containsKey("top-id")){
+      this.topID = agendaDocument.getString("top-id");
+    }
+    if (agendaDocument.containsKey("speech")){
+      List<Document> speeches = agendaDocument.getList("speech", Document.class);
+      for (Document document : speeches){
+        if (document.containsKey("speechID")){
+          this.speechIdSet.add(document.getString("speechID"));
+        }
+        if (document.containsKey("speakerID")){
+          this.speakerIDSet.add(document.getString("speaker"));
+        }
       }
     }
   }
@@ -55,6 +79,13 @@ public class AgendaItem_Impl implements AgendaItem {
 
   @Override
   public Document toDocument() {
-    return null;
+    Document document = new Document();
+    document.append("topID", this.topID);
+    List<Document> speeches = new ArrayList<>();
+    for (Speech s : this.speechList){
+      speeches.add(s.toDocument());
+    }
+    document.append("speechIDs", speeches);
+    return document;
   }
 }

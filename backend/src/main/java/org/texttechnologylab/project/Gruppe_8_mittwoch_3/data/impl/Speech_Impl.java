@@ -39,10 +39,20 @@ public class Speech_Impl implements Speech {
 
   private String speechID;
   private Speaker speaker;
+  private String speakerID;
   private List<Text> textList = new ArrayList<>();
   private List<String> speechComment = new ArrayList<>();
   private JCas jcas;
   private Document document = new Document();
+  private List<String> person = new ArrayList<>();
+  private List<String> location = new ArrayList<>();
+  private List<String> organisation = new ArrayList<>();
+  private List<String> token = new ArrayList<>();
+  private List<String> sentences = new ArrayList<>();
+  private List<String> pos = new ArrayList<>();
+  private List<String> dependency = new ArrayList<>();
+  private List<Double> sentiment = new ArrayList<>();
+
 
   public Speech_Impl(Element speechElement) {
     this.speechID = speechElement.attributeValue("id");
@@ -61,7 +71,45 @@ public class Speech_Impl implements Speech {
         speechComment.add(elementS.getText());
       }
     }
+  }
 
+  public Speech_Impl(Document speechDocument){
+    if (speechDocument.containsKey("speech_id")){
+      this.speechID = speechDocument.getString("speech_id");
+    }
+    if (speechDocument.containsKey("speaker")){
+      this.speakerID = speechDocument.getString("speaker");
+    }
+    if (speechDocument.containsKey("text")){ //这里目前是按照分开来的
+      List<Document> texts = speechDocument.getList("tetx", Document.class);
+      this.textList = texts.stream()
+          .map(d -> new Text_Impl(d))
+          .collect(Collectors.toList());
+    }
+    if (speechDocument.containsKey("person")){
+      this.person = speechDocument.getList("person", String.class);
+    }
+    if (speechDocument.containsKey("location")){
+      this.location = speechDocument.getList("location", String.class);
+    }
+    if (speechDocument.containsKey("organisation")){
+      this.organisation = speechDocument.getList("organisation", String.class);
+    }
+    if (speechDocument.containsKey("token")){
+      this.token = speechDocument.getList("token", String.class);
+    }
+    if (speechDocument.containsKey("sentences")){
+      this.sentences = speechDocument.getList("sentences", String.class);
+    }
+    if (speechDocument.containsKey("pos")){
+      this.pos = speechDocument.getList("pos", String.class);
+    }
+    if(speechDocument.containsKey("dependency")){
+      this.dependency = speechDocument.getList("dependency", String.class);
+    }
+    if (speechDocument.containsKey("sentiment")){
+      this.sentiment = speechDocument.getList("sentiment", Double.class);
+    }
   }
 
   @Override
@@ -80,17 +128,24 @@ public class Speech_Impl implements Speech {
   }
 
   @Override
-  public Document toDocument() { //ab-4
-    return null;
+  public Document toDocument() { //ab-4 这里也有问题！ AgendaItem里面的speech和speaker是有ID吧？
+    Document document = new Document();
+    document.append("speechID", this.speechID);
+    document.append("speakerID", this.speaker.getId());
+
+    return document;
   }
 
   public Document toDocumentWithNLP() throws UIMAException {
     this.toCAS();
     Document document = new Document();
     document.append("id", this.speechID);
-    document.append("speaker", this.speaker.getId());
-    List<Document> textDocument = this.textList.stream().map(text -> text.toDocument()).collect(
-        Collectors.toList());
+    document.append("speakerID", this.speaker.getId());
+    List<Document> texts = new ArrayList<>();
+    for (Text t : this.textList){
+      texts.add(t.toDocument());
+    }
+    document.append("texts", texts);
     document.append("person", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream().filter(f -> f.getValue().equals("PER")).collect(
         Collectors.toList())));
     document.append("location", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream().filter(f -> f.getValue().equals("LOC")).collect(
