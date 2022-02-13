@@ -3,15 +3,11 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 import org.bson.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.AgendaItem;
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.PlenaryProtocol;
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speech;
+import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
 
 import java.io.File;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PlenaryProtocol_Impl implements PlenaryProtocol {
     private int session = -1;  // Sitzungsnummer
@@ -21,9 +17,20 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
     private LocalTime startTime = null;
     private LocalTime endTime = null;
     private List<Speaker> speakerList = new ArrayList<>();
+    private Set<String> speakerIdSet = new TreeSet<>();
     private List<AgendaItem> agendaItems = new ArrayList<>(0);
+    private ParliamentFactory factory = null;
+
+    public PlenaryProtocol_Impl(File xmlFile, ParliamentFactory factory){
+        this.factory = factory;
+        this.init(xmlFile);
+    }
 
     public PlenaryProtocol_Impl(File xmlFile){
+        this.init(xmlFile);
+    }
+
+    private void init(File xmlFile){
         try {
             SAXReader saxReader = new SAXReader();
             org.dom4j.Document document = saxReader.read(xmlFile);
@@ -42,7 +49,10 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
             // -------------------------- build speaker list --------------------------------
             List<Element> rednerElements = root.element("rednerliste").elements("redner");
             for (Element rednerElement : rednerElements){
-                speakerList.add(new Speaker_Impl(rednerElement));
+//                speakerList.add(new Speaker_Impl(rednerElement));
+                Speaker speaker = this.factory.addSpeaker(rednerElement);
+//                this.speakerList.add(speaker);
+                this.speakerIdSet.add(speaker.getId());
             }
 
             // -------------------------- build agendaItem list --------------------------------
@@ -52,68 +62,6 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
             }
 
             System.out.format("Finish reading %s\n", xmlFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public PlenaryProtocol_Impl(File xmlFile){
-        try {
-            SAXReader saxReader = new SAXReader();
-            org.dom4j.Document document = saxReader.read(xmlFile);
-
-            Element root = document.getRootElement();
-            Element sitzungsverlauf = root.element("sitzungsverlauf");
-
-            // -------------------------- attributes -----------------------------
-            this.date = root.attributeValue("sitzung-datum");
-            this.term = Integer.parseInt(root.attributeValue("wahlperiode"));
-            this.session = Integer.parseInt(root.attributeValue("sitzung-nr"));
-            this.startTime = LocalTime.parse(root.attributeValue("sitzung-start-uhrzeit"));
-            this.endTime = LocalTime.parse(root.attributeValue("sitzung-ende-uhrzeit"));
-            this.titel = this.session + ". Sitzung";
-
-            // -------------------------- build speaker list --------------------------------
-            List<Element> rednerElements = root.element("rednerliste").elements("redner");
-            for (Element rednerElement : rednerElements){
-                speakerList.add(new Speaker_Impl(rednerElement));
-            }
-
-            // -------------------------- build agendaItem list --------------------------------
-            List<Element> tagesordnungespunktElementList = sitzungsverlauf.elements("tagesordnungspunkt");
-            for (Element tagesordnungspunktElement : tagesordnungespunktElementList){
-                this.agendaItems.add(new AgendaItem_Impl(tagesordnungspunktElement));
-            }
-
-            System.out.format("Finish reading %s\n", xmlFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public PlenaryProtocol_Impl(Element protocolElement){
-        try {
-            Element sitzungsverlauf = protocolElement.element("sitzungsverlauf");
-
-            // -------------------------- attributes -----------------------------
-            this.date = protocolElement.attributeValue("sitzung-datum");
-            this.term = Integer.parseInt(protocolElement.attributeValue("wahlperiode"));
-            this.session = Integer.parseInt(protocolElement.attributeValue("sitzung-nr"));
-            this.startTime = LocalTime.parse(protocolElement.attributeValue("sitzung-start-uhrzeit"));
-            this.endTime = LocalTime.parse(protocolElement.attributeValue("sitzung-ende-uhrzeit"));
-            this.titel = this.session + ". Sitzung";
-
-            // -------------------------- build speaker list --------------------------------
-            List<Element> rednerElements = protocolElement.element("rednerliste").elements("redner");
-            for (Element rednerElement : rednerElements){
-                speakerList.add(new Speaker_Impl(rednerElement));
-            }
-
-            // -------------------------- build agendaItem list --------------------------------
-            List<Element> tagesordnungespunktElementList = sitzungsverlauf.elements("tagesordnungspunkt");
-            for (Element tagesordnungspunktElement : tagesordnungespunktElementList){
-                this.agendaItems.add(new AgendaItem_Impl(tagesordnungspunktElement));
-            }
 
         } catch (Exception e) {
             e.printStackTrace();

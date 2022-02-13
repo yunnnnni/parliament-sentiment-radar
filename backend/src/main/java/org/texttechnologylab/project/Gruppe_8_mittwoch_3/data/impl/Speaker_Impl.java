@@ -3,6 +3,7 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 import org.bson.Document;
 import org.dom4j.Element;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Fraction;
+import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.ParliamentFactory;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
 
 public class Speaker_Impl implements Speaker {
@@ -10,12 +11,22 @@ public class Speaker_Impl implements Speaker {
     private String titel = "";
     private String firstName = "";
     private String lastName = "";
-    private Fraction fraction = new Fraction_Impl("");
-//    private Party party = new Party_Impl("");
+    private String fractionName = "";
+//    private Fraction fraction = new Fraction_Impl("");
     private String role = "";
     private Image_Impl img = new Image_Impl("", "");
+    private ParliamentFactory factory = null;
+
+    public Speaker_Impl(Element speakerElement, ParliamentFactory factory){
+        this.factory = factory;
+        this.init(speakerElement);
+    }
 
     public Speaker_Impl(Element speakerElement){
+        this.init(speakerElement);
+    }
+
+    private void init(Element speakerElement){
         // init from element
         try{
             this.id = speakerElement.attributeValue("id");
@@ -51,7 +62,12 @@ public class Speaker_Impl implements Speaker {
                             //process special cases
                             if (fractionName.equals("CDU/ CSU")){fractionName="CDU/CSU";}
                             else if (fractionName.equals("fraktionslos")){fractionName="Fraktionslos";}
-                            this.fraction.setName(fractionName);
+
+//                            Fraction fraction = this.factory.addFraction(new Fraction_Impl(fractionName, this.factory));
+                            Fraction fraction = this.factory.addFraction(fractionName);
+                            fraction.addSpeaker(this);
+                            this.fractionName = fractionName;
+
                             continue;
                         case "rolle":
                             try {
@@ -117,7 +133,7 @@ public class Speaker_Impl implements Speaker {
 
     @Override
     public String getFraktion() {
-        return this.fraction.getName();
+        return this.fractionName;
     }
 
     @Override
@@ -135,7 +151,7 @@ public class Speaker_Impl implements Speaker {
         document.append("titel", this.titel);
         document.append("firstName", this.firstName);
         document.append("lastName", this.lastName);
-        document.append("fraction", this.fraction.toDocument());
+        document.append("fraction", this.fractionName);
         document.append("role", this.role);
         document.append("image", this.img.toDocument());
         return document;

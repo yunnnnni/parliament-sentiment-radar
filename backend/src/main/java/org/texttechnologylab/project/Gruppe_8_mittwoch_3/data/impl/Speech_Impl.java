@@ -5,6 +5,7 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.jcas.JCas;
 import org.bson.Document;
 import org.dom4j.Element;
+import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.ParliamentFactory;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speech;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Text;
@@ -18,9 +19,19 @@ public class Speech_Impl implements Speech {
     private String speechID;
     private Speaker speaker;
     private List<Text> textList = new ArrayList<>();
+    private ParliamentFactory factory = null;
 //    private List<String> speechComment = new ArrayList<>();
 
+    public Speech_Impl(Element speechElement, ParliamentFactory factory){
+        this.factory = factory;
+        this.init(speechElement);
+    }
+
     public Speech_Impl(Element speechElement){
+        this.init(speechElement);
+    }
+
+    private void init(Element speechElement){
         this.speechID = speechElement.attributeValue("id");
         List<Element> speechElements = speechElement.elements();
         for (Element elementS : speechElements){
@@ -29,7 +40,11 @@ public class Speech_Impl implements Speech {
                     continue;
                 }
                 if (elementS.attributeValue("klasse").equals("redner")){
-                    this.speaker = new Speaker_Impl(elementS.element("redner"));
+                    if (this.factory != null) {
+                        this.speaker = this.factory.addSpeaker(new Speaker_Impl(elementS.element("redner"), this.factory));
+                    }else{
+                        this.speaker = new Speaker_Impl(elementS.element("redner"));
+                    }
                 } else{
                     this.textList.add(new Text_Impl(elementS));
                 }
