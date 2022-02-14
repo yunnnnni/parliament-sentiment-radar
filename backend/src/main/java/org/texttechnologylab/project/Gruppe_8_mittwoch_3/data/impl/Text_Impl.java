@@ -13,6 +13,11 @@ public class Text_Impl implements Text {
         this.text = textElement.getText();
     }
 
+    public Text_Impl(String text, String label){
+        this.text = text;
+        this.label = label;
+    }
+
     public Text_Impl(Document textDocument){
         this.text = textDocument.getString("text");
         this.label = textDocument.getString("label");

@@ -63,50 +63,56 @@ public class Speech_Impl implements Speech {
           this.textList.add(new Text_Impl(elementS));
         }
       } else if (elementS.getName().equals("kommentar")) {
-        speechComment.add(elementS.getText());
+//        speechComment.add(elementS.getText());
+        this.textList.add((new Text_Impl(elementS.getText(), "comment")));
+      } else if (elementS.getName().equals("name")) {
+        this.textList.add((new Text_Impl(elementS.getText(), "name")));
+      } else if (elementS.getName().equals("a")) {
+        continue;
       }
     }
   }
 
-  public Speech_Impl(Document speechDocument){
-    if (speechDocument.containsKey("speechId")){
+  public Speech_Impl(Document speechDocument) {
+    if (speechDocument.containsKey("speechId")) {
       this.speechID = speechDocument.getString("speechId");
     }
-    if (speechDocument.containsKey("speakerID")){
+    if (speechDocument.containsKey("speakerID")) {
       this.speakerID = speechDocument.getString("speakerID");
     }
-    if (speechDocument.containsKey("texts")){
+    if (speechDocument.containsKey("texts")) {
       List<Document> texts = speechDocument.getList("texts", Document.class);
-      for (Document textDocument : texts){
+      for (Document textDocument : texts) {
         Text text = new Text_Impl(textDocument);
         this.textList.add(text);
       }
     }
-    if (speechDocument.containsKey("annotations")){
+    if (speechDocument.containsKey("annotations")) {
       this.annotations = new HashMap<>();
       Document annotationsDocument = speechDocument.get("annotations", Document.class);
-      if (annotationsDocument.containsKey("person")){
+      if (annotationsDocument.containsKey("person")) {
         this.annotations.put("person", annotationsDocument.getList("person", String.class));
       }
-      if (annotationsDocument.containsKey("location")){
+      if (annotationsDocument.containsKey("location")) {
         this.annotations.put("location", annotationsDocument.getList("location", String.class));
       }
-      if (annotationsDocument.containsKey("organisation")){
-        this.annotations.put("organisation", annotationsDocument.getList("organisation", String.class));
+      if (annotationsDocument.containsKey("organisation")) {
+        this.annotations
+            .put("organisation", annotationsDocument.getList("organisation", String.class));
       }
-      if (annotationsDocument.containsKey("token")){
+      if (annotationsDocument.containsKey("token")) {
         this.annotations.put("token", annotationsDocument.getList("token", String.class));
       }
-      if (annotationsDocument.containsKey("sentences")){
+      if (annotationsDocument.containsKey("sentences")) {
         this.annotations.put("sentences", annotationsDocument.getList("sentences", String.class));
       }
-      if (annotationsDocument.containsKey("pos")){
+      if (annotationsDocument.containsKey("pos")) {
         this.annotations.put("pos", annotationsDocument.getList("pos", String.class));
       }
       if (annotationsDocument.containsKey("dependency")) {
         this.annotations.put("dependency", annotationsDocument.getList("dependency", String.class));
       }
-      if (annotationsDocument.containsKey("sentiment")){
+      if (annotationsDocument.containsKey("sentiment")) {
         this.annotations.put("sentiment", annotationsDocument.getList("sentiment", Double.class));
       }
     }
@@ -184,7 +190,7 @@ public class Speech_Impl implements Speech {
     return this.document;
   }
 
-  public void setAnnotations(){
+  public void setAnnotations() {
     annotations.put("person", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream()
         .filter(f -> f.getValue().equals("PER")).collect(
             Collectors.toList())));
@@ -210,7 +216,6 @@ public class Speech_Impl implements Speech {
   }
 
 
-
   @Override
   public JCas toCAS() throws UIMAException {
     List<String> theTextList = this.textList.stream()
@@ -227,8 +232,7 @@ public class Speech_Impl implements Speech {
     ));
 
     File file = new File("./backend/config/am_posmap.txt");
-    String sPOSMapFile =  file.getAbsolutePath();
-
+    String sPOSMapFile = file.getAbsolutePath();
 
     pipeline.add(createEngineDescription(LabelAnnotatorDocker.class,
         LabelAnnotatorDocker.PARAM_FASTTEXT_K, 100,
@@ -275,32 +279,31 @@ public class Speech_Impl implements Speech {
 
   }
 
-  public List<Sentence> getSentence(){
+  public List<Sentence> getSentence() {
     return JCasUtil.select(this.jcas, Sentence.class).stream().collect(
         Collectors.toList());
   }
 
-  public List<Double> getSentiments(){
+  public List<Double> getSentiments() {
     List<Sentiment> sentiments = new ArrayList<>();
     List<Sentence> sentences = this.getSentence();
-    for (Sentence sentence : sentences){
-      for (Sentiment sentiment : JCasUtil.selectCovered(Sentiment.class, sentence)){
+    for (Sentence sentence : sentences) {
+      for (Sentiment sentiment : JCasUtil.selectCovered(Sentiment.class, sentence)) {
         sentiments.add(sentiment);
       }
     }
 
-    return sentiments.stream().map(s ->s.getSentiment()).collect(Collectors.toList());
+    return sentiments.stream().map(s -> s.getSentiment()).collect(Collectors.toList());
   }
 
 
-
-  public List<String> toStringList(List<Annotation> annotationCollection){
+  public List<String> toStringList(List<Annotation> annotationCollection) {
     HashSet<String> list = new HashSet<String>();
 
-    for (Annotation annotation : annotationCollection){
-      if (annotation instanceof POS){
+    for (Annotation annotation : annotationCollection) {
+      if (annotation instanceof POS) {
         list.add(((POS) annotation).getPosValue());
-      }else {
+      } else {
         list.add(annotation.getCoveredText());
       }
     }
