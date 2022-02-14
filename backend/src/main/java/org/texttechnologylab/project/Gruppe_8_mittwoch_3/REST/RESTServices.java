@@ -9,6 +9,7 @@ import org.json.simple.JSONValue;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl.ParliamentFactory_Impl;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.database.MongoDBConnectionHandler;
+import spark.Filter;
 import spark.Request;
 
 import java.util.*;
@@ -26,27 +27,32 @@ public class RESTServices {
     }
 
     public void startServices() {
-        options("/*",
-                (request, response) -> {
+//        options("/*",
+//                (request, response) -> {
+//
+//                    String accessControlRequestHeaders = request
+//                            .headers("Access-Control-Request-Headers");
+//                    if (accessControlRequestHeaders != null) {
+//                        response.header("Access-Control-Allow-Headers",
+//                                accessControlRequestHeaders);
+//                    }
+//
+//                    String accessControlRequestMethod = request
+//                            .headers("Access-Control-Request-Method");
+//                    if (accessControlRequestMethod != null) {
+//                        response.header("Access-Control-Allow-Methods",
+//                                accessControlRequestMethod);
+//                    }
+//
+//                    return "OK";
+//                });
+//
+//        before((request, response) -> response.header("Access-Control-Aollow-Origin", "*"));
 
-                    String accessControlRequestHeaders = request
-                            .headers("Access-Control-Request-Headers");
-                    if (accessControlRequestHeaders != null) {
-                        response.header("Access-Control-Allow-Headers",
-                                accessControlRequestHeaders);
-                    }
-
-                    String accessControlRequestMethod = request
-                            .headers("Access-Control-Request-Method");
-                    if (accessControlRequestMethod != null) {
-                        response.header("Access-Control-Allow-Methods",
-                                accessControlRequestMethod);
-                    }
-
-                    return "OK";
-                });
-
-        before((request, response) -> response.header("Access-Control-Aollow-Origin", "*"));
+        after((Filter) (req, res) -> {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Methods", "GET");
+        });
 
         get("/update-factory", (req, res) -> {
             res.type("application/json");
