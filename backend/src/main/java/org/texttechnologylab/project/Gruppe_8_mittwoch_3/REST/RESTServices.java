@@ -14,7 +14,7 @@ import spark.Request;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static spark.Spark.get;
+import static spark.Spark.*;
 
 public class RESTServices {
     MongoDBConnectionHandler handler = null;
@@ -26,6 +26,33 @@ public class RESTServices {
     }
 
     public void startServices() {
+        options("/*",
+                (request, response) -> {
+
+                    String accessControlRequestHeaders = request
+                            .headers("Access-Control-Request-Headers");
+                    if (accessControlRequestHeaders != null) {
+                        response.header("Access-Control-Allow-Headers",
+                                accessControlRequestHeaders);
+                    }
+
+                    String accessControlRequestMethod = request
+                            .headers("Access-Control-Request-Method");
+                    if (accessControlRequestMethod != null) {
+                        response.header("Access-Control-Allow-Methods",
+                                accessControlRequestMethod);
+                    }
+
+                    return "OK";
+                });
+
+        before((request, response) -> response.header("Access-Control-Aollow-Origin", "*"));
+
+        get("/update-factory", (req, res) -> {
+            res.type("application/json");
+            this.factory.initFromMongoDB(this.handler);
+            return "updated";
+        });
         get("/speech", (req, res) -> {
             res.type("application/json");
             return this.speechService(req);
