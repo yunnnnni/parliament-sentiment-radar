@@ -10,8 +10,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Collectors;
+import javax.print.Doc;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AggregateBuilder;
@@ -44,14 +46,7 @@ public class Speech_Impl implements Speech {
   private List<String> speechComment = new ArrayList<>();
   private JCas jcas;
   private Document document = new Document();
-  private List<String> person = new ArrayList<>();
-  private List<String> location = new ArrayList<>();
-  private List<String> organisation = new ArrayList<>();
-  private List<String> token = new ArrayList<>();
-  private List<String> sentences = new ArrayList<>();
-  private List<String> pos = new ArrayList<>();
-  private List<String> dependency = new ArrayList<>();
-  private List<Double> sentiment = new ArrayList<>();
+  private Map<String, Object> annotations = new HashMap<>();
 
 
   public Speech_Impl(Element speechElement) {
@@ -74,41 +69,46 @@ public class Speech_Impl implements Speech {
   }
 
   public Speech_Impl(Document speechDocument){
-    if (speechDocument.containsKey("speech_id")){
-      this.speechID = speechDocument.getString("speech_id");
+    if (speechDocument.containsKey("speechId")){
+      this.speechID = speechDocument.getString("speechId");
     }
-    if (speechDocument.containsKey("speaker")){
-      this.speakerID = speechDocument.getString("speaker");
+    if (speechDocument.containsKey("speakerID")){
+      this.speakerID = speechDocument.getString("speakerID");
     }
-    if (speechDocument.containsKey("text")){ //这里目前是按照分开来的
-      List<Document> texts = speechDocument.getList("tetx", Document.class);
-      this.textList = texts.stream()
-          .map(d -> new Text_Impl(d))
-          .collect(Collectors.toList());
+    if (speechDocument.containsKey("texts")){
+      List<Document> texts = speechDocument.getList("texts", Document.class);
+      for (Document textDocument : texts){
+        Text text = new Text_Impl(textDocument);
+        this.textList.add(text);
+      }
     }
-    if (speechDocument.containsKey("person")){
-      this.person = speechDocument.getList("person", String.class);
-    }
-    if (speechDocument.containsKey("location")){
-      this.location = speechDocument.getList("location", String.class);
-    }
-    if (speechDocument.containsKey("organisation")){
-      this.organisation = speechDocument.getList("organisation", String.class);
-    }
-    if (speechDocument.containsKey("token")){
-      this.token = speechDocument.getList("token", String.class);
-    }
-    if (speechDocument.containsKey("sentences")){
-      this.sentences = speechDocument.getList("sentences", String.class);
-    }
-    if (speechDocument.containsKey("pos")){
-      this.pos = speechDocument.getList("pos", String.class);
-    }
-    if(speechDocument.containsKey("dependency")){
-      this.dependency = speechDocument.getList("dependency", String.class);
-    }
-    if (speechDocument.containsKey("sentiment")){
-      this.sentiment = speechDocument.getList("sentiment", Double.class);
+    if (speechDocument.containsKey("annotations")){
+      this.annotations = new HashMap<>();
+      Document annotationsDocument = speechDocument.get("annotations", Document.class);
+      if (annotationsDocument.containsKey("person")){
+        this.annotations.put("person", annotationsDocument.getList("person", String.class));
+      }
+      if (annotationsDocument.containsKey("location")){
+        this.annotations.put("location", annotationsDocument.getList("location", String.class));
+      }
+      if (annotationsDocument.containsKey("organisation")){
+        this.annotations.put("organisation", annotationsDocument.getList("organisation", String.class));
+      }
+      if (annotationsDocument.containsKey("token")){
+        this.annotations.put("token", annotationsDocument.getList("token", String.class));
+      }
+      if (annotationsDocument.containsKey("sentences")){
+        this.annotations.put("sentences", annotationsDocument.getList("sentences", String.class));
+      }
+      if (annotationsDocument.containsKey("pos")){
+        this.annotations.put("pos", annotationsDocument.getList("pos", String.class));
+      }
+      if (annotationsDocument.containsKey("dependency")) {
+        this.annotations.put("dependency", annotationsDocument.getList("dependency", String.class));
+      }
+      if (annotationsDocument.containsKey("sentiment")){
+        this.annotations.put("sentiment", annotationsDocument.getList("sentiment", Double.class));
+      }
     }
   }
 
@@ -128,7 +128,7 @@ public class Speech_Impl implements Speech {
   }
 
   @Override
-  public Document toDocument() { //ab-4 这里也有问题！ AgendaItem里面的speech和speaker是有ID吧？
+  public Document toDocument() {
     Document document = new Document();
     document.append("speechID", this.speechID);
     document.append("speakerID", this.speaker.getId());
@@ -138,33 +138,78 @@ public class Speech_Impl implements Speech {
 
   public Document toDocumentWithNLP() throws UIMAException {
     this.toCAS();
+    this.setAnnotations();
     Document document = new Document();
-    document.append("id", this.speechID);
+    Document annotationsList = new Document();
+    document.append("speechId", this.speechID);
     document.append("speakerID", this.speaker.getId());
     List<Document> texts = new ArrayList<>();
-    for (Text t : this.textList){
+    for (Text t : this.textList) {
       texts.add(t.toDocument());
     }
     document.append("texts", texts);
-    document.append("person", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream().filter(f -> f.getValue().equals("PER")).collect(
-        Collectors.toList())));
-    document.append("location", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream().filter(f -> f.getValue().equals("LOC")).collect(
-        Collectors.toList())));
-    document.append("organisation", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream().filter(f -> f.getValue().equals("ORG")).collect(
-        Collectors.toList())));
-    document.append("token", toStringList(JCasUtil.select(this.jcas, Token.class).stream().collect(
-        Collectors.toList())));
-    document.append("sentences", toStringList(JCasUtil.select(this.jcas, Sentence.class).stream().collect(
-        Collectors.toList())));
-    document.append("pos", toStringList(JCasUtil.select(this.jcas, POS.class).stream().collect(
-        Collectors.toList())));
-    document.append("dependency", toStringList(JCasUtil.select(this.jcas, Dependency.class).stream().collect(
-        Collectors.toList())));
-    document.append("sentiment", getSentiments());
+//    document.append("person", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream()
+//        .filter(f -> f.getValue().equals("PER")).collect(
+//            Collectors.toList())));
+//    document.append("location", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream()
+//        .filter(f -> f.getValue().equals("LOC")).collect(
+//            Collectors.toList())));
+//    document.append("organisation", toStringList(
+//        JCasUtil.select(this.jcas, NamedEntity.class).stream()
+//            .filter(f -> f.getValue().equals("ORG")).collect(
+//            Collectors.toList())));
+//    document.append("token", toStringList(JCasUtil.select(this.jcas, Token.class).stream().collect(
+//        Collectors.toList())));
+//    document.append("sentences",
+//        toStringList(JCasUtil.select(this.jcas, Sentence.class).stream().collect(
+//            Collectors.toList())));
+//    document.append("pos", toStringList(JCasUtil.select(this.jcas, POS.class).stream().collect(
+//        Collectors.toList())));
+//    document.append("dependency",
+//        toStringList(JCasUtil.select(this.jcas, Dependency.class).stream().collect(
+//            Collectors.toList())));
+//    document.append("sentiment", getSentiments());
+
+    annotationsList.append("person", annotations.get("person"));
+    annotationsList.append("location", annotations.get("location"));
+    annotationsList.append("organisation", annotations.get("organisation"));
+    annotationsList.append("token", annotations.get("token"));
+    annotationsList.append("sentences", annotations.get("sentences"));
+    annotationsList.append("pos", annotations.get("pos"));
+    annotationsList.append("dependency", annotations.get("dependency"));
+    annotationsList.append("sentiment", annotations.get("sentiment"));
+    document.append("annotations", annotationsList);
 
     this.document = document;
     return this.document;
   }
+
+  public void setAnnotations(){
+    annotations.put("person", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream()
+        .filter(f -> f.getValue().equals("PER")).collect(
+            Collectors.toList())));
+    annotations.put("location", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream()
+        .filter(f -> f.getValue().equals("LOC")).collect(
+            Collectors.toList())));
+    annotations.put("organisation", toStringList(
+        JCasUtil.select(this.jcas, NamedEntity.class).stream()
+            .filter(f -> f.getValue().equals("ORG")).collect(
+            Collectors.toList())));
+    annotations.put("token", toStringList(JCasUtil.select(this.jcas, Token.class).stream().collect(
+        Collectors.toList())));
+    annotations.put("sentences",
+        toStringList(JCasUtil.select(this.jcas, Sentence.class).stream().collect(
+            Collectors.toList())));
+    annotations.put("pos", toStringList(JCasUtil.select(this.jcas, POS.class).stream().collect(
+        Collectors.toList())));
+    annotations.put("dependency",
+        toStringList(JCasUtil.select(this.jcas, Dependency.class).stream().collect(
+            Collectors.toList())));
+    annotations.put("sentiment", getSentiments());
+
+  }
+
+
 
   @Override
   public JCas toCAS() throws UIMAException {
