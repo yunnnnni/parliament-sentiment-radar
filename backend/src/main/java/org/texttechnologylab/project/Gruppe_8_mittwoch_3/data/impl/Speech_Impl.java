@@ -40,29 +40,22 @@ import scala.xml.Elem;
 
 public class Speech_Impl implements Speech {
 
-    private String speechID;
+    private String speechId;
     private Speaker speaker;
-    private String speakerID;
     private String speakerId;
     private List<Text> textList = new ArrayList<>();
-    private List<String> speechComment = new ArrayList<>();
     private JCas jcas;
     private Document document = new Document();
     private Map<String, Object> annotations = new HashMap<>();
     private ParliamentFactory factory = null;
-//    private List<String> speechComment = new ArrayList<>();
 
     public Speech_Impl(Element speechElement, ParliamentFactory factory){
         this.factory = factory;
         this.init(speechElement);
     }
 
-    public Speech_Impl(Element speechElement){
-        this.init(speechElement);
-    }
-
     private void init(Element speechElement){
-        this.speechID = speechElement.attributeValue("id");
+        this.speechId = speechElement.attributeValue("id");
         List<Element> speechElements = speechElement.elements();
         for (Element elementS : speechElements) {
             if (elementS.getName().equals("p")) {
@@ -70,12 +63,13 @@ public class Speech_Impl implements Speech {
                     continue;
                 }
                 if (elementS.attributeValue("klasse").equals("redner")) {
-                    this.speaker = new Speaker_Impl(elementS);
+//                    this.speaker = new Speaker_Impl(elementS);
+                    this.speaker = this.factory.addSpeaker(elementS.element("redner"));
+                    this.speakerId = this.speaker.getId();
                 } else {
                     this.textList.add(new Text_Impl(elementS));
                 }
             } else if (elementS.getName().equals("kommentar")) {
-//        speechComment.add(elementS.getText());
                 this.textList.add((new Text_Impl(elementS.getText(), "comment")));
             } else if (elementS.getName().equals("name")) {
                 this.textList.add((new Text_Impl(elementS.getText(), "name")));
@@ -87,10 +81,10 @@ public class Speech_Impl implements Speech {
 
     public Speech_Impl(Document speechDocument) {
         if (speechDocument.containsKey("speechId")) {
-            this.speechID = speechDocument.getString("speechId");
+            this.speechId = speechDocument.getString("speechId");
         }
-        if (speechDocument.containsKey("speakerID")) {
-            this.speakerID = speechDocument.getString("speakerID");
+        if (speechDocument.containsKey("speakerId")) {
+            this.speakerId = speechDocument.getString("speakerId");
         }
         if (speechDocument.containsKey("texts")) {
             List<Document> texts = speechDocument.getList("texts", Document.class);
@@ -132,7 +126,7 @@ public class Speech_Impl implements Speech {
 
     @Override
     public String getId() {
-        return this.speechID;
+        return this.speechId;
     }
 
     @Override
@@ -148,8 +142,8 @@ public class Speech_Impl implements Speech {
     @Override
     public Document toDocument() {
         Document document = new Document();
-        document.append("speechID", this.speechID);
-        document.append("speakerID", this.speaker.getId());
+        document.append("speechId", this.speechId);
+        document.append("speakerId", this.speaker.getId());
 
         return document;
     }
@@ -159,8 +153,8 @@ public class Speech_Impl implements Speech {
         this.setAnnotations();
         Document document = new Document();
         Document annotationsList = new Document();
-        document.append("speechId", this.speechID);
-        document.append("speakerID", this.speaker.getId());
+        document.append("speechId", this.speechId);
+        document.append("speakerId", this.speaker.getId());
         List<Document> texts = new ArrayList<>();
         for (Text t : this.textList) {
             texts.add(t.toDocument());

@@ -54,7 +54,10 @@ public class AgendaItem_Impl implements AgendaItem {
         List<Element> agendaItemElements = agendaElement.elements();
         for (Element elementsA : agendaItemElements) {
             if (elementsA.getName().equals("rede")) {
-                speechList.add(new Speech_Impl(elementsA));
+//                speechList.add(new Speech_Impl(elementsA));
+                Speech speech = this.factory.addSpeech(elementsA);
+                this.speechList.add(speech);
+                this.speechIdSet.add(speech.getId());
             } else if (elementsA.getName().equals("kommentar")) {
                 agendaItemComment.add(elementsA.getText());
             } else if (elementsA.getName().equals("p") && agendaTextLabel

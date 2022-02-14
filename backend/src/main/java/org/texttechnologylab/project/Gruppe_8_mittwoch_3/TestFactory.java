@@ -5,7 +5,7 @@ import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl.ParliamentFac
 
 public class TestFactory {
     public static void main(String[] args) {
-        String protocolDirectory = "C:\\Programmieren\\nini\\praktikum\\gruppe_8_mittwoch_3_parliamentsentimentradar\\backend\\Daten\\test";
+        String protocolDirectory = "Daten/test";
         ParliamentFactory factory = new ParliamentFactory_Impl();
         factory.initFromDirectory(protocolDirectory);
         System.out.println();
