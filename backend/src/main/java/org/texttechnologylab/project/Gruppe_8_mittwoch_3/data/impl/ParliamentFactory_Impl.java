@@ -41,10 +41,24 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     @Override
     public void initFromMongoDB(MongoDBConnectionHandler handler) {
         this.handler = handler;
+        initProtocolsFromMongoDB();
         initParliamentMembersFromMongoDB();
         initOtherSpeakersFromMongoDB();
         initSpeechesFromMongoDB();
         initFractionsFromMongoDB();
+    }
+
+    private void initProtocolsFromMongoDB(){
+        FindIterable<Document> iterDoc = this.handler.getCollection("protocols").find();
+        Iterator it = iterDoc.iterator();
+        try {
+            while (it.hasNext()) {
+                Document docu = (Document) it.next();
+                this.addProtocol(docu);
+            }
+        }catch (Exception e){
+            System.out.println(e);
+        }
     }
 
     private void initParliamentMembersFromMongoDB(){
@@ -225,7 +239,8 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
 
     @Override
     public PlenaryProtocol addProtocol(Document protocolDocument) {
-        return null;
+        PlenaryProtocol protocol = new PlenaryProtocol_Impl(protocolDocument, this);
+        return this.addProtocol(protocol);
     }
 
     @Override

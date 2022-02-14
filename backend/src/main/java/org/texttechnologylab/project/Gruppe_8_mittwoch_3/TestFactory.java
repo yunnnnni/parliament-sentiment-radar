@@ -8,10 +8,10 @@ public class TestFactory {
     public static void main(String[] args) {
         String protocolDirectory = "Daten/test";
         ParliamentFactory factory = new ParliamentFactory_Impl();
-        factory.initFromDirectory(protocolDirectory);
+//        factory.initFromDirectory(protocolDirectory);
 
-//        MongoDBConnectionHandler handler = new MongoDBConnectionHandler("config/config.json");
-//        factory.initFromMongoDB(handler);
+        MongoDBConnectionHandler handler = new MongoDBConnectionHandler("config/config.json");
+        factory.initFromMongoDB(handler);
         System.out.println();
 
     }

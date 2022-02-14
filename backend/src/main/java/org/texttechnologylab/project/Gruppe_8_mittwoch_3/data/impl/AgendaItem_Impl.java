@@ -1,9 +1,12 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 
 import java.util.*;
+
+import org.apache.uima.ruta.type.html.P;
 import org.bson.Document;
 import org.dom4j.Element;
 
+import org.javatuples.Pair;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.AgendaItem;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.ParliamentFactory;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speech;
@@ -15,10 +18,12 @@ public class AgendaItem_Impl implements AgendaItem {
     private Set<String> speechIdSet = new TreeSet<>();
     private Set<String> speakerIdSet = new TreeSet<>();
     private List<String> agendaItemComment = new ArrayList<>();
+    private Pair<Integer, Integer> protocolId = null;
     private ParliamentFactory factory = null;
 
-    public AgendaItem_Impl(Element agendaElement, ParliamentFactory factory) {
+    public AgendaItem_Impl(Element agendaElement, Pair<Integer, Integer> protocolId, ParliamentFactory factory) {
         this.factory = factory;
+        this.protocolId = protocolId;
         this.init(agendaElement);
     }
 
@@ -38,6 +43,7 @@ public class AgendaItem_Impl implements AgendaItem {
         for (Element elementsA : agendaItemElements) {
             if (elementsA.getName().equals("rede")) {
                 Speech speech = this.factory.addSpeech(elementsA);
+                speech.setProtocolId(this.protocolId.getValue0(), this.protocolId.getValue1());
                 this.speechIdSet.add(speech.getId());
             } else if (elementsA.getName().equals("kommentar")) {
                 agendaItemComment.add(elementsA.getText());
@@ -52,8 +58,12 @@ public class AgendaItem_Impl implements AgendaItem {
         if (agendaDocument.containsKey("topId")){
             this.topId = agendaDocument.getString("topId");
         }
+        if (agendaDocument.containsKey("protocolId")) {
+            List<Integer> protocolId = agendaDocument.get("protocolId", ArrayList.class);
+            this.protocolId = new Pair<Integer, Integer>(protocolId.get(0), protocolId.get(1));
+        }
         if (agendaDocument.containsKey("speechIds")){
-            this.speechIdSet.add(agendaDocument.getString("speechIds"));
+            this.speechIdSet.addAll(agendaDocument.getList("speechIds", String.class));
         }
     }
 
@@ -61,6 +71,16 @@ public class AgendaItem_Impl implements AgendaItem {
     public String getId() {
                               return this.topId;
                                                 }
+
+    @Override
+    public void setProtocolId(int session, int term) {
+        this.protocolId = new Pair<>(session, term);
+    }
+
+    @Override
+    public Pair<Integer, Integer> getProtocolId() {
+        return this.protocolId;
+    }
 
     @Override
     public void printTexts() {
@@ -78,6 +98,7 @@ public class AgendaItem_Impl implements AgendaItem {
     public Document toDocument() {
         Document document = new Document();
         document.append("topId", this.topId);
+        document.append("protocolId", this.protocolId);
         document.append("speechIds", this.speechIdSet);
         return document;
     }

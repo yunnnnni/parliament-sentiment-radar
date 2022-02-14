@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import javax.print.Doc;
+
+import jnr.ffi.annotations.In;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.factory.AggregateBuilder;
@@ -25,6 +27,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.bson.Document;
 import org.dom4j.Element;
+import org.javatuples.Pair;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.ParliamentFactory;
 import org.hucompute.textimager.fasttext.labelannotator.LabelAnnotatorDocker;
 import org.hucompute.textimager.uima.spacy.SpaCyMultiTagger3;
@@ -39,13 +42,13 @@ import java.util.Map;
 import scala.xml.Elem;
 
 public class Speech_Impl implements Speech {
-
     private String speechId;
     private Speaker speaker;
     private String speakerId;
     private List<Text> textList = new ArrayList<>();
     private JCas jcas;
     private Map<String, Object> annotations = null;
+    private Pair<Integer, Integer> protocolId = null;
     private ParliamentFactory factory = null;
 
     public Speech_Impl(Document speechDocument, ParliamentFactory factory){
@@ -89,6 +92,9 @@ public class Speech_Impl implements Speech {
         }
         if (speechDocument.containsKey("speakerId")) {
             this.speakerId = speechDocument.getString("speakerId");
+        }
+        if (speechDocument.containsKey("protocolId")) {
+            this.protocolId = (Pair<Integer, Integer>) speechDocument.get("protocolId", Object.class);
         }
         if (speechDocument.containsKey("texts")) {
             List<Document> texts = speechDocument.getList("texts", Document.class);
@@ -144,6 +150,16 @@ public class Speech_Impl implements Speech {
     }
 
     @Override
+    public void setProtocolId(int session, int term) {
+        this.protocolId = new Pair<>(session, term);
+    }
+
+    @Override
+    public Pair<Integer, Integer> getProtocolId() {
+        return this.protocolId;
+    }
+
+    @Override
     public List<Text> getTexts() {
         return this.textList;
     }
@@ -153,6 +169,7 @@ public class Speech_Impl implements Speech {
         Document document = new Document();
         document.append("speechId", this.speechId);
         document.append("speakerId", this.speaker.getId());
+        document.append("protocolId", this.protocolId);
         List<Document> texts = new ArrayList<>();
         for (Text t : this.textList) {
             texts.add(t.toDocument());

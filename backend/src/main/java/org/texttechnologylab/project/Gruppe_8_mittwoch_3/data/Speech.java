@@ -3,6 +3,7 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data;
 import org.apache.uima.UIMAException;
 import org.apache.uima.jcas.JCas;
 import org.bson.Document;
+import org.javatuples.Pair;
 import org.texttechnologylab.uimadb.wrapper.mongo.serilization.exceptions.CasSerializationException;
 import org.texttechnologylab.uimadb.wrapper.mongo.serilization.exceptions.SerializerInitializationException;
 import org.texttechnologylab.uimadb.wrapper.mongo.serilization.exceptions.UnknownFactoryException;
@@ -23,6 +24,10 @@ public interface Speech {
      */
     Speaker getSpeaker();
     String getSpeakerId();
+
+    void setProtocolId(int session, int term);
+
+    Pair<Integer, Integer> getProtocolId();
 
     /**
      * getter function for attribute this.texts

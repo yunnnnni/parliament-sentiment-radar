@@ -1,6 +1,7 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.helper;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl.ParliamentFactory_Impl;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.database.MongoDBConnectionHandler;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 public class ProtocolMongoDBWriter {
@@ -17,9 +19,10 @@ public class ProtocolMongoDBWriter {
         String protocolDirectory = "Daten/test";
         ParliamentFactory factory = new ParliamentFactory_Impl();
         factory.initFromDirectory(protocolDirectory);
+        writeProtocols(factory.getProtocols(), handler);
 //        writeSpeakers(factory.getParliamentMembers(), handler);
 //        writeSpeechs(factory.getSpeeches(), handler);
-        writeFractions(factory.getFractions(), handler);
+//        writeFractions(factory.getFractions(), handler);
     }
 
     /**
@@ -28,12 +31,35 @@ public class ProtocolMongoDBWriter {
      * @param handler mongodb handler
      */
     public static void writeProtocols(List<PlenaryProtocol> protocolList, MongoDBConnectionHandler handler){
-        for(PlenaryProtocol protocol: protocolList) {
-            Document protocolDocument = protocol.toDocument();
-            handler.writeDocument("protocol", protocolDocument);
+        int bufferSize = 5;
+        List<Document> protocolDocuments = new ArrayList<>();
+        for (int i=0; i<protocolList.size(); i++){
+            PlenaryProtocol protocol = protocolList.get(i);
+            // check if document exists
+            Bson filter;
+            filter = and(eq("session", protocol.getSession()),
+                         eq("term", protocol.getTerm()));
+            Document rDocument = handler.getCollection("protocols").
+                    find(filter).first();
+            // if not, build document, add to buffer
+            if (rDocument == null){
+                System.out.println(i + "/" + protocolList.size() + " Add protocol " + protocol.getSession() + " in buffer.");
+                Document protocolDocument = protocol.toDocument();
+                protocolDocuments.add(protocolDocument);
+            }
+            // if buffer full, write documents in buffer to mongodb
+            if (protocolDocuments.size() >= bufferSize){
+                System.out.println("Write buffer into mongodb");
+                handler.writeDocuments("protocols", protocolDocuments);
+                protocolDocuments.clear();  // clear buffer after writing
+            }
         }
+        // write rest documents in buffer
+        if (protocolDocuments.size() > 0){
+            handler.writeDocuments("protocols", protocolDocuments);
+        }
+//        System.out.println();
     }
-
     /**
      * write speakers into mongodb
      * @param speakerList list of speakers
