@@ -17,6 +17,16 @@ public class Text_Impl implements Text {
         this.label = label;
     }
 
+    public Text_Impl(String text, String label){
+        this.text = text;
+        this.label = label;
+    }
+
+    public Text_Impl(Document textDocument){
+        this.text = textDocument.getString("text");
+        this.label = textDocument.getString("label");
+    }
+
     @Override
     public String getText() {
         return this.text;
@@ -29,6 +39,10 @@ public class Text_Impl implements Text {
 
     @Override
     public Document toDocument() {
-        return null;
+        Document document = new Document();
+        document.append("text", this.text);
+        document.append("label", this.label);
+        return document;
     }
+
 }
