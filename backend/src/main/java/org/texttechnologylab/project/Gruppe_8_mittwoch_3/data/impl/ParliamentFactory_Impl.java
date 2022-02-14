@@ -1,41 +1,23 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 
 import com.mongodb.client.FindIterable;
-import edu.washington.cs.knowitall.logic.Expression;
-import org.apache.uima.ruta.type.html.P;
 import org.bson.Document;
+import org.javatuples.Pair;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.database.MongoDBConnectionHandler;
 import org.dom4j.Element;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class ParliamentFactory_Impl implements ParliamentFactory {
-    /**
-     Reasons for using arraylist instead of hashset/treeset:
-     1. reduce memory usage (hashset needs more much more memory than list)
-        - REST Service can read all of the data into memory to prove efficiency
-     2. efficient by iteration (it's faster to iterate over arraylist than hashset)
-        - efficiency for searching & filtering is more important than creation
-        - only during creation the list is indexed by id
-            in this case hashset has O(1), arrayList has O(n)
-        - when filtering, we have to manually go through each element to find the one that matches the filter conditions
-            only one keyword (like id) can be set as key in hashmap, but we can filter speech by speaker, fraction ...
-            in this case hashset has O(n), arrayList has O(n)
-     3. easy to implement and understand (no need to overwrite hashcode(), compare(), equals() for each class)
-
-     For the above reasons, we choose arraylist to store all the data
-     the uniqueness of the data is guaranteed by the add function
-    **/
-    private List<PlenaryProtocol> protocolList = new ArrayList<>();
-    private List<Speech> speechList = new ArrayList<>();
-    private List<Speaker> speakerList = new ArrayList<>();
-    private List<Speaker> parliamentMemberList = new ArrayList<>();
-    private List<Speaker> otherSpeakerList = new ArrayList<>();
-    private List<Fraction> fractionList = new ArrayList<>();
+    // use TreeMap to ensure data uniqueness and retrieval performance
+    private Map<Pair<Integer, Integer>, PlenaryProtocol> protocolMap = new TreeMap<>();
+    private Map<String, Speech> speechMap = new TreeMap<>();
+    private Map<String, Speaker> speakerMap = new TreeMap<>();
+    private Map<String, Speaker> parliamentMemberMap = new TreeMap<>();
+    private Map<String, Speaker> otherSpeakerMap = new TreeMap<>();
+    private Map<String, Fraction> fractionMap = new TreeMap<>();
     private MongoDBConnectionHandler handler;
 
     public ParliamentFactory_Impl(){
@@ -78,79 +60,59 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
 
     @Override
     public List<PlenaryProtocol> getProtocols() {
-        return this.protocolList;
+        return new ArrayList<PlenaryProtocol>(this.protocolMap.values());
     }
 
     @Override
     public List<Speech> getSpeeches() {
-        return this.speechList;
+        return new ArrayList<Speech>(this.speechMap.values());
     }
 
     @Override
     public List<Speaker> getSpeakers() {
-        return this.speakerList;
+        return new ArrayList<Speaker>(this.speakerMap.values());
     }
 
     @Override
     public List<Speaker> getParliamentMembers() {
-        return this.parliamentMemberList;
+        return new ArrayList<Speaker>(this.parliamentMemberMap.values());
     }
 
     @Override
     public List<Speaker> getOtherSpeakers() {
-        return this.otherSpeakerList;
+        return new ArrayList<Speaker>(this.otherSpeakerMap.values());
     }
 
     @Override
     public List<Fraction> getFractions() {
-        return this.fractionList;
+        return new ArrayList<Fraction>(this.fractionMap.values());
     }
 
     @Override
     public PlenaryProtocol getProtocol(int session, int term) {
-        for (PlenaryProtocol protocol: this.protocolList){
-            if (protocol.getSession() == session && protocol.getTerm() == term){
-                return protocol;
-            }
-        }
-        return null;
+        return this.protocolMap.get(new Pair<>(session, term));
     }
 
     @Override
     public Speech getSpeech(String id) {
-        for (Speech speech: this.speechList){
-            if (speech.getId().equals(id)){
-                return speech;
-            }
-        }
-        return null;
+        return this.speechMap.get(id);
     }
 
     @Override
     public Speaker getSpeaker(String id) {
-        for (Speaker speaker: this.speakerList){
-            if (speaker.getId().equals(id)){
-                return speaker;
-            }
-        }
-        return null;
+        return this.speakerMap.get(id);
     }
 
     @Override
     public Fraction getFraction(String name) {
-        for (Fraction fraction: this.fractionList){
-            if (fraction.getName().equals(name) || fraction.getName().contains(name)){
-                return fraction;
-            }
-        }
-        return null;
+        return this.fractionMap.get(name);
     }
 
     @Override
     public PlenaryProtocol addProtocol(PlenaryProtocol protocol) {
         PlenaryProtocol existedProtocol = this.getProtocol(protocol.getSession(), protocol.getTerm());
         if (existedProtocol == null){
-            this.protocolList.add(protocol);
+            this.protocolMap.put(new Pair<>(protocol.getSession(),protocol.getTerm()), protocol);
             return protocol;
         }
         return existedProtocol;
@@ -160,7 +122,7 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     public Speech addSpeech(Speech speech) {
         Speech existedSpeech = this.getSpeech(speech.getId());
         if (existedSpeech == null){
-            this.speechList.add(speech);
+            this.speechMap.put(speech.getId(), speech);
             return speech;
         }
         return existedSpeech;
@@ -170,11 +132,11 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     public Speaker addSpeaker(Speaker speaker) {
         Speaker existedSpeaker = this.getSpeaker(speaker.getId());
         if (existedSpeaker == null){
-            this.speakerList.add(speaker);
+            this.speakerMap.put(speaker.getId(), speaker);
             if (speaker.isParliamentMember()){
-                this.parliamentMemberList.add(speaker);
+                this.parliamentMemberMap.put(speaker.getId(), speaker);
             } else{
-                this.otherSpeakerList.add(speaker);
+                this.otherSpeakerMap.put(speaker.getId(), speaker);
             }
             return speaker;
         }
@@ -185,7 +147,7 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     public Fraction addFraction(Fraction fraction) {
         Fraction existedFraction = this.getFraction(fraction.getName());
         if (existedFraction == null){
-            this.fractionList.add(fraction);
+            this.fractionMap.put(fraction.getName(),fraction);
             return fraction;
         }
         return existedFraction;
@@ -200,19 +162,19 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     @Override
     public Speech addSpeech(Element speechElement) {
         Speech speech = new Speech_Impl(speechElement, this);
-        return addSpeech(speech);
+        return this.addSpeech(speech);
     }
 
     @Override
     public Speaker addSpeaker(Element speakerElement) {
         Speaker speaker = new Speaker_Impl(speakerElement, this);
-        return addSpeaker(speaker);
+        return this.addSpeaker(speaker);
     }
 
     @Override
     public Fraction addFraction(String name) {
         Fraction fraction = new Fraction_Impl(name, this);
-        return addFraction(fraction);
+        return this.addFraction(fraction);
     }
 
     @Override
