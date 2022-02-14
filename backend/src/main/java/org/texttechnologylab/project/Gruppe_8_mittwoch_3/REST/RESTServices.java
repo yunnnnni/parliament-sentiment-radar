@@ -1,11 +1,7 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.REST;
 
-import com.couchbase.client.core.RequestEvent;
-import com.hazelcast.map.impl.MapEntries;
+import org.apache.log4j.Logger;
 import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.geotools.util.MapEntry;
-import org.json.simple.JSONValue;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl.ParliamentFactory_Impl;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.database.MongoDBConnectionHandler;
@@ -20,6 +16,7 @@ import static spark.Spark.*;
 public class RESTServices {
     MongoDBConnectionHandler handler = null;
     ParliamentFactory factory = new ParliamentFactory_Impl();
+    final static Logger logger = Logger.getLogger(RESTServices.class);
 
     public RESTServices() {
         this.handler = new MongoDBConnectionHandler("config/config.json");
@@ -27,6 +24,7 @@ public class RESTServices {
     }
 
     public void startServices() {
+        before("/*", (req, res) -> this.logger.info(req.ip() + ": " + req.uri() + "?" + req.queryString()));
         after((Filter) (req, res) -> {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Methods", "GET");
@@ -261,6 +259,7 @@ public class RESTServices {
         docu.append("success", true);
         return docu;
     }
+
     private Document sentimentService(Request req, String annotationType, String outputAnnotationTag){
         List<Speech> speechList = filterSpeeches(req);
         Document document = new Document();

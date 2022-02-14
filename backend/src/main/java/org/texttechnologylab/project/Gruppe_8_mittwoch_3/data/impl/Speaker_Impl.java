@@ -185,6 +185,7 @@ public class Speaker_Impl implements Speaker {
             }
         }
         document.append("image", this.img.toDocument());
+        document.append("speechIds", this.speechIdSet);
         return document;
     }
 
