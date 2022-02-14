@@ -45,9 +45,13 @@ public class Speech_Impl implements Speech {
     private String speakerId;
     private List<Text> textList = new ArrayList<>();
     private JCas jcas;
-    private Document document = new Document();
-    private Map<String, Object> annotations = new HashMap<>();
+    private Map<String, Object> annotations = null;
     private ParliamentFactory factory = null;
+
+    public Speech_Impl(Document speechDocument, ParliamentFactory factory){
+        this.factory = factory;
+        this.init(speechDocument);
+    }
 
     public Speech_Impl(Element speechElement, ParliamentFactory factory){
         this.factory = factory;
@@ -79,7 +83,7 @@ public class Speech_Impl implements Speech {
         }
     }
 
-    public Speech_Impl(Document speechDocument) {
+    private void init(Document speechDocument) {
         if (speechDocument.containsKey("speechId")) {
             this.speechId = speechDocument.getString("speechId");
         }
@@ -96,30 +100,30 @@ public class Speech_Impl implements Speech {
         if (speechDocument.containsKey("annotations")) {
             this.annotations = new HashMap<>();
             Document annotationsDocument = speechDocument.get("annotations", Document.class);
-            if (annotationsDocument.containsKey("person")) {
-                this.annotations.put("person", annotationsDocument.getList("person", String.class));
+            if (annotationsDocument.containsKey("persons")) {
+                this.annotations.put("persons", annotationsDocument.getList("persons", String.class));
             }
-            if (annotationsDocument.containsKey("location")) {
-                this.annotations.put("location", annotationsDocument.getList("location", String.class));
+            if (annotationsDocument.containsKey("locations")) {
+                this.annotations.put("locations", annotationsDocument.getList("locations", String.class));
             }
-            if (annotationsDocument.containsKey("organisation")) {
+            if (annotationsDocument.containsKey("organisations")) {
                 this.annotations
-                        .put("organisation", annotationsDocument.getList("organisation", String.class));
+                        .put("organisations", annotationsDocument.getList("organisations", String.class));
             }
-            if (annotationsDocument.containsKey("token")) {
-                this.annotations.put("token", annotationsDocument.getList("token", String.class));
+            if (annotationsDocument.containsKey("tokens")) {
+                this.annotations.put("tokens", annotationsDocument.getList("tokens", String.class));
             }
             if (annotationsDocument.containsKey("sentences")) {
                 this.annotations.put("sentences", annotationsDocument.getList("sentences", String.class));
             }
-            if (annotationsDocument.containsKey("pos")) {
-                this.annotations.put("pos", annotationsDocument.getList("pos", String.class));
+            if (annotationsDocument.containsKey("POS")) {
+                this.annotations.put("POS", annotationsDocument.getList("POS", String.class));
             }
-            if (annotationsDocument.containsKey("dependency")) {
-                this.annotations.put("dependency", annotationsDocument.getList("dependency", String.class));
+            if (annotationsDocument.containsKey("dependencies")) {
+                this.annotations.put("dependencies", annotationsDocument.getList("dependencies", String.class));
             }
-            if (annotationsDocument.containsKey("sentiment")) {
-                this.annotations.put("sentiment", annotationsDocument.getList("sentiment", Double.class));
+            if (annotationsDocument.containsKey("sentiments")) {
+                this.annotations.put("sentiments", annotationsDocument.getList("sentiments", Double.class));
             }
         }
     }
@@ -135,24 +139,18 @@ public class Speech_Impl implements Speech {
     }
 
     @Override
+    public String getSpeakerId() {
+        return this.speakerId;
+    }
+
+    @Override
     public List<Text> getTexts() {
         return this.textList;
     }
 
     @Override
-    public Document toDocument() {
+    public Document toDocument(){
         Document document = new Document();
-        document.append("speechId", this.speechId);
-        document.append("speakerId", this.speaker.getId());
-
-        return document;
-    }
-
-    public Document toDocumentWithNLP() throws UIMAException {
-        this.toCAS();
-        this.setAnnotations();
-        Document document = new Document();
-        Document annotationsList = new Document();
         document.append("speechId", this.speechId);
         document.append("speakerId", this.speaker.getId());
         List<Document> texts = new ArrayList<>();
@@ -160,108 +158,97 @@ public class Speech_Impl implements Speech {
             texts.add(t.toDocument());
         }
         document.append("texts", texts);
-//    document.append("person", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream()
-//        .filter(f -> f.getValue().equals("PER")).collect(
-//            Collectors.toList())));
-//    document.append("location", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream()
-//        .filter(f -> f.getValue().equals("LOC")).collect(
-//            Collectors.toList())));
-//    document.append("organisation", toStringList(
-//        JCasUtil.select(this.jcas, NamedEntity.class).stream()
-//            .filter(f -> f.getValue().equals("ORG")).collect(
-//            Collectors.toList())));
-//    document.append("token", toStringList(JCasUtil.select(this.jcas, Token.class).stream().collect(
-//        Collectors.toList())));
-//    document.append("sentences",
-//        toStringList(JCasUtil.select(this.jcas, Sentence.class).stream().collect(
-//            Collectors.toList())));
-//    document.append("pos", toStringList(JCasUtil.select(this.jcas, POS.class).stream().collect(
-//        Collectors.toList())));
-//    document.append("dependency",
-//        toStringList(JCasUtil.select(this.jcas, Dependency.class).stream().collect(
-//            Collectors.toList())));
-//    document.append("sentiment", getSentiments());
 
-        annotationsList.append("person", annotations.get("person"));
-        annotationsList.append("location", annotations.get("location"));
-        annotationsList.append("organisation", annotations.get("organisation"));
-        annotationsList.append("token", annotations.get("token"));
-        annotationsList.append("sentences", annotations.get("sentences"));
-        annotationsList.append("pos", annotations.get("pos"));
-        annotationsList.append("dependency", annotations.get("dependency"));
-        annotationsList.append("sentiment", annotations.get("sentiment"));
+        if (this.annotations == null){
+            this.setAnnotations();
+        }
+        Document annotationsList = new Document();
+        annotationsList.append("persons", this.annotations.get("persons"));
+        annotationsList.append("locations", this.annotations.get("locations"));
+        annotationsList.append("organisations", this.annotations.get("organisations"));
+        annotationsList.append("tokens", this.annotations.get("tokens"));
+        annotationsList.append("sentences", this.annotations.get("sentences"));
+        annotationsList.append("POS", this.annotations.get("POS"));
+        annotationsList.append("dependencies", this.annotations.get("dependencies"));
+        annotationsList.append("sentiments", this.annotations.get("sentiments"));
         document.append("annotations", annotationsList);
 
-        this.document = document;
-        return this.document;
+        return document;
     }
-
-    public void setAnnotations() {
-        annotations.put("person", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream()
-                .filter(f -> f.getValue().equals("PER")).collect(
-                        Collectors.toList())));
-        annotations.put("location", toStringList(JCasUtil.select(this.jcas, NamedEntity.class).stream()
-                .filter(f -> f.getValue().equals("LOC")).collect(
-                        Collectors.toList())));
-        annotations.put("organisation", toStringList(
-                JCasUtil.select(this.jcas, NamedEntity.class).stream()
-                        .filter(f -> f.getValue().equals("ORG")).collect(
-                                Collectors.toList())));
-        annotations.put("token", toStringList(JCasUtil.select(this.jcas, Token.class).stream().collect(
-                Collectors.toList())));
-        annotations.put("sentences",
-                toStringList(JCasUtil.select(this.jcas, Sentence.class).stream().collect(
-                        Collectors.toList())));
-        annotations.put("pos", toStringList(JCasUtil.select(this.jcas, POS.class).stream().collect(
-                Collectors.toList())));
-        annotations.put("dependency",
-                toStringList(JCasUtil.select(this.jcas, Dependency.class).stream().collect(
-                        Collectors.toList())));
-        annotations.put("sentiment", getSentiments());
-
-    }
-
 
     @Override
-    public JCas toCAS() throws UIMAException {
-        List<String> theTextList = this.textList.stream()
-                .filter(t -> (t.getLabel() != "comment") && (t.getLabel() != "name")).map(t -> t.getText())
-                .collect(
-                        Collectors.toList());
-        String speechText = String.join(" ", theTextList);
-        JCas jcas = JCasFactory.createText(speechText, "de");
+    public void setAnnotations() {
+        this.toCAS();
+        this.annotations = new HashMap<>();
+        this.annotations.put("persons", toStringList(JCasUtil.select(this.jcas, NamedEntity.class)
+                .stream()
+                .filter(f -> f.getValue().equals("PER"))
+                .collect(Collectors.toList())));
+        this.annotations.put("locations", toStringList(JCasUtil.select(this.jcas, NamedEntity.class)
+                .stream()
+                .filter(f -> f.getValue().equals("LOC"))
+                .collect(Collectors.toList())));
+        this.annotations.put("organisations", toStringList(JCasUtil.select(this.jcas, NamedEntity.class)
+                .stream()
+                .filter(f -> f.getValue().equals("ORG"))
+                .collect(Collectors.toList())));
+        this.annotations.put("tokens", toStringList(JCasUtil.select(this.jcas, Token.class)
+                .stream().collect(Collectors.toList())));
+        this.annotations.put("sentences", toStringList(JCasUtil.select(this.jcas, Sentence.class)
+                .stream().collect(Collectors.toList())));
+        this.annotations.put("POS", toStringList(JCasUtil.select(this.jcas, POS.class)
+                .stream().collect(Collectors.toList())));
+        this.annotations.put("dependencies", toStringList(JCasUtil.select(this.jcas, Dependency.class)
+                .stream().collect(Collectors.toList())));
+        this.annotations.put("sentiments", getSentiments());
 
-        AggregateBuilder pipeline = new AggregateBuilder();
-        pipeline.add(createEngineDescription(SpaCyMultiTagger3.class,
-                SpaCyMultiTagger3.PARAM_REST_ENDPOINT, "http://spacy.prg2021.texttechnologylab.org"
+        this.clearJcas();
+    }
 
-        ));
+    @Override
+    public JCas toCAS(){
+        try{
+            List<String> theTextList = this.textList.stream()
+                    .filter(t -> (t.getLabel() != "comment") && (t.getLabel() != "name")).map(t -> t.getText())
+                    .collect(
+                            Collectors.toList());
+            String speechText = String.join(" ", theTextList);
+            JCas jcas = JCasFactory.createText(speechText, "de");
 
-        File file = new File("./backend/config/am_posmap.txt");
-        String sPOSMapFile = file.getAbsolutePath();
+            AggregateBuilder pipeline = new AggregateBuilder();
+            pipeline.add(createEngineDescription(SpaCyMultiTagger3.class,
+                    SpaCyMultiTagger3.PARAM_REST_ENDPOINT, "http://spacy.prg2021.texttechnologylab.org"
 
-        pipeline.add(createEngineDescription(LabelAnnotatorDocker.class,
-                LabelAnnotatorDocker.PARAM_FASTTEXT_K, 100,
-                LabelAnnotatorDocker.PARAM_CUTOFF, false,
-                LabelAnnotatorDocker.PARAM_SELECTION, "text",
-                LabelAnnotatorDocker.PARAM_TAGS, "ddc3",
-                LabelAnnotatorDocker.PARAM_USE_LEMMA, true,
-                LabelAnnotatorDocker.PARAM_ADD_POS, true,
-                LabelAnnotatorDocker.PARAM_POSMAP_LOCATION, sPOSMapFile,
-                LabelAnnotatorDocker.PARAM_REMOVE_FUNCTIONWORDS, true,
-                LabelAnnotatorDocker.PARAM_REMOVE_PUNCT, true,
-                LabelAnnotatorDocker.PARAM_REST_ENDPOINT, "http://ddc.prg2021.texttechnologylab.org"
-        ));
+            ));
 
-        pipeline.add(createEngineDescription(GerVaderSentiment.class,
-                GerVaderSentiment.PARAM_REST_ENDPOINT, "http://gervader.prg2021.texttechnologylab.org",
-                GerVaderSentiment.PARAM_SELECTION,
-                "text,de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence"
-        ));
-        AnalysisEngine pAE = pipeline.createAggregate();
-        SimplePipeline.runPipeline(jcas, pAE);
-        this.jcas = jcas;
+            File file = new File("config/am_posmap.txt");
+            String sPOSMapFile = file.getAbsolutePath();
 
+            pipeline.add(createEngineDescription(LabelAnnotatorDocker.class,
+                    LabelAnnotatorDocker.PARAM_FASTTEXT_K, 100,
+                    LabelAnnotatorDocker.PARAM_CUTOFF, false,
+                    LabelAnnotatorDocker.PARAM_SELECTION, "text",
+                    LabelAnnotatorDocker.PARAM_TAGS, "ddc3",
+                    LabelAnnotatorDocker.PARAM_USE_LEMMA, true,
+                    LabelAnnotatorDocker.PARAM_ADD_POS, true,
+                    LabelAnnotatorDocker.PARAM_POSMAP_LOCATION, sPOSMapFile,
+                    LabelAnnotatorDocker.PARAM_REMOVE_FUNCTIONWORDS, true,
+                    LabelAnnotatorDocker.PARAM_REMOVE_PUNCT, true,
+                    LabelAnnotatorDocker.PARAM_REST_ENDPOINT, "http://ddc.prg2021.texttechnologylab.org"
+            ));
+
+            pipeline.add(createEngineDescription(GerVaderSentiment.class,
+                    GerVaderSentiment.PARAM_REST_ENDPOINT, "http://gervader.prg2021.texttechnologylab.org",
+                    GerVaderSentiment.PARAM_SELECTION,
+                    "text,de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence"
+            ));
+            AnalysisEngine pAE = pipeline.createAggregate();
+            SimplePipeline.runPipeline(jcas, pAE);
+            this.jcas = jcas;
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return this.jcas;
     }
 
@@ -282,7 +269,6 @@ public class Speech_Impl implements Speech {
 
     @Override
     public void setSitzungsNr(String nr) {
-
     }
 
     public List<Sentence> getSentence() {

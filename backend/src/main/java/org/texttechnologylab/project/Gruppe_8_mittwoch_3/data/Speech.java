@@ -22,6 +22,7 @@ public interface Speech {
      * @return Redner
      */
     Speaker getSpeaker();
+    String getSpeakerId();
 
     /**
      * getter function for attribute this.texts
@@ -44,17 +45,16 @@ public interface Speech {
      * convert text strings in the Rede to jcas object
      * process jcas object with defined pipeline
      * @return
-     * @throws UIMAException
      */
-    JCas toCAS() throws UIMAException;
+    JCas toCAS();
 
     JCas getCAS();
+
+    void setAnnotations();
 
     Map<String, Object> getAnnotations();
 
     void clearJcas();
 
     void setSitzungsNr(String nr);
-
-    Document toDocumentWithNLP() throws UIMAException; //添加了新的
 }

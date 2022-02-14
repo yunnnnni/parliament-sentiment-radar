@@ -41,16 +41,58 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     @Override
     public void initFromMongoDB(MongoDBConnectionHandler handler) {
         this.handler = handler;
-        initSpeakersFromMongoDB();
+        initParliamentMembersFromMongoDB();
+        initOtherSpeakersFromMongoDB();
+        initSpeechesFromMongoDB();
+        initFractionsFromMongoDB();
     }
 
-    private void initSpeakersFromMongoDB(){
+    private void initParliamentMembersFromMongoDB(){
         FindIterable<Document> iterDoc = this.handler.getCollection("parliament_members").find();
         Iterator it = iterDoc.iterator();
         try {
             while (it.hasNext()) {
                 Document docu = (Document) it.next();
                 this.addSpeaker(docu);
+            }
+        }catch (Exception e){
+            System.out.println(e);
+        }
+    }
+
+    private void initOtherSpeakersFromMongoDB(){
+        FindIterable<Document> iterDoc = this.handler.getCollection("other_speakers").find();
+        Iterator it = iterDoc.iterator();
+        try {
+            while (it.hasNext()) {
+                Document docu = (Document) it.next();
+                this.addSpeaker(docu);
+            }
+        }catch (Exception e){
+            System.out.println(e);
+        }
+    }
+
+    private void initSpeechesFromMongoDB(){
+        FindIterable<Document> iterDoc = this.handler.getCollection("speeches").find();
+        Iterator it = iterDoc.iterator();
+        try {
+            while (it.hasNext()) {
+                Document docu = (Document) it.next();
+                this.addSpeech(docu);
+            }
+        }catch (Exception e){
+            System.out.println(e);
+        }
+    }
+
+    private void initFractionsFromMongoDB(){
+        FindIterable<Document> iterDoc = this.handler.getCollection("fractions").find();
+        Iterator it = iterDoc.iterator();
+        try {
+            while (it.hasNext()) {
+                Document docu = (Document) it.next();
+                this.addFraction(docu);
             }
         }catch (Exception e){
             System.out.println(e);
@@ -123,6 +165,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
         Speech existedSpeech = this.getSpeech(speech.getId());
         if (existedSpeech == null){
             this.speechMap.put(speech.getId(), speech);
+            String speakerId = speech.getSpeakerId();
+            if (this.speakerMap.get(speakerId)!= null){
+                this.speakerMap.get(speakerId).addSpeech(speech.getId());  // assign speech to speaker
+            }
             return speech;
         }
         return existedSpeech;
@@ -184,7 +230,8 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
 
     @Override
     public Speech addSpeech(Document speechDocument) {
-        return null;
+        Speech speech = new Speech_Impl(speechDocument, this);
+        return this.addSpeech(speech);
     }
 
     @Override
@@ -195,6 +242,7 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
 
     @Override
     public Fraction addFraction(Document fractionDocument) {
-        return null;
+        Fraction fraction = new Fraction_Impl(fractionDocument, this);
+        return this.addFraction(fraction);
     }
 }

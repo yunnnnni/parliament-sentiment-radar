@@ -49,10 +49,10 @@ public class NLPTest{
         }
         List<AgendaItem> agendaItems = protocolList.get(0).getAgendaItems();
 //    System.out.println(ParliamentSentimentRadar.getClassLoader().getResource("am_posmap.txt").getPath());
-        Document document = protocolList.get(0).getAgendaItems().get(0).getSpeeches().get(0).toDocumentWithNLP();
+//        Document document = protocolList.get(0).getAgendaItems().get(0).getSpeeches().get(0).toDocumentWithNLP();
         Document document1 = protocolList.get(0).getAgendaItems().get(0).toDocument();
         agendaItemCollection.insertOne(document1);
-        speechCollection.insertOne(document);
+//        speechCollection.insertOne(document);
 
 //    for (AgendaItem agendaItem : agendaItems){
 //      Document agendaItemDocument = agendaItem.toDocument();

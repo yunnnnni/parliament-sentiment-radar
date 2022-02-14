@@ -6,9 +6,12 @@ import org.dom4j.Element;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Fraction;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.ParliamentFactory;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
+import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speech;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.helper.ImageFinder;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Speaker_Impl implements Speaker {
     private String id = "";
@@ -18,21 +21,13 @@ public class Speaker_Impl implements Speaker {
     private String fractionName = "";
     private String role = "";
     private Image_Impl img = null;
+    private Set<String> speechIdSet = new TreeSet<>();
+//    private Set<Speech> speechSet = new TreeSet<>();
     private ParliamentFactory factory = null;
 
     public Speaker_Impl(Document speakerDocument, ParliamentFactory factory){
         this.factory = factory;
         this.init(speakerDocument);
-    }
-
-    public void init(Document speakerDocument){
-        this.id = speakerDocument.getString("id");
-        this.titel = speakerDocument.getString("titel");
-        this.firstName = speakerDocument.getString("firstname");
-        this.lastName = speakerDocument.getString("name");
-        this.fractionName = speakerDocument.getString("fraction");
-        this.role = speakerDocument.getString("role");
-        this.img = new Image_Impl(speakerDocument.get("image", Document.class));
     }
 
     public Speaker_Impl(Element speakerElement, ParliamentFactory factory){
@@ -63,7 +58,7 @@ public class Speaker_Impl implements Speaker {
                     switch (name){
                         case "vorname":
                             this.firstName = ele.getText();
-                            if (this.firstName.equals("Alterpräsident Dr. Hermann")){
+                            if (this.firstName.equals("Alterspräsident Dr. Hermann")){
                                 this.titel = "Dr.";
                                 this.firstName = "Hermann";
                             }
@@ -113,6 +108,19 @@ public class Speaker_Impl implements Speaker {
         }
         // add picture
 
+    }
+
+    private void init(Document speakerDocument){
+        this.id = speakerDocument.getString("id");
+        this.titel = speakerDocument.getString("titel");
+        this.firstName = speakerDocument.getString("firstname");
+        this.lastName = speakerDocument.getString("name");
+        this.fractionName = speakerDocument.getString("fraction");
+        this.role = speakerDocument.getString("role");
+        this.img = new Image_Impl(speakerDocument.get("image", Document.class));
+        if (speakerDocument.containsKey("speechIds")){
+            this.speechIdSet.addAll(speakerDocument.getList("speechIds", String.class));
+        }
     }
 
     public void setImage(Image_Impl image){
@@ -178,5 +186,15 @@ public class Speaker_Impl implements Speaker {
         }
         document.append("image", this.img.toDocument());
         return document;
+    }
+
+    @Override
+    public void addSpeech(String speechId) {
+        this.speechIdSet.add(speechId);
+    }
+
+    @Override
+    public Set<String> getSpeeches() {
+        return this.speechIdSet;
     }
 }

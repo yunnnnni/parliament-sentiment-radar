@@ -21,7 +21,7 @@ public interface AgendaItem {
      * getter for attribute Reden
      * @return list of reden in this Tagesordnungspunkt
      */
-    public abstract List<Speech> getSpeeches();
+//    public abstract List<Speech> getSpeeches();
 
     /**
      * convert class instance to BSON Document,

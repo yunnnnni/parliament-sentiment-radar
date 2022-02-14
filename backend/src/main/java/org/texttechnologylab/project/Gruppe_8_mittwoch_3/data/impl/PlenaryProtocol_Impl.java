@@ -7,6 +7,7 @@ import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
 
 import java.io.File;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class PlenaryProtocol_Impl implements PlenaryProtocol {
@@ -41,8 +42,12 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
             this.date = root.attributeValue("sitzung-datum");
             this.term = Integer.parseInt(root.attributeValue("wahlperiode"));
             this.session = Integer.parseInt(root.attributeValue("sitzung-nr"));
-//            this.startTime = LocalTime.parse(root.attributeValue("sitzung-start-uhrzeit"));
-            this.endTime = LocalTime.parse(root.attributeValue("sitzung-ende-uhrzeit"));
+            try{
+                this.startTime = this.formatTime(root.attributeValue("sitzung-start-uhrzeit"));
+                this.endTime = this.formatTime(root.attributeValue("sitzung-ende-uhrzeit"));
+            } catch (Exception e){
+                e.printStackTrace();
+            }
             this.titel = this.session + ". Sitzung";
 
             // -------------------------- build speaker list --------------------------------
@@ -65,6 +70,20 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
         }
     }
 
+    private LocalTime formatTime(String timeStr){
+        timeStr = timeStr.replace(" Uhr", "");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+        if (timeStr.contains(".")){
+            formatter = DateTimeFormatter.ofPattern("H.mm");
+        }
+        try{
+            LocalTime time = LocalTime.parse(timeStr, formatter);
+            return time;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
     @Override
     public Set<String> getSpeakerIdSet() {
         return this.speakerIdSet;

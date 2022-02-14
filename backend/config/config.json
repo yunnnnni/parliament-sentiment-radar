@@ -4,5 +4,5 @@
   "remoteUser": "PRG_WiSe21_Gruppe_8_3",
   "remotePassword": "cjJMGyHF",
   "remotePort": "27020",
-  "remoteCollections": ["protocols", "agenda_items", "speeches", "parliament_members", "other_speakers"]
+  "remoteCollections": ["protocols", "agenda_items", "speeches", "parliament_members", "other_speakers", "fractions"]
 }

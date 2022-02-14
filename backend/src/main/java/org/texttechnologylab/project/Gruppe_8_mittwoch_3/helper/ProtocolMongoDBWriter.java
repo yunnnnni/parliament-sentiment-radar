@@ -17,8 +17,9 @@ public class ProtocolMongoDBWriter {
         String protocolDirectory = "Daten/test";
         ParliamentFactory factory = new ParliamentFactory_Impl();
         factory.initFromDirectory(protocolDirectory);
-        writeSpeakers(factory.getParliamentMembers(), handler);
-
+//        writeSpeakers(factory.getParliamentMembers(), handler);
+//        writeSpeechs(factory.getSpeeches(), handler);
+        writeFractions(factory.getFractions(), handler);
     }
 
     /**
@@ -70,18 +71,76 @@ public class ProtocolMongoDBWriter {
 //        System.out.println();
     }
 
+    public static void writeSpeechs(List<Speech> speechList, MongoDBConnectionHandler handler){
+        int bufferSize = 5;
+        List<Document> speechDocuments = new ArrayList<>();
+        Random r = new Random();
+        for (int i=0; i<speechList.size(); i++){
+            Speech speech = speechList.get(i);
+            // check if document exists
+            Document rDocument = handler.getCollection("speeches").
+                    find(eq("speechId", speech.getId())).first();
+            // if not, build document, add to buffer
+            if (rDocument == null){
+                System.out.println(i + "/" + speechList.size() + " Add speech " + speech.getId() + " in buffer.");
+                Document speechDocument = speech.toDocument();
+                speechDocuments.add(speechDocument);
+            }
+            // if buffer full, write documents in buffer to mongodb
+            if (speechDocuments.size() >= bufferSize){
+                System.out.println("Write buffer into mongodb");
+                handler.writeDocuments("speeches", speechDocuments);
+                speechDocuments.clear();  // clear buffer after writing
+            }
+        }
+        // write rest documents in buffer
+        if (speechDocuments.size() > 0){
+            handler.writeDocuments("speeches", speechDocuments);
+        }
+//        System.out.println();
+    }
+
+    public static void writeFractions(List<Fraction> fractionList, MongoDBConnectionHandler handler){
+        int bufferSize = 5;
+        List<Document> fractionDocuments = new ArrayList<>();
+        Random r = new Random();
+        for (int i=0; i<fractionList.size(); i++){
+            Fraction fraction = fractionList.get(i);
+            // check if document exists
+            Document rDocument = handler.getCollection("fractions").
+                    find(eq("name", fraction.getName())).first();
+            // if not, build document, add to buffer
+            if (rDocument == null){
+                System.out.println(i + "/" + fractionList.size() + " Add fraction " + fraction.getName() + " in buffer.");
+                Document fractionDocument = fraction.toDocument();
+                fractionDocuments.add(fractionDocument);
+            }
+            // if buffer full, write documents in buffer to mongodb
+            if (fractionDocuments.size() >= bufferSize){
+                System.out.println("Write buffer into mongodb");
+                handler.writeDocuments("fractions", fractionDocuments);
+                fractionDocuments.clear();  // clear buffer after writing
+            }
+        }
+        // write rest documents in buffer
+        if (fractionDocuments.size() > 0){
+            handler.writeDocuments("fractions", fractionDocuments);
+        }
+//        System.out.println();
+    }
+
     /**
      * write speeches into mongodb
      * @param protocolList list of protocols
      * @param handler mongodb handler
      */
     public static void writeSpeeches(List<PlenaryProtocol> protocolList, MongoDBConnectionHandler handler){
-        for(PlenaryProtocol protocol: protocolList) {
-            for (AgendaItem agendaItem: protocol.getAgendaItems()){
-                for (Speech speech: agendaItem.getSpeeches()){
-                    handler.writeDocument("speech", speech.toDocument());
-                }
-            }
-        }
+//        for(PlenaryProtocol protocol: protocolList) {
+//            for (AgendaItem agendaItem: protocol.getAgendaItems()){
+//                for (Speech speech: agendaItem.getSpeeches()){
+//                    handler.writeDocument("speech", speech.toDocument());
+//                }
+//            }
+//        }
     }
 }

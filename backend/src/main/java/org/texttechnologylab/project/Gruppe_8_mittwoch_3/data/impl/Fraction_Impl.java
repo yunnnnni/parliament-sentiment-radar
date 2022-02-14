@@ -23,6 +23,16 @@ public class Fraction_Impl implements Fraction {
         this.setName(name);
     }
 
+    public Fraction_Impl(Document fractionDocument, ParliamentFactory factory){
+        this.factory = factory;
+        if (fractionDocument.containsKey("name")){
+            this.name = fractionDocument.getString("name");
+        }
+        if (fractionDocument.containsKey("speakerIds")){
+            this.speakerIdSet.addAll(fractionDocument.getList("speakerIds", String.class));
+        }
+    }
+
     @Override
     public String getName() {
         return this.name;
@@ -34,6 +44,8 @@ public class Fraction_Impl implements Fraction {
         if (fractionName.equals("CDU/ CSU")){fractionName="CDU/CSU";}
         else if (fractionName.equals("fraktionslos")){fractionName="Fraktionslos";}
         else if (fractionName.replaceAll("\\s+","").toLowerCase(Locale.ROOT).equals("bündnis90/diegrünen")){
+            fractionName="BÜNDNIS 90/DIE GRÜNEN";}
+        else if ("bündnis90/diegrünen".contains(fractionName.replaceAll("\\s+","").toLowerCase(Locale.ROOT))){
             fractionName="BÜNDNIS 90/DIE GRÜNEN";}
         else if (fractionName.equals("SPD: Ja.")){fractionName="SPD";}
         else if (fractionName.equals("Erklärung nach § 30 GO")){fractionName="AfD";}
@@ -49,6 +61,7 @@ public class Fraction_Impl implements Fraction {
     @Override
     public Document toDocument() {
         Document document = new Document("name", this.name);
+        document.append("speakerIds", this.speakerIdSet);
         return document;
     }
 }
