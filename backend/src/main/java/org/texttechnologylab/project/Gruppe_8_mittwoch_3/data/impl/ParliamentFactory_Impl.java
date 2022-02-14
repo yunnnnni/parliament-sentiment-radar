@@ -116,12 +116,20 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
 
     @Override
     public List<PlenaryProtocol> getProtocols() {
-        return new ArrayList<PlenaryProtocol>(this.protocolMap.values());
+        List<PlenaryProtocol> protocolList = new ArrayList<PlenaryProtocol>(this.protocolMap.values());
+        if (protocolList.contains(null)) {
+            protocolList.removeIf(Objects::isNull);
+        }
+        return protocolList;
     }
 
     @Override
     public List<Speech> getSpeeches() {
-        return new ArrayList<Speech>(this.speechMap.values());
+        List<Speech> speechList = new ArrayList<Speech>(this.speechMap.values());
+        if (speechList.contains(null)) {
+            speechList.removeIf(Objects::isNull);
+        }
+        return speechList;
     }
 
     @Override
@@ -138,12 +146,20 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
             }
         }
         if (speechList.size() == 0){return null;}
+
+        if (speechList.contains(null)) {
+            speechList.removeIf(Objects::isNull);
+        }
         return speechList;
     }
 
     @Override
     public List<Speaker> getSpeakers() {
-        return new ArrayList<Speaker>(this.speakerMap.values());
+        List<Speaker> speakerList = new ArrayList<Speaker>(this.speakerMap.values());
+        if (speakerList.contains(null)) {
+            speakerList.removeIf(Objects::isNull);
+        }
+        return speakerList;
     }
 
     @Override
@@ -167,17 +183,29 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
 
     @Override
     public List<Speaker> getParliamentMembers() {
-        return new ArrayList<Speaker>(this.parliamentMemberMap.values());
+        List<Speaker> speakerList = new ArrayList<Speaker>(this.parliamentMemberMap.values());
+        if (speakerList.contains(null)) {
+            speakerList.removeIf(Objects::isNull);
+        }
+        return speakerList;
     }
 
     @Override
     public List<Speaker> getOtherSpeakers() {
-        return new ArrayList<Speaker>(this.otherSpeakerMap.values());
+        List<Speaker> speakerList = new ArrayList<Speaker>(this.otherSpeakerMap.values());
+        if (speakerList.contains(null)) {
+            speakerList.removeIf(Objects::isNull);
+        }
+        return speakerList;
     }
 
     @Override
     public List<Fraction> getFractions() {
-        return new ArrayList<Fraction>(this.fractionMap.values());
+        List<Fraction> fractionList = new ArrayList<Fraction>(this.fractionMap.values());
+        if (fractionList.contains(null)) {
+            fractionList.removeIf(Objects::isNull);
+        }
+        return fractionList;
     }
 
     @Override

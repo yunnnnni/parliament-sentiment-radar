@@ -200,6 +200,10 @@ public class RESTServices {
         }
 
         filterById.retainAll(filterByFraction);
+
+        if (filterById.contains(null)){
+            filterById.removeIf(Objects::isNull);
+        }
         return filterById;
 
     }
@@ -265,14 +269,18 @@ public class RESTServices {
         Document document = new Document();
         Map<Object, Integer> frequency = new TreeMap<>();
         for (Speech speech: speechList){
-            List<Object> sentiments = (List<Object>) speech.getAnnotations().get(annotationType);
-            for (Object sentiment: sentiments){
-                Integer count = frequency.get(sentiment);
-                if (count != null){
-                    frequency.put(sentiment, ++count);
-                }else{
-                    frequency.put(sentiment, 1);
+            try{
+                List<Object> sentiments = (List<Object>) speech.getAnnotations().get(annotationType);
+                for (Object sentiment: sentiments){
+                    Integer count = frequency.get(sentiment);
+                    if (count != null){
+                        frequency.put(sentiment, ++count);
+                    }else{
+                        frequency.put(sentiment, 1);
+                    }
                 }
+            }catch (Exception e){
+                logger.debug(e);
             }
         }
         List<Document> results = new ArrayList<>();
