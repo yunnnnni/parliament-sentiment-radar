@@ -27,28 +27,6 @@ public class RESTServices {
     }
 
     public void startServices() {
-//        options("/*",
-//                (request, response) -> {
-//
-//                    String accessControlRequestHeaders = request
-//                            .headers("Access-Control-Request-Headers");
-//                    if (accessControlRequestHeaders != null) {
-//                        response.header("Access-Control-Allow-Headers",
-//                                accessControlRequestHeaders);
-//                    }
-//
-//                    String accessControlRequestMethod = request
-//                            .headers("Access-Control-Request-Method");
-//                    if (accessControlRequestMethod != null) {
-//                        response.header("Access-Control-Allow-Methods",
-//                                accessControlRequestMethod);
-//                    }
-//
-//                    return "OK";
-//                });
-//
-//        before((request, response) -> response.header("Access-Control-Aollow-Origin", "*"));
-
         after((Filter) (req, res) -> {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Methods", "GET");
@@ -274,12 +252,12 @@ public class RESTServices {
         Document personDocu = sentimentService(req, "persons", "persons");
         Document organisationsDocu = sentimentService(req, "organisations", "organisations");
         Document locationsDocu = sentimentService(req, "locations", "locations");
-        Document result = new Document();
-        result.append("persons", personDocu.get("result"));
-        result.append("organisations", personDocu.get("result"));
-        result.append("locations", personDocu.get("result"));
+        List<Document> resultDocuments = new ArrayList<>();
+        resultDocuments.add(new Document("persons", personDocu.get("result")));
+        resultDocuments.add(new Document("organisations", organisationsDocu.get("result")));
+        resultDocuments.add(new Document("locations", locationsDocu.get("result")));
         Document docu = new Document();
-        docu.append("result", result);
+        docu.append("result", resultDocuments);
         docu.append("success", true);
         return docu;
     }
