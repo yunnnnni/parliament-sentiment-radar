@@ -19,8 +19,8 @@ public class ProtocolMongoDBWriter {
         String protocolDirectory = "Daten/test";
         ParliamentFactory factory = new ParliamentFactory_Impl();
         factory.initFromDirectory(protocolDirectory);
-        writeProtocols(factory.getProtocols(), handler);
-//        writeSpeakers(factory.getParliamentMembers(), handler);
+//        writeProtocols(factory.getProtocols(), handler);
+        writeSpeakers(factory.getParliamentMembers(), handler);
 //        writeSpeechs(factory.getSpeeches(), handler);
 //        writeFractions(factory.getFractions(), handler);
     }

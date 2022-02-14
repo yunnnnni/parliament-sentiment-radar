@@ -7,6 +7,7 @@ import org.texttechnologylab.project.Gruppe_8_mittwoch_3.database.MongoDBConnect
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 import org.dom4j.Element;
 
@@ -15,7 +16,9 @@ public interface ParliamentFactory {
     void initFromMongoDB(MongoDBConnectionHandler handler);
     List<PlenaryProtocol> getProtocols();
     List<Speech> getSpeeches();
+    List<Speech> getSpeeches(Set<String> speechIdList);
     List<Speaker> getSpeakers();
+    List<Speaker> getSpeakersOfFraction(String fractionName);
     List<Speaker> getParliamentMembers();
     List<Speaker> getOtherSpeakers();
     List<Fraction> getFractions();

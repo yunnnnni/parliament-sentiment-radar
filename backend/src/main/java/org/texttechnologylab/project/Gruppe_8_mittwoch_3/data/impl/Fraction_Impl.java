@@ -5,9 +5,7 @@ import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Fraction;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.ParliamentFactory;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
 
-import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class Fraction_Impl implements Fraction {
     private String name;
@@ -56,6 +54,11 @@ public class Fraction_Impl implements Fraction {
     public void addSpeaker(Speaker speaker) {
         // TODO: check if null
         this.speakerIdSet.add(speaker.getId());
+    }
+
+    @Override
+    public List<String> getSpeakerIds() {
+        return new ArrayList<>(this.speakerIdSet);
     }
 
     @Override

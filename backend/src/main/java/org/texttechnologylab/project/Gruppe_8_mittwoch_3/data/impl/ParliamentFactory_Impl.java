@@ -125,8 +125,44 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     @Override
+    public List<Speech> getSpeeches(Set<String> speechIdList) {
+        if (speechIdList == null){
+            return null;
+        }
+        List<Speech> speechList = new ArrayList<>();
+        for (String id: speechIdList){
+            try{
+                speechList.add(this.getSpeech(id));
+            }catch (Exception e){
+                continue;
+            }
+        }
+        if (speechList.size() == 0){return null;}
+        return speechList;
+    }
+
+    @Override
     public List<Speaker> getSpeakers() {
         return new ArrayList<Speaker>(this.speakerMap.values());
+    }
+
+    @Override
+    public List<Speaker> getSpeakersOfFraction(String fractionName) {
+        Fraction fraction = this.getFraction(fractionName);
+        if (fraction == null){
+            return null;
+        }
+        List<Speaker> speakerList = new ArrayList<>();
+        for (String speakerId: fraction.getSpeakerIds()){
+            Speaker speaker = this.getSpeaker(speakerId);
+            if (speaker != null){
+                speakerList.add(speaker);
+            }
+        }
+        if (speakerList.size() == 0){
+            return null;
+        }
+        return speakerList;
     }
 
     @Override
@@ -146,22 +182,38 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
 
     @Override
     public PlenaryProtocol getProtocol(int session, int term) {
-        return this.protocolMap.get(new Pair<>(session, term));
+        try{
+            return this.protocolMap.get(new Pair<>(session, term));
+        } catch (Exception e){
+            return null;
+        }
     }
 
     @Override
     public Speech getSpeech(String id) {
-        return this.speechMap.get(id);
+        try{
+            return this.speechMap.get(id);
+        } catch (Exception e){
+            return null;
+        }
     }
 
     @Override
     public Speaker getSpeaker(String id) {
-        return this.speakerMap.get(id);
+        try{
+            return this.speakerMap.get(id);
+        } catch (Exception e){
+            return null;
+        }
     }
 
     @Override
     public Fraction getFraction(String name) {
-        return this.fractionMap.get(name);
+        try{
+            return this.fractionMap.get(name);
+        } catch (Exception e){
+            return null;
+        }
     }
 
     @Override

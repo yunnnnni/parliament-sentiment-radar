@@ -94,7 +94,8 @@ public class Speech_Impl implements Speech {
             this.speakerId = speechDocument.getString("speakerId");
         }
         if (speechDocument.containsKey("protocolId")) {
-            this.protocolId = (Pair<Integer, Integer>) speechDocument.get("protocolId", Object.class);
+            List<Integer> protocolId = speechDocument.get("protocolId", ArrayList.class);
+            this.protocolId = new Pair<Integer, Integer>(protocolId.get(0), protocolId.get(1));
         }
         if (speechDocument.containsKey("texts")) {
             List<Document> texts = speechDocument.getList("texts", Document.class);
@@ -168,7 +169,7 @@ public class Speech_Impl implements Speech {
     public Document toDocument(){
         Document document = new Document();
         document.append("speechId", this.speechId);
-        document.append("speakerId", this.speaker.getId());
+        document.append("speakerId", this.speakerId);
         document.append("protocolId", this.protocolId);
         List<Document> texts = new ArrayList<>();
         for (Text t : this.textList) {
@@ -276,7 +277,7 @@ public class Speech_Impl implements Speech {
 
     @Override
     public Map<String, Object> getAnnotations() {
-        return null;
+        return this.annotations;
     }
 
     @Override
