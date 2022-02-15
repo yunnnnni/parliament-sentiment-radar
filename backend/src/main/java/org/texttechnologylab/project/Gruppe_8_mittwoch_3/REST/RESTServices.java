@@ -71,6 +71,10 @@ public class RESTServices {
             res.type("application/json");
             return this.sentimentService(req, "tokens", "token").toJson();
         });
+	get("/dependencies", (req, res) -> {
+            res.type("application/json");
+            return this.sentimentService(req, "dependencies", "dependency").toJson();
+        });
         get("/namedEntities", (req, res) -> {
             res.type("application/json");
             return this.namedEntitiesService(req).toJson();
@@ -128,7 +132,10 @@ public class RESTServices {
         List<Document> fractionDocuments = new ArrayList<>();
         try{
             for (Fraction fraction: this.factory.getFractions()){
-                Document fractionDocument = fraction.toDocument();
+		Document fractionDocument = new Document();
+                fractionDocument.put("id", fraction.getName());
+                fractionDocument.put("members", fraction.getSpeakerIds().size());
+                fractionDocument.put("memberIds", fraction.getSpeakerIds());
                 fractionDocuments.add(fractionDocument);
             }
         } catch (Exception e){
@@ -247,13 +254,16 @@ public class RESTServices {
         }
         document.append("speeches", speechStatistics);
 
-        return document.toJson();
+	Document docu = new Document();
+        docu.append("result", document);
+        docu.append("success", true);
+        return docu.toJson();
     }
 
     private Document namedEntitiesService(Request req){
-        Document personDocu = sentimentService(req, "persons", "persons");
-        Document organisationsDocu = sentimentService(req, "organisations", "organisations");
-        Document locationsDocu = sentimentService(req, "locations", "locations");
+        Document personDocu = sentimentService(req, "persons", "element");
+        Document organisationsDocu = sentimentService(req, "organisations", "element");
+        Document locationsDocu = sentimentService(req, "locations", "element");
         List<Document> resultDocuments = new ArrayList<>();
         resultDocuments.add(new Document("persons", personDocu.get("result")));
         resultDocuments.add(new Document("organisations", organisationsDocu.get("result")));
