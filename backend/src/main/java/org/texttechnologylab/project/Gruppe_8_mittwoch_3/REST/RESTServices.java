@@ -2,12 +2,16 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.REST;
 
 import org.apache.log4j.Logger;
 import org.bson.Document;
+import org.javatuples.Pair;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl.ParliamentFactory_Impl;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.database.MongoDBConnectionHandler;
 import spark.Filter;
 import spark.Request;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -91,8 +95,24 @@ public class RESTServices {
             document.append("success", false);
             return document.toJson();
         }
+	Document document = new Document();
+        Document speechDocument = speech.toDocument();
+        try{
+            Pair<Integer, Integer> protocolId = speech.getProtocolId();
+            PlenaryProtocol protocol = this.factory.getProtocol(protocolId.getValue0(), protocolId.getValue1());
+            document.append("date", protocol.getDate());
+        }catch (Exception e){
+            logger.info("speechService - " + e);
+        }
+        document.append("protocolId", speech.getProtocolId());
+        document.append("speaker", speech.getSpeakerId());
+        document.append("id", speech.getId());
+        document.append("texts", speechDocument.get("texts"));
+        document.append("annotations", speechDocument.get("annotations"));
 
-        return speech.toDocument().toJson();
+        return document.toJson();
+
+        // return speech.toDocument().toJson();
     }
 
     private String speechesService(Request req){
@@ -222,6 +242,33 @@ public class RESTServices {
             speechIdSet.addAll(speaker.getSpeeches());
         }
         List<Speech> speechList = this.factory.getSpeeches(speechIdSet);
+	// filter speakers by time
+	// TODO: consider how to improve this function
+        try{
+            String timerange = req.queryParams("time");
+            if (timerange != null){
+                List<Speech> speechListFilteredByTime = new ArrayList<>();
+                Document doc = Document.parse(timerange);
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+                Date gte = df.parse(doc.getString("gte"));
+                Date lte = df.parse(doc.getString("lte"));
+		logger.info("QueryParams: gte: " + gte + ", lte: " + lte);
+                for (Speech speech: speechList){
+                    Pair<Integer, Integer> protocolId = speech.getProtocolId();
+                    PlenaryProtocol protocol = this.factory.getProtocol(protocolId.getValue0(), protocolId.getValue1());
+                    Date protocolStartTime = protocol.getStartDateTime();
+                    Date protocolEndDateTime = protocol.getEndDateTime();
+                    if (protocolStartTime.after(gte) && protocolEndDateTime.before(lte)){
+                        speechListFilteredByTime.add(speech);
+                    }
+                }
+                return speechListFilteredByTime;
+            }
+	}catch (ParseException e){
+            logger.info(e);
+        }catch (Exception e){
+            logger.info(e);
+        }
         return speechList;
     }
 
@@ -248,7 +295,7 @@ public class RESTServices {
                     .collect(Collectors.toList());
             String textStr = String.join(" ", textStrs);
             Document docu = new Document();
-            docu.append("count", textStr.length());
+            docu.append("length", textStr.length());
             docu.append("id", speech.getId());
             speechStatistics.add(docu);
         }
@@ -292,6 +339,16 @@ public class RESTServices {
             }catch (Exception e){
                 logger.debug(e);
             }
+        }
+	if (req.queryParams("minimum") != null){
+            int minimum = Integer.parseInt(req.queryParams("minimum"));
+            Map<Object, Integer> frequencyOccurrence = new TreeMap<>();
+            for (Object key: frequency.keySet()){
+                if (frequency.get(key) > minimum){
+                    frequencyOccurrence.put(key, frequency.get(key));
+                }
+            }
+            frequency = frequencyOccurrence;
         }
         List<Document> results = new ArrayList<>();
         for (Object sentiment: frequency.keySet()){
