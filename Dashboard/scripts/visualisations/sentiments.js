@@ -1,7 +1,10 @@
 /**
  * @author Tinghuan Song
  */
- var sentiment = document.getElementById("sentiments-visualisation");
+// Select HTML-Element
+var sentiment = document.getElementById("sentiments-visualisation");
+
+// create chart
 var sentimentChart = new Chart(sentiment, {
     type: "radar",
     data: {
@@ -36,6 +39,9 @@ var sentimentChart = new Chart(sentiment, {
     }
 });
 
+/**
+ * Method to query the sentiment.
+ */
 getSentimentChart = function sentiment() {
 	$.ajax({
         url: globalURL+"/sentiment",

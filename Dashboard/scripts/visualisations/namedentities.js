@@ -128,7 +128,7 @@ var namedEntitiesChart = new Chart(namedEntities, {
  */
 getNamedEntitiesChart = function namedEntities() {
 	$.ajax({
-		url: globalURL+"/namedEntities?minimum=100",
+		url: globalURL+"/namedEntities?user=&fraction=&party=",
 		method: 'GET',
 		dataType: 'json',
 		success: function (d) {

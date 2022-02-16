@@ -22,6 +22,7 @@ var speakerChart = new Chart(speaker, {
 			pointHoverBorderColor: "rgba(78, 115, 223, 1)",
 			pointHitRadius: 10,
 			pointBorderWidth: 2,
+			pointStyle: pic,
 			data: [],
 		}],
 	},
@@ -90,14 +91,11 @@ var speakerChart = new Chart(speaker, {
 	}
 });
 
-/**
- * Method to query the speakers and their quantity
- */
-
-function getName(id) {
+function getNamePic(id) {
 	var name;
+	var pic;
 	$.ajax({
-		url: globalURL+"/speakers?id=" + id,
+		url: globalURL+"/speakers?user=" + id,
 		method: 'GET',
 		dataType: 'json',
 		async: false,
@@ -105,28 +103,44 @@ function getName(id) {
 
 			var result = d.result;
 			name = result[0].firstname + " " + result[0].name;
+			pic = result[0].image.url;
 		}
 	});
-	return name;
+	return [name, pic];
 }
 
-getSpeakerChart = function speaker() {
+/**
+ * Method to query the speakers and the quantity of their speeches.
+ * Without parameter 50 is used as miniumum.
+ * @param iMinimum
+ * @param data
+ */
+getSpeakerChart = function speaker(iMinimum=$("#speechLimit").val(), data={}) {
 	$.ajax({
 		url: globalURL+"/statistic",
 		method: 'GET',
+		data: data,
 		dataType: 'json',
 		success: function (d) {
 
 			let labels = [];//d.labels;
 			let values = [];//d.values;
+			let pics = [];//d.pics;
+			let pointStyle = [];
 
 			d.result.speakers.forEach(s => {
-				labels.push(getName(s.id));
-				values.push(s.count);
+				if (s.count >= iMinimum){
+					labels.push(getNamePic(s.id)[0]);
+					values.push(s.count);
+					//var pic = new Image();
+					//pic.src = getNamePic(s.id)[1];
+					//pointStyle.push(pic);
+				}
 			});
 
 			speakerChart.data.labels = labels;
 			speakerChart.data.datasets[0].data = values;
+			//speakerChart.data.datasets[0].pointStyle = pics;
 			speakerChart.update();
 
 		}

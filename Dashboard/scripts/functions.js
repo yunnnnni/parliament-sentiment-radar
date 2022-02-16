@@ -31,3 +31,19 @@ function number_format (number, decimals, dec_point, thousands_sep) {
     }
     return s.join(dec);
 }
+
+// limit filter for charts.
+$("#tokenLimit").bind('click keyup', function () {
+    // reload chart filtered by value
+    getTokenChart(this.value==undefined ? 10000 : this.value);
+});
+
+$("#posLimit").bind('click keyup', function () {
+    // reload chart filtered by value
+    getPosChart(this.value==undefined ? 100 : this.value);
+});
+
+$("#speechLimit").bind('click keyup', function () {
+    // reload chart filtered by value
+    getSpeakerChart(this.value==undefined ? 100 : this.value);
+});

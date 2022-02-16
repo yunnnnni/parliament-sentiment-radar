@@ -89,83 +89,13 @@
     
                     </div>
 
-                    <!-- Content Row -->
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Verteilung der Token</h6>
-                                    <div style="float:right;">
-                                        Filter: <input type="number" id="tokenLimit" min="1000" value="10000">
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas height="100%" id="token-visualisation"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Verteilung der Pos</h6>
-									<div style="float:right;">
-										Filter: <input type="number" id="posLimit" min="0" value="100">
-									</div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas height="100%" id="pos-visualisation"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Verteilung der Sentiments</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas height="100%" id="sentiments-visualisation"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Verteilung der Named Entities</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas height="100%", id="namedentities-visualisation"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="row">
                         <div class="col-xl-12 col-lg-7">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Verteilung der Reden</h6>
                                     <div style="float:right;">
-										Filter: <input type="number" id="speechLimit" min="0" value="50">
+										Filter: <input type="number" id="speechLimit" min="0" value="100">
 									</div>
                                 </div>
                                 <div class="card-body">
@@ -240,10 +170,6 @@
     <script src="scripts/konstants.js"></script>
     <script src="scripts/functions.js"></script>
 
-	<script src="scripts/visualisations/sentiments.js"></script>
-	<script src="scripts/visualisations/token.js"></script>
-	<script src="scripts/visualisations/namedentities.js"></script>
-	<script src="scripts/visualisations/pos.js"></script>
     <script src="scripts/visualisations/speaker.js"></script>
 
 </body>

@@ -94,13 +94,16 @@ var posChart = new Chart(pos, {
 });
 
 /**
- * Method to query the pos and their quantity
- * Without parameter 2000 is used as miniumum.
+ * Method to query the pos and their quantity.
+ *  Without parameter 100 is used as miniumum.
+ * @param iMinimum
+ * @param data
  */
-getPosChart = function pos() {
+getPosChart = function pos(iMinimum=$("#posLimit").val(), data={}) {
 	$.ajax({
-		url: globalURL+"/pos?minimum=2000",
+		url: globalURL+"/pos?minimum=" + iMinimum,
 		method: 'GET',
+		data: data,
 		dataType: 'json',
 		success: function (d) {
 

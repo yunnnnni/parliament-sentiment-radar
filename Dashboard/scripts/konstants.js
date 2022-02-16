@@ -6,4 +6,4 @@ Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,Bli
 Chart.defaults.global.defaultFontColor = '#858796';
 
 // URL for all REST requests
-var globalURL = "http://api.prg2021.texttechnologylab.org";
+var globalURL = "http://38.242.210.53:4567";

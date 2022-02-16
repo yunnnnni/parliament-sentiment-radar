@@ -91,13 +91,16 @@ var tokenChart = new Chart(token, {
 });
 
 /**
- * Method to query the tokens and their quantity
- * Without parameter 50000 is used as miniumum.
+ * Method to query the tokens and their quantity.
+ * Without parameter 10000 is used as miniumum.
+ * @param iMinimum
+ * @param data
  */
-getTokenChart = function token() {
+getTokenChart = function token(iMinimum=$("#tokenLimit").val(), data={}) {
 	$.ajax({
-		url: globalURL+"/tokens?minimum=50000",
+		url: globalURL+"/tokens?minimum=" + iMinimum,
 		method: 'GET',
+		data: data,
 		dataType: 'json',
 		success: function (d) {
 
