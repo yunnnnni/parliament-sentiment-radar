@@ -168,6 +168,21 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
     }
 
     @Override
+    public String getDate() {
+        return this.date;
+    }
+
+    @Override
+    public Date getStartDateTime() {
+        return this.startTime;
+    }
+
+    @Override
+    public Date getEndDateTime() {
+        return this.endTime;
+    }
+
+    @Override
     public AgendaItem getAgendaItem(String numberIndex) {
         return null;
     }

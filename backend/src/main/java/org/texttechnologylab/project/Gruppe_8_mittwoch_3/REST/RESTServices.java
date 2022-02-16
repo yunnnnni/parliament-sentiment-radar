@@ -1,13 +1,18 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.REST;
 
+import jnr.ffi.annotations.In;
 import org.apache.log4j.Logger;
 import org.bson.Document;
+import org.javatuples.Pair;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl.ParliamentFactory_Impl;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.database.MongoDBConnectionHandler;
 import spark.Filter;
 import spark.Request;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,7 +29,10 @@ public class RESTServices {
     }
 
     public void startServices() {
-        before("/*", (req, res) -> this.logger.info(req.ip() + ": " + req.uri() + "?" + req.queryString()));
+        before("/*", (req, res) -> {
+            this.logger.info(req.ip() + ": " + req.uri() + "?" + req.queryString());
+            this.logger.info("QueryParams: " + req.queryParams().toString());
+        });
         after((Filter) (req, res) -> {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Methods", "GET");
@@ -32,6 +40,7 @@ public class RESTServices {
 
         get("/update-factory", (req, res) -> {
             res.type("application/json");
+            this.factory = new ParliamentFactory_Impl();
             this.factory.initFromMongoDB(this.handler);
             return "updated";
         });
@@ -71,6 +80,10 @@ public class RESTServices {
             res.type("application/json");
             return this.sentimentService(req, "tokens", "token").toJson();
         });
+        get("/dependencies", (req, res) -> {
+            res.type("application/json");
+            return this.sentimentService(req, "dependencies", "dependency").toJson();
+        });
         get("/namedEntities", (req, res) -> {
             res.type("application/json");
             return this.namedEntitiesService(req).toJson();
@@ -87,8 +100,23 @@ public class RESTServices {
             document.append("success", false);
             return document.toJson();
         }
+        Document document = new Document();
+        Document speechDocument = speech.toDocument();
+        try{
+            Pair<Integer, Integer> protocolId = speech.getProtocolId();
+            PlenaryProtocol protocol = this.factory.getProtocol(protocolId.getValue0(), protocolId.getValue1());
+            document.append("date", protocol.getDate());
+        }catch (Exception e){
+            logger.info("speechService - " + e);
+        }
+        document.append("protocolId", speech.getProtocolId());
+        document.append("speaker", speech.getSpeakerId());
+        document.append("id", speech.getId());
+        document.append("texts", speechDocument.get("texts"));
+        document.append("annotations", speechDocument.get("annotations"));
 
-        return speech.toDocument().toJson();
+        return document.toJson();
+//        return speech.toDocument().toJson();
     }
 
     private String speechesService(Request req){
@@ -128,7 +156,10 @@ public class RESTServices {
         List<Document> fractionDocuments = new ArrayList<>();
         try{
             for (Fraction fraction: this.factory.getFractions()){
-                Document fractionDocument = fraction.toDocument();
+                Document fractionDocument = new Document();
+                fractionDocument.put("id", fraction.getName());
+                fractionDocument.put("members", fraction.getSpeakerIds().size());
+                fractionDocument.put("memberIds", fraction.getSpeakerIds());
                 fractionDocuments.add(fractionDocument);
             }
         } catch (Exception e){
@@ -208,13 +239,40 @@ public class RESTServices {
 
     }
 
-    private List<Speech> filterSpeeches(Request req){
+    private List<Speech> filterSpeeches(Request req) {
+
         List<Speaker> speakerList = filterSpeakers(req);
         Set<String> speechIdSet = new TreeSet<>();
         for (Speaker speaker: speakerList){
             speechIdSet.addAll(speaker.getSpeeches());
         }
         List<Speech> speechList = this.factory.getSpeeches(speechIdSet);
+        // filter speakers by time
+        try {
+            String timerange = req.queryParams("time");
+            if (timerange != null) {
+                List<Speech> speechListFilteredByTime = new ArrayList<>();
+                Document doc = Document.parse(timerange);
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+                Date gte = df.parse(doc.getString("gte"));
+                Date lte = df.parse(doc.getString("lte"));
+                logger.info("QueryParams: gte: " + gte + ", lte: " + lte);
+                for (Speech speech : speechList) {
+                    Pair<Integer, Integer> protocolId = speech.getProtocolId();
+                    PlenaryProtocol protocol = this.factory.getProtocol(protocolId.getValue0(), protocolId.getValue1());
+                    Date protocolStartTime = protocol.getStartDateTime();
+                    Date protocolEndDateTime = protocol.getEndDateTime();
+                    if (protocolStartTime.after(gte) && protocolEndDateTime.before(lte)) {
+                        speechListFilteredByTime.add(speech);
+                    }
+                }
+                return speechListFilteredByTime;
+            }
+        }catch (ParseException e){
+            logger.info(e);
+        }catch (Exception e){
+            logger.info(e);
+        }
         return speechList;
     }
 
@@ -241,19 +299,22 @@ public class RESTServices {
                     .collect(Collectors.toList());
             String textStr = String.join(" ", textStrs);
             Document docu = new Document();
-            docu.append("count", textStr.length());
+            docu.append("length", textStr.length());
             docu.append("id", speech.getId());
             speechStatistics.add(docu);
         }
         document.append("speeches", speechStatistics);
 
-        return document.toJson();
+        Document docu = new Document();
+        docu.append("result", document);
+        docu.append("success", true);
+        return docu.toJson();
     }
 
     private Document namedEntitiesService(Request req){
-        Document personDocu = sentimentService(req, "persons", "persons");
-        Document organisationsDocu = sentimentService(req, "organisations", "organisations");
-        Document locationsDocu = sentimentService(req, "locations", "locations");
+        Document personDocu = sentimentService(req, "persons", "element");
+        Document organisationsDocu = sentimentService(req, "organisations", "element");
+        Document locationsDocu = sentimentService(req, "locations", "element");
         List<Document> resultDocuments = new ArrayList<>();
         resultDocuments.add(new Document("persons", personDocu.get("result")));
         resultDocuments.add(new Document("organisations", organisationsDocu.get("result")));
@@ -281,8 +342,20 @@ public class RESTServices {
                 }
             }catch (Exception e){
                 logger.debug(e);
+                System.out.println(e);
             }
         }
+        if (req.queryParams("minimum") != null){
+            int minimum = Integer.parseInt(req.queryParams("minimum"));
+            Map<Object, Integer> frequencyOccurrence = new TreeMap<>();
+            for (Object key: frequency.keySet()){
+                if (frequency.get(key) > minimum){
+                    frequencyOccurrence.put(key, frequency.get(key));
+                }
+            }
+            frequency = frequencyOccurrence;
+        }
+
         List<Document> results = new ArrayList<>();
         for (Object sentiment: frequency.keySet()){
             Document docu = new Document();
