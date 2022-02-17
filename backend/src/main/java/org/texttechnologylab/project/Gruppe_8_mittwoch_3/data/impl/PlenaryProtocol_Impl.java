@@ -1,24 +1,37 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 
+import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
+import org.apache.uima.ruta.type.html.P;
 import org.bson.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.elasticsearch.action.ingest.IngestActionForwarder;
+import org.javatuples.Pair;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
 
 import java.io.File;
-import java.time.LocalTime;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlenaryProtocol_Impl implements PlenaryProtocol {
     private int session = -1;  // Sitzungsnummer
     private int term = -1;  // Wahlperiode
     private String titel = "";
     private String date = "";
-    private LocalTime startTime = null;
-    private LocalTime endTime = null;
+    private Date startTime = null;
+    private Date endTime = null;
     private Set<String> speakerIdSet = new TreeSet<>();
     private List<AgendaItem> agendaItems = new ArrayList<>(0);
     private ParliamentFactory factory = null;
+
+    public PlenaryProtocol_Impl(Document protocolDocument, ParliamentFactory factory){
+        this.factory = factory;
+        this.init(protocolDocument);
+    }
 
     public PlenaryProtocol_Impl(File xmlFile, ParliamentFactory factory){
         this.factory = factory;
@@ -41,8 +54,8 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
             this.date = root.attributeValue("sitzung-datum");
             this.term = Integer.parseInt(root.attributeValue("wahlperiode"));
             this.session = Integer.parseInt(root.attributeValue("sitzung-nr"));
-//            this.startTime = LocalTime.parse(root.attributeValue("sitzung-start-uhrzeit"));
-            this.endTime = LocalTime.parse(root.attributeValue("sitzung-ende-uhrzeit"));
+            this.startTime = this.formatTime(this.date, root.attributeValue("sitzung-start-uhrzeit"));
+            this.endTime = this.formatTime(this.date, root.attributeValue("sitzung-ende-uhrzeit"));
             this.titel = this.session + ". Sitzung";
 
             // -------------------------- build speaker list --------------------------------
@@ -54,8 +67,10 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
 
             // -------------------------- build agendaItem list --------------------------------
             List<Element> tagesordnungespunktElementList = sitzungsverlauf.elements("tagesordnungspunkt");
+            Pair<Integer, Integer> protocolId = new Pair<>(this.session, this.term);
             for (Element tagesordnungspunktElement : tagesordnungespunktElementList){
-                this.agendaItems.add(new AgendaItem_Impl(tagesordnungspunktElement, this.factory));
+                AgendaItem item = new AgendaItem_Impl(tagesordnungspunktElement, protocolId, this.factory);
+                this.agendaItems.add(item);
             }
 
             System.out.format("Finish reading %s\n", xmlFile);
@@ -65,6 +80,78 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
         }
     }
 
+    private void init(Document protocolDocument){
+        this.session = protocolDocument.getInteger("session");
+        this.term = protocolDocument.getInteger("term");
+        this.titel = protocolDocument.getString("titel");
+        this.date = protocolDocument.getString("date");
+        this.startTime = protocolDocument.get("startTime", Date.class);
+        this.endTime = protocolDocument.get("endTime", Date.class);
+        this.speakerIdSet.addAll(protocolDocument.getList("speakerIds", String.class));
+
+        this.agendaItems = protocolDocument.getList("agendaItems", Document.class)
+                .stream()
+                .map(d -> new AgendaItem_Impl(d, this.factory))
+                .collect(Collectors.toList());
+    }
+
+//    private Date formatDate(String dateStr){
+//        SimpleDateFormat isoFormat = new SimpleDateFormat("dd.MM.yyyy");
+////        isoFormat.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+//        try {
+//            Date date = isoFormat.parse(dateStr);
+//            return date;
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+
+    private LocalDate formatDate(String dateStr){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        try{
+            LocalDate date = LocalDate.parse(dateStr, formatter);
+            return date;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Date formatTime(String dateStr, String timeStr){
+        timeStr = timeStr.replace(" Uhr", "");
+        String dateTimeStr = dateStr + "-" + timeStr;
+        SimpleDateFormat isoFormat = new SimpleDateFormat("dd.MM.yyyy-HH:mm");
+        if (timeStr.contains(".")){
+            isoFormat = new SimpleDateFormat("dd.MM.yyyy-HH.mm");
+        }
+        isoFormat.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+        try {
+            Date dateTime = isoFormat.parse(dateTimeStr);
+            return dateTime;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Date formatTime2(String timeStr){
+        timeStr = timeStr.replace(" Uhr", "");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+
+        if (timeStr.contains(".")){
+            formatter = DateTimeFormatter.ofPattern("H.mm");
+        }
+        try{
+            LocalTime time = LocalTime.parse(timeStr, formatter);
+//            return Date.from(time.atDate(this.date).atZone(ZoneId.of("Europe/Berlin")).toInstant());
+            return null;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
     @Override
     public Set<String> getSpeakerIdSet() {
         return this.speakerIdSet;
@@ -81,6 +168,21 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
     }
 
     @Override
+    public String getDate() {
+        return this.date;
+    }
+
+    @Override
+    public Date getStartDateTime() {
+        return this.startTime;
+    }
+
+    @Override
+    public Date getEndDateTime() {
+        return this.endTime;
+    }
+
+    @Override
     public AgendaItem getAgendaItem(String numberIndex) {
         return null;
     }
@@ -92,6 +194,19 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
 
     @Override
     public Document toDocument() {
-        return null;
+        org.bson.Document document = new org.bson.Document();
+        document.append("session", this.session);
+        document.append("term", this.term);
+        document.append("titel", this.titel);
+        document.append("date", this.date);
+        document.append("startTime", this.startTime);
+        document.append("endTime", this.endTime);
+        document.append("speakerIds", this.speakerIdSet);
+        List<org.bson.Document> agendaItemDocuments = new ArrayList<>();
+        for (AgendaItem item: this.agendaItems){
+            agendaItemDocuments.add(item.toDocument());
+        }
+        document.append("agendaItems", agendaItemDocuments);
+        return document;
     }
 }

@@ -1,13 +1,17 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 
+import org.apache.uima.ruta.type.html.I;
 import org.bson.Document;
 import org.dom4j.Element;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Fraction;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.ParliamentFactory;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
+import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speech;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.helper.ImageFinder;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Speaker_Impl implements Speaker {
     private String id = "";
@@ -16,8 +20,15 @@ public class Speaker_Impl implements Speaker {
     private String lastName = "";
     private String fractionName = "";
     private String role = "";
-    private Image_Impl img = new Image_Impl("", "");
+    private Image_Impl img = null;
+    private Set<String> speechIdSet = new TreeSet<>();
+//    private Set<Speech> speechSet = new TreeSet<>();
     private ParliamentFactory factory = null;
+
+    public Speaker_Impl(Document speakerDocument, ParliamentFactory factory){
+        this.factory = factory;
+        this.init(speakerDocument);
+    }
 
     public Speaker_Impl(Element speakerElement, ParliamentFactory factory){
         this.factory = factory;
@@ -47,7 +58,7 @@ public class Speaker_Impl implements Speaker {
                     switch (name){
                         case "vorname":
                             this.firstName = ele.getText();
-                            if (this.firstName.equals("Alterpräsident Dr. Hermann")){
+                            if (this.firstName.equals("Alterspräsident Dr. Hermann")){
                                 this.titel = "Dr.";
                                 this.firstName = "Hermann";
                             }
@@ -99,6 +110,19 @@ public class Speaker_Impl implements Speaker {
 
     }
 
+    private void init(Document speakerDocument){
+        this.id = speakerDocument.getString("id");
+        this.titel = speakerDocument.getString("titel");
+        this.firstName = speakerDocument.getString("firstname");
+        this.lastName = speakerDocument.getString("name");
+        this.fractionName = speakerDocument.getString("fraction");
+        this.role = speakerDocument.getString("role");
+        this.img = new Image_Impl(speakerDocument.get("image", Document.class));
+        if (speakerDocument.containsKey("speechIds")){
+            this.speechIdSet.addAll(speakerDocument.getList("speechIds", String.class));
+        }
+    }
+
     public void setImage(Image_Impl image){
         this.img = image;
     }
@@ -144,21 +168,34 @@ public class Speaker_Impl implements Speaker {
     @Override
     public Document toDocument() {
         Document document = new Document();
+        document.append("firstname", this.firstName);
+        document.append("name", this.lastName);
         document.append("id", this.id);
         document.append("titel", this.titel);
-        document.append("firstName", this.firstName);
-        document.append("lastName", this.lastName);
         document.append("fraction", this.fractionName);
         document.append("role", this.role);
-        try {
-            ImageFinder finder = new ImageFinder(this.firstName, this.lastName);
-            this.img = new Image_Impl(finder.getImgUrl(), finder.getDescription());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (this.img == null){
+            try {
+                ImageFinder finder = new ImageFinder(this.firstName, this.lastName);
+                this.img = new Image_Impl(finder.getImgUrl(), finder.getDescription());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         document.append("image", this.img.toDocument());
+        document.append("speechIds", this.speechIdSet);
         return document;
+    }
+
+    @Override
+    public void addSpeech(String speechId) {
+        this.speechIdSet.add(speechId);
+    }
+
+    @Override
+    public Set<String> getSpeeches() {
+        return this.speechIdSet;
     }
 }

@@ -3,6 +3,8 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data;
 import org.bson.Document;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl.Image_Impl;
 
+import java.util.Set;
+
 public interface Speaker {
 
     void setImage(Image_Impl image);
@@ -46,4 +48,8 @@ public interface Speaker {
     Boolean isParliamentMember();
 
     Document toDocument();
+
+    void addSpeech(String speechId);
+
+    Set<String> getSpeeches();
 }

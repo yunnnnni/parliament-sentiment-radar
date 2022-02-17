@@ -9,21 +9,22 @@ public class Text_Impl implements Text {
     private String label;
 
     public Text_Impl(Element textElement){
-        this.text = textElement.getText();
+        this.text = textElement.getText().replace("\u00a0"," ");
+        this.label = textElement.attributeValue("klasse");
     }
 
     public Text_Impl(Element textElement, String label){
-        this.text = textElement.getText();
+        this.text = textElement.getText().replace("\u00a0"," ");
         this.label = label;
     }
 
     public Text_Impl(String text, String label){
-        this.text = text;
+        this.text = text.replace("\u00a0"," ");
         this.label = label;
     }
 
     public Text_Impl(Document textDocument){
-        this.text = textDocument.getString("text");
+        this.text = textDocument.getString("text").replace("\u00a0"," ");
         this.label = textDocument.getString("label");
     }
 
