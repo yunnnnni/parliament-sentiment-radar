@@ -3,6 +3,7 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data;
 import org.apache.uima.UIMAException;
 import org.apache.uima.jcas.JCas;
 import org.bson.Document;
+import org.javatuples.Pair;
 import org.texttechnologylab.uimadb.wrapper.mongo.serilization.exceptions.CasSerializationException;
 import org.texttechnologylab.uimadb.wrapper.mongo.serilization.exceptions.SerializerInitializationException;
 import org.texttechnologylab.uimadb.wrapper.mongo.serilization.exceptions.UnknownFactoryException;
@@ -22,6 +23,11 @@ public interface Speech {
      * @return Redner
      */
     Speaker getSpeaker();
+    String getSpeakerId();
+
+    void setProtocolId(int session, int term);
+
+    Pair<Integer, Integer> getProtocolId();
 
     /**
      * getter function for attribute this.texts
@@ -44,11 +50,12 @@ public interface Speech {
      * convert text strings in the Rede to jcas object
      * process jcas object with defined pipeline
      * @return
-     * @throws UIMAException
      */
-    JCas toCAS() throws UIMAException;
+    JCas toCAS();
 
     JCas getCAS();
+
+    void setAnnotations();
 
     Map<String, Object> getAnnotations();
 

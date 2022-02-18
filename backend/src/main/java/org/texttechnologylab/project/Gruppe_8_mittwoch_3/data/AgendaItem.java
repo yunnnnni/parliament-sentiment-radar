@@ -1,6 +1,7 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data;
 
 import org.bson.Document;
+import org.javatuples.Pair;
 
 import java.util.List;
 
@@ -10,6 +11,10 @@ public interface AgendaItem {
      * @return id of the tagesordnungspunkt
      */
     String getId();
+
+    void setProtocolId(int session, int term);
+
+    Pair<Integer, Integer> getProtocolId();
 
     /**
      * print all texts in the tagesordnungspunkt
@@ -21,12 +26,12 @@ public interface AgendaItem {
      * getter for attribute Reden
      * @return list of reden in this Tagesordnungspunkt
      */
-    List<Speech> getSpeeches();
+//    public abstract List<Speech> getSpeeches();
 
     /**
      * convert class instance to BSON Document,
      * so that it can be written to MongoDB
      * @return class instance in BSON Document form
      */
-    Document toDocument();
+    public abstract Document toDocument();
 }

@@ -1,2 +1,7 @@
 backend/target/*
 .history
+.DS_Store
+Daten/
+.idea
+*.jpg
+*.out
