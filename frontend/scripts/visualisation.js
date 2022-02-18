@@ -146,9 +146,10 @@ function createTokenChart(node, query){
 
 function addNavItem(){
     var contentNode = document.getElementById("content");
-    clone = contentNode.children[1].cloneNode(true);
-    charts = clone.getElementsByTagName("canvas");
-    createTokenChart(charts[0], "/tokens?minimum=5000")
+    clone = document.getElementById("charts_template").cloneNode(true);
+    clone.style.display = "";
+    // charts = clone.getElementsByTagName("canvas");
+    // createTokenChart(charts[0], "/tokens?minimum=5000")
     contentNode.appendChild(clone);
     // document.getElementById("content").appendChild(clone)
 }
