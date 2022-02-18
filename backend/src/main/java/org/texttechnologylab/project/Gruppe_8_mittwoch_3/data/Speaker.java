@@ -43,7 +43,7 @@ public interface Speaker {
      * return fraktion name of this abgeordnete
      * @return name of the fraktion of this abgeordnete
      */
-    String getFraktion();
+    String getFraction();
 
     Boolean isParliamentMember();
 

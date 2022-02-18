@@ -36,48 +36,49 @@ public class RESTServices {
 
         get("/update-factory", (req, res) -> {
             res.type("application/json");
+            this.factory = new ParliamentFactory_Impl();
             this.factory.initFromMongoDB(this.handler);
             return "updated";
         });
         get("/speech", (req, res) -> {
             res.type("application/json");
-            return this.speechService(req);
+            return this.speechService(req).toJson();
         });
         get("/speeches", (req, res) -> {
             res.type("application/json");
-            return this.speechesService(req);
+            return this.speechesService(req).toJson();
         });
         get("/speakers", (req, res) -> {
             res.type("application/json");
-            return this.speakerService(req);
+            return this.speakerService(req).toJson();
         });
         get("/fractions", (req, res) -> {
             res.type("application/json");
-            return this.fractionsService();
+            return this.fractionsService().toJson();
         });
         get("/fraction", (req, res) -> {
             res.type("application/json");
-            return this.fractionService(req.queryParams("name"));
+            return this.fractionService(req.queryParams("name")).toJson();
         });
         get("/statistic", (req, res) -> {
             res.type("application/json");
-            return this.statisticService();
+            return this.statisticService().toJson();
         });
         get("/sentiment", (req, res) -> {
             res.type("application/json");
-            return this.sentimentService(req, "sentiments", "sentiment").toJson();
+            return this.annotationService(req, "sentiments", "sentiment").toJson();
         });
         get("/pos", (req, res) -> {
             res.type("application/json");
-            return this.sentimentService(req, "POS", "pos").toJson();
+            return this.annotationService(req, "POS", "pos").toJson();
         });
         get("/tokens", (req, res) -> {
             res.type("application/json");
-            return this.sentimentService(req, "tokens", "token").toJson();
+            return this.annotationService(req, "tokens", "token").toJson();
         });
-	get("/dependencies", (req, res) -> {
+        get("/dependencies", (req, res) -> {
             res.type("application/json");
-            return this.sentimentService(req, "dependencies", "dependency").toJson();
+            return this.annotationService(req, "dependencies", "dependency").toJson();
         });
         get("/namedEntities", (req, res) -> {
             res.type("application/json");
@@ -85,17 +86,13 @@ public class RESTServices {
         });
     }
 
-    private String speechService(Request req) {
+    private Document speechService(Request req) {
         String speechId= req.queryParams("id");
         Speech speech = this.factory.getSpeech(speechId);
         if (speech == null){
-            List<Document> emptyDocumentList = new ArrayList<>();
-            Document document = new Document();
-            document.append("result", emptyDocumentList);
-            document.append("success", false);
-            return document.toJson();
+            return new Document();
         }
-	Document document = new Document();
+        Document document = new Document();
         Document speechDocument = speech.toDocument();
         try{
             Pair<Integer, Integer> protocolId = speech.getProtocolId();
@@ -110,81 +107,72 @@ public class RESTServices {
         document.append("texts", speechDocument.get("texts"));
         document.append("annotations", speechDocument.get("annotations"));
 
-        return document.toJson();
-
-        // return speech.toDocument().toJson();
+        return document;
     }
 
-    private String speechesService(Request req){
-
-        // query speaker list
-//        List<Speaker> speakerList = filterSpeakers(req);
-//        Set<String> speechIdSet = new TreeSet<>();
-//        for (Speaker speaker: speakerList){
-//            speechIdSet.addAll(speaker.getSpeeches());
-//        }
-//        List<Speech> speechList = this.factory.getSpeeches(speechIdSet);
-        List<Speech> speechList = filterSpeeches(req);
-
-        Document document = new Document();
-        List<Document> speechDocuments = new ArrayList<>();
-        try{
-            for (Speech speech: speechList){
-                if (speech == null){continue;}
-                Document speechDocument = speech.toDocument();
-                speechDocument.remove("_id");
-                speechDocuments.add(speechDocument);
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-            List<Document> emptyDocumentList = new ArrayList<>();
-            document.append("result", emptyDocumentList);
-            document.append("success", false);
-            return document.toJson();
+    /**
+     * query speech list
+     * @param req: client request
+     * @return list of speech ids to avoid overflow
+     */
+    private Document speechesService(Request req){
+        // query speech list
+        List<Speech> speechList = this.filterSpeeches(req);
+        Set<String> speechIdSet = new TreeSet<>();
+        for (Speech speech: speechList){
+            speechIdSet.add(speech.getId());
         }
-        document.append("result", speechDocuments);
-        document.append("success", true);
-        return document.toJson();
+        Document docu = new Document();
+        docu.append("result", speechIdSet);
+        if (speechIdSet.size() == 0){
+            docu.append("success", false);
+        }else{
+            docu.append("success", true);
+        }
+        return docu;
     }
 
-    private String fractionsService(){
-        Document document = new Document();
-        List<Document> fractionDocuments = new ArrayList<>();
+    private Document fractionsService(){
         try{
+            List<Document> fractionDocuments = new ArrayList<>();
             for (Fraction fraction: this.factory.getFractions()){
-		Document fractionDocument = new Document();
-                fractionDocument.put("id", fraction.getName());
-                fractionDocument.put("members", fraction.getSpeakerIds().size());
-                fractionDocument.put("memberIds", fraction.getSpeakerIds());
-                fractionDocuments.add(fractionDocument);
+                Document fractionDocument = this.fractionToDocument(fraction);
+                if (fractionDocument != null){
+                    fractionDocuments.add(fractionDocument);
+                }
             }
+            return this.packPayload(fractionDocuments);
         } catch (Exception e){
             List<Document> emptyDocumentList = new ArrayList<>();
-            document.append("result", emptyDocumentList);
-            document.append("success", false);
-            return document.toJson();
+            return this.packPayload(emptyDocumentList);
         }
-        document.append("result", fractionDocuments);
-        document.append("success", true);
-        return document.toJson();
     }
 
-    private String fractionService(String fractionName){
-        if (fractionName == null){
-            return new Document().toJson();
-        }
+    private Document fractionService(String fractionName){
         Fraction fraction= this.factory.getFraction(fractionName);
-        if (fraction == null){
-            return new Document().toJson();
+        Document fractionDocument = this.fractionToDocument(fraction);
+        if (fractionDocument == null){
+            return new Document();
         }
-        return fraction.toDocument().toJson();
+        return fractionDocument;
     }
 
-    private String speakerService(Request req){
-        // query speaker list
-        List<Speaker> speakerList = filterSpeakers(req);
+    private Document fractionToDocument(Fraction fraction){
+        try{
+            Document document = new Document();
+            document.append("id", fraction.getName());
+            document.append("members", fraction.getSpeakerIds().size());
+            document.append("memberIds", fraction.getSpeakerIds());
+            return document;
+        } catch (Exception e){
+            return null;
+        }
+    }
 
-        Document document = new Document();
+    private Document speakerService(Request req){
+        // query speaker
+        List<Speaker> speakerList = this.filterSpeakers(req);
+
         List<Document> speakerDocuments = new ArrayList<>();
         try{
             for (Speaker speaker: speakerList){
@@ -195,55 +183,42 @@ public class RESTServices {
             }
         } catch (Exception e){
             List<Document> emptyDocumentList = new ArrayList<>();
-            document.append("result", emptyDocumentList);
-            document.append("success", false);
-            return document.toJson();
+            return this.packPayload(emptyDocumentList);
         }
-        document.append("result", speakerDocuments);
-        document.append("success", true);
-        return document.toJson();
+        return this.packPayload(speakerDocuments);
     }
 
     private List<Speaker> filterSpeakers(Request req){
+        List<Speaker> speakerList = new ArrayList<>();
+        // filter by speakerId
         String speakerId = req.queryParams("user");
-        String fractionName = req.queryParams("fraction");
-        List<Speaker> filterById = new ArrayList<>();
-        List<Speaker> filterByFraction = new ArrayList<>();
-        if (speakerId == null || speakerId == ""){
-            filterById.addAll(this.factory.getSpeakers());
+        if (speakerId == null || speakerId == ""){  // if speakerId is not defined, add all speakers into list
+            speakerList.addAll(this.factory.getSpeakers());
         }else{
             Speaker speakerFound = this.factory.getSpeaker(speakerId);
             if (speakerFound != null){
-                filterById.add(speakerFound);
+                speakerList.add(speakerFound);
             }
         }
-        if (fractionName == null || fractionName == ""){
-            filterByFraction.addAll(this.factory.getSpeakers());
-        }else{
-            List<Speaker> listFilteredByFraction = this.factory.getSpeakersOfFraction(fractionName);
-            if (listFilteredByFraction!= null){
-                filterByFraction.addAll(listFilteredByFraction);
-            }
+        // filter by fraction
+        String fractionName = req.queryParams("fraction");
+        if (speakerList.size() > 0 && fractionName != null && fractionName != ""){
+            speakerList = speakerList.stream()
+                    .filter(speaker -> speaker.getFraction().equals(fractionName))
+                    .collect(Collectors.toList());
         }
-
-        filterById.retainAll(filterByFraction);
-
-        if (filterById.contains(null)){
-            filterById.removeIf(Objects::isNull);
-        }
-        return filterById;
-
+        return speakerList;
     }
 
     private List<Speech> filterSpeeches(Request req){
-        List<Speaker> speakerList = filterSpeakers(req);
+        List<Speaker> speakerList = this.filterSpeakers(req);
         Set<String> speechIdSet = new TreeSet<>();
         for (Speaker speaker: speakerList){
             speechIdSet.addAll(speaker.getSpeeches());
         }
         List<Speech> speechList = this.factory.getSpeeches(speechIdSet);
-	// filter speakers by time
-	// TODO: consider how to improve this function
+        // filter speakers by time
+        // TODO: consider how to improve this function
         try{
             String timerange = req.queryParams("time");
             if (timerange != null){
@@ -252,7 +227,7 @@ public class RESTServices {
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
                 Date gte = df.parse(doc.getString("gte"));
                 Date lte = df.parse(doc.getString("lte"));
-		logger.info("QueryParams: gte: " + gte + ", lte: " + lte);
+                logger.info("QueryParams: gte: " + gte + ", lte: " + lte);
                 for (Speech speech: speechList){
                     Pair<Integer, Integer> protocolId = speech.getProtocolId();
                     PlenaryProtocol protocol = this.factory.getProtocol(protocolId.getValue0(), protocolId.getValue1());
@@ -264,7 +239,7 @@ public class RESTServices {
                 }
                 return speechListFilteredByTime;
             }
-	}catch (ParseException e){
+        }catch (ParseException e){
             logger.info(e);
         }catch (Exception e){
             logger.info(e);
@@ -272,93 +247,104 @@ public class RESTServices {
         return speechList;
     }
 
-    private String statisticService(){
+    private Document statisticService(){
         Document document = new Document();
-
-        List<Speaker> speakerList = this.factory.getSpeakers();
+        // get statistic of speakers
         List<Document> speakerStatistics = new ArrayList<>();
-        for (Speaker speaker: speakerList){
+        for (Speaker speaker: this.factory.getSpeakers()){
             Document docu = new Document();
             docu.append("count", speaker.getSpeeches().size());
             docu.append("id", speaker.getId());
             speakerStatistics.add(docu);
         }
         document.append("speakers", speakerStatistics);
-
-        List<Speech> speechList = this.factory.getSpeeches();
+        // get statistic of speeches
         List<Document> speechStatistics = new ArrayList<>();
-        for (Speech speech: speechList){
-            List<Text> texts = speech.getTexts();
-            List<String> textStrs = texts.stream()
-                    .filter(t -> t.getLabel() != "comment" && t.getLabel() != "name")
-                    .map(t -> t.getText())
-                    .collect(Collectors.toList());
-            String textStr = String.join(" ", textStrs);
+        for (Speech speech: this.factory.getSpeeches()){
+            int length = 0;
+            for (Text text: speech.getTexts()){
+                if (text.getLabel() != "comment" && text.getLabel() != "name"){
+                    length += text.getText().length();
+                }
+            }
             Document docu = new Document();
-            docu.append("length", textStr.length());
+            docu.append("length", length);
             docu.append("id", speech.getId());
             speechStatistics.add(docu);
         }
         document.append("speeches", speechStatistics);
 
-	Document docu = new Document();
-        docu.append("result", document);
-        docu.append("success", true);
-        return docu.toJson();
+        return this.packPayload(document);
     }
 
     private Document namedEntitiesService(Request req){
-        Document personDocu = sentimentService(req, "persons", "element");
-        Document organisationsDocu = sentimentService(req, "organisations", "element");
-        Document locationsDocu = sentimentService(req, "locations", "element");
+        Document personDocu = annotationService(req, "persons", "element");
+        Document organisationsDocu = annotationService(req, "organisations", "element");
+        Document locationsDocu = annotationService(req, "locations", "element");
         List<Document> resultDocuments = new ArrayList<>();
         resultDocuments.add(new Document("persons", personDocu.get("result")));
         resultDocuments.add(new Document("organisations", organisationsDocu.get("result")));
         resultDocuments.add(new Document("locations", locationsDocu.get("result")));
-        Document docu = new Document();
-        docu.append("result", resultDocuments);
-        docu.append("success", true);
-        return docu;
+        return packPayload(resultDocuments);
     }
 
-    private Document sentimentService(Request req, String annotationType, String outputAnnotationTag){
-        List<Speech> speechList = filterSpeeches(req);
-        Document document = new Document();
+    private Document annotationService(Request req, String annotationType, String outputAnnotationType){
+        // filter speeches by query
+        List<Speech> speechList = this.filterSpeeches(req);
+        // get frequency of each tag
         Map<Object, Integer> frequency = new TreeMap<>();
         for (Speech speech: speechList){
             try{
-                List<Object> sentiments = (List<Object>) speech.getAnnotations().get(annotationType);
-                for (Object sentiment: sentiments){
-                    Integer count = frequency.get(sentiment);
+                List<Object> annotations = (List<Object>) speech.getAnnotations().get(annotationType);
+                for (Object annotation: annotations){
+                    Integer count = frequency.get(annotation);
                     if (count != null){
-                        frequency.put(sentiment, ++count);
+                        frequency.put(annotation, ++count);
                     }else{
-                        frequency.put(sentiment, 1);
+                        frequency.put(annotation, 1);
                     }
                 }
             }catch (Exception e){
                 logger.debug(e);
             }
         }
-	if (req.queryParams("minimum") != null){
+        // filter annotations by minimum frequency
+	    if (req.queryParams("minimum") != null){
             int minimum = Integer.parseInt(req.queryParams("minimum"));
-            Map<Object, Integer> frequencyOccurrence = new TreeMap<>();
-            for (Object key: frequency.keySet()){
-                if (frequency.get(key) > minimum){
-                    frequencyOccurrence.put(key, frequency.get(key));
-                }
-            }
-            frequency = frequencyOccurrence;
+            frequency = frequency.entrySet().stream()
+                    .filter(x -> x.getValue() > minimum)
+                    .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
         }
+        // create payload, map to document list
         List<Document> results = new ArrayList<>();
-        for (Object sentiment: frequency.keySet()){
+        for (Map.Entry<Object, Integer> entry: frequency.entrySet()){
             Document docu = new Document();
-            docu.append(outputAnnotationTag, sentiment);
-            docu.append("count", frequency.get(sentiment));
+            docu.append(outputAnnotationType, entry.getKey());
+            docu.append("count", entry.getValue());
             results.add(docu);
         }
-        document.put("result", results);
-        document.put("success", true);
-        return document;
+        return this.packPayload(results);
+    }
+
+    private Document packPayload(List<Document> payload){
+        Document docu = new Document();
+        docu.append("result", payload);
+        if (payload == null || payload.size() == 0){
+            docu.append("success", false);
+        }else{
+            docu.append("success", true);
+        }
+        return docu;
+    }
+
+    private Document packPayload(Document payload){
+        Document docu = new Document();
+        docu.append("result", payload);
+        if (payload == null){
+            docu.append("success", false);
+        }else{
+            docu.append("success", true);
+        }
+        return docu;
     }
 }

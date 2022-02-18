@@ -16,7 +16,7 @@ import static com.mongodb.client.model.Filters.eq;
 public class ProtocolMongoDBWriter {
     public static void main(String[] args) {
         MongoDBConnectionHandler handler = new MongoDBConnectionHandler("config/config.json");
-        String protocolDirectory = "Daten/test";
+        String protocolDirectory = "Daten/20. Wahlperiode";
         ParliamentFactory factory = new ParliamentFactory_Impl();
         factory.initFromDirectory(protocolDirectory);
 //        writeProtocols(factory.getProtocols(), handler);

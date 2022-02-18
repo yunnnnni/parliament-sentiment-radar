@@ -153,7 +153,7 @@ public class Speaker_Impl implements Speaker {
     }
 
     @Override
-    public String getFraktion() {
+    public String getFraction() {
         return this.fractionName;
     }
 
