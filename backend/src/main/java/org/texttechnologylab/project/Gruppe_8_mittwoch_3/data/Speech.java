@@ -7,6 +7,7 @@ import org.javatuples.Pair;
 import org.texttechnologylab.uimadb.wrapper.mongo.serilization.exceptions.CasSerializationException;
 import org.texttechnologylab.uimadb.wrapper.mongo.serilization.exceptions.SerializerInitializationException;
 import org.texttechnologylab.uimadb.wrapper.mongo.serilization.exceptions.UnknownFactoryException;
+import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Text;
 
 import java.util.List;
 import java.util.Map;

@@ -146,7 +146,7 @@ function findSpeech(speechId, speakers){
     return new Promise(function(res,rej){
         $.ajax({
             type: "GET",
-            url: "http://api.prg2021.texttechnologylab.org/speech?id="+speechId,
+            url: "http://localhost:5678/speech?id="+speechId,
             async: true,
             success: (speech) => res([speech, speakers]),
             error: (speech) => rej([speech, speakers])
@@ -172,9 +172,9 @@ function setElementText(text, elementId){
  */
 Promise.all([
     // getData("http://api.prg2021.texttechnologylab.org/statistic"),
-    getData("http://38.242.210.53:4567/statistic"),
+    getData("http://localhost:5678/statistic"),
     // getData("http://api.prg2021.texttechnologylab.org/speakers")
-    getData("http://38.242.210.53:4567/speakers")
+    getData("http://localhost:5678/speakers")
 ])
 .then(([statisticData, speakerData]) => processData(statisticData, speakerData))
 .then(([speechId, speakers]) => findSpeech(speechId, speakers))

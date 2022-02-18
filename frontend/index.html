@@ -41,13 +41,18 @@
             </a>
 
             <!-- Divider -->
-            <hr class="sidebar-divider my-0">
+            <hr class="sidebar-divider my-0" id="sidebarDivider">
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
                 <a class="nav-link" href="index.html">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
             </li>
 
             <!-- Divider -->
@@ -73,164 +78,70 @@
 
             <!-- Main Content -->
             <div id="content">
-
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <!-- input box -->
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text form-control bg-light small" id="">Speaker</span>
+                        </div>
+                        <!-- filer speaker id -->
+                        <input type="text" id="speaker-id" class="form-control bg-light small" placeholder="Type speaker id to search...">
+                        <!-- <input type="text" id="speaker-id" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true"> -->
+                        <div class="input-group-prepend">
+                            <span class="input-group-text form-control bg-light small" id="">Fraction</span>
+                        </div>
+                        <!-- filer fraction id -->
+                        <input class="form-control bg-light small" list="fraction-options" id="fraction-id" placeholder="Type fraction to search...">
+                        <datalist id="fraction-options">
+                        </datalist>
+                        <div class="input-group-prepend">
+                            <span class="input-group-text form-control bg-light small" id="">Party</span>
+                        </div>
+                        <!-- filer party id -->
+                        <!-- <input class="form-control bg-light small" list="party-options" id="party-id" placeholder="Type party to search...">
+                        <datalist id="party-options"> -->
+                        </datalist>
+                        <!-- <input type="text" id="speaker-id" class="form-control bg-light border-0 small" placeholder="Search for speaker id" aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true">
+                        <input type="text" id="fraction-id" class="form-control bg-light border-0 small" placeholder="Search for fraction" aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true">
+                        <input type="text" id="party-id" class="form-control bg-light border-0 small" placeholder="Search for party" aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true"> -->
+                        <div class="input-group-append">
+                            <!-- button to submit query -->
+                            <!-- <button class="btn btn-primary" type="button" onclick=updateChartsOnClick()> -->
+                            <button class="btn btn-primary" type="button" onclick=addNavItem()>
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+
+                        <button onClick="checkId(this)" class="btn btn-danger btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-trash"></i>
+                            </span>
+                            <span class="text">Delete sub dashboard</span>
+                            
+                        </button>
+
+                        <script>
+                        function checkId(elem)
+                        {
+                            var contentToDelete = elem.parentNode.parentNode;
+                            if (contentToDelete.parentNode.childElementCount > 2){
+                                contentToDelete.parentNode.removeChild(contentToDelete);
+                            } else{
+                                alert("Can't delete the last sub-dashboard.");
+                            }
+                        }
+                        </script>
                     </div>
 
                     <!-- Content Row -->
-
-
                     <div class="row">
-                        <!-- Speaker with the most speeches -->
-                        <div class="col-xl-6 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Speaker with the most speeches</div>
-                                            <div id="speaker-most-speeches" class="h5 mb-0 font-weight-bold text-gray-800">Max Mustermann</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-user-alt fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Speaker with the longest speech -->
-                        <div class="col-xl-6 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Speaker with the longest speech</div>
-                                            <div id="speaker-longest-speech" class="h5 mb-0 font-weight-bold text-gray-800">Max Mustermann</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-user-alt fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Average speech length -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Average speech length
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div id="average-speech-length" class="h5 mb-0 mr-3 font-weight-bold text-gray-800">0</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-chart-bar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Number of speeches -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Number of speeches</div>
-                                            <div id="number-speeches" class="h5 mb-0 font-weight-bold text-gray-800">0</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-chart-bar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Number of comments -->
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Number of comments</div>
-                                            <div id="number-comments" class="h5 mb-0 font-weight-bold text-gray-800">0</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-chart-bar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="row">
-
-                        <!-- filter for query -->
-                        <div class="col-xl-12 col-lg-12">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    id="query-title" class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Query data</h6>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <!-- input box -->
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="">Speaker</span>
-                                        </div>
-                                        <!-- filer speaker id -->
-                                        <input type="text" id="speaker-id" class="form-control" placeholder="Type speaker id to search...">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="">Fraction</span>
-                                        </div>
-                                        <!-- filer fraction id -->
-                                        <input class="form-control" list="fraction-options" id="fraction-id" placeholder="Type fraction to search...">
-                                        <datalist id="fraction-options">
-                                        </datalist>
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="">Party</span>
-                                        </div>
-                                        <!-- filer party id -->
-                                        <input class="form-control" list="party-options" id="party-id" placeholder="Type party to search...">
-                                        <datalist id="party-options">
-                                        </datalist>
-                                        <!-- <input type="text" id="speaker-id" class="form-control bg-light border-0 small" placeholder="Search for speaker id" aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true">
-                                        <input type="text" id="fraction-id" class="form-control bg-light border-0 small" placeholder="Search for fraction" aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true">
-                                        <input type="text" id="party-id" class="form-control bg-light border-0 small" placeholder="Search for party" aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true"> -->
-                                    <div class="input-group-append">
-
-                                    <!-- button to submit query -->
-                                    <button class="btn btn-primary" type="button" onclick=updateChartsOnClick()>
-                                        <i class="fas fa-search fa-sm"></i>
-                                    </button>
-                                </div>
-                            </div>
-                                </div>
-                            </div>
-                        </div>
-
-                                        
                         <!-- Sentiment distribution chart -->
                         <div class="col-xl-12 col-lg-12">
                             <div class="card shadow mb-4">
@@ -406,7 +317,7 @@
     <!-- script to update cards in the first rows -->
     <script type="text/javascript" src="scripts/run.js"></script>
     <!-- script to query annotation distribuions -->
-    <script type="text/javascript" src="scripts/run2.js"></script>
+    <script type="text/javascript" src="scripts/visualisation.js"></script>
 </body>
 
 </html>

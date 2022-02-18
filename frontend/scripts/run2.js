@@ -14,7 +14,11 @@ Chart.defaults.global.defaultFontColor = '#858796';
  * @returns 
  */
 function createBarChart(elementId){
-    let ctx = document.getElementById(elementId);
+    let ctx = elementId;
+    if (typeof elementId == 'string'){
+        ctx = document.getElementById(elementId);
+    }
+
     return new Chart(ctx, {
         type: 'bar',
         data: {
@@ -188,39 +192,40 @@ function createDoughnutChart(elementId){
 function updateChartsOnClick(){
     const speakerId = document.getElementById('speaker-id').value;
     const fractionId = document.getElementById('fraction-id').value;
-    const partyId = document.getElementById('party-id').value;
-    const conditions = "user=" + speakerId + "&" + "fraction=" + fractionId + "&" + "party=" + partyId
+    // const partyId = document.getElementById('party-id').value;
+    // const conditions = "user=" + speakerId + "&" + "fraction=" + fractionId + "&" + "party=" + partyId
+    const conditions = "user=" + speakerId + "&" + "fraction=" + fractionId
 
-    document.getElementById("query-title").textContent = "Query data: \'" + conditions + "\'";
+    // document.getElementById("query-title").textContent = "Query data: \'" + conditions + "\'";
     // getData("http://api.prg2021.texttechnologylab.org/sentiment?" + conditions)
-    getData("http://38.242.210.53:4567/sentiment?" + conditions)
+    getData("http://localhost:5678/sentiment?" + conditions)
     .then(
         (data) => {visualizeSentimentDistribution(data, sentimentChart);})
     .catch(
         // e => {alert("Invalid query for sentiment distribution!");}
-        e => {updateBarChart([], [], chart);}
+        // e => {updateBarChart([], [], chart);}
     );
 
     // getData("http://api.prg2021.texttechnologylab.org/pos?" + conditions)
-    getData("http://38.242.210.53:4567/pos?" + conditions)
+    getData("http://localhost:5678/pos?" + conditions)
     .then(
         (data) => {visualizePosDistribution(data, posChart);})
     .catch(
         // e => {alert("Invalid query for pos distribution!");}
-        e => {updatePieChart([], [], chart);}
+        // e => {updatePieChart([], [], chart);}
     );
 
     // getData("http://api.prg2021.texttechnologylab.org/tokens?" + conditions)
-    getData("http://38.242.210.53:4567/tokens?" + conditions)
+    getData("http://localhost:5678/tokens?" + conditions)
     .then(
         (data) => {visualizeTokenDistribution(data, tokenChart);})
     .catch(
         // e => {alert("Invalid query for token distribution!");}
-        e => {updatePieChart([], [], chart);}
+        // e => {updatePieChart([], [], chart);}
     );
 
     // getData("http://api.prg2021.texttechnologylab.org/namedEntities?" + conditions)
-    getData("http://38.242.210.53:4567/namedEntities?" + conditions)
+    getData("http://localhost:5678/namedEntities?" + conditions)
     // getData("http://localhost:4567/namedEntities?" + conditions)
     .then(
         (data) => {visualizeEntitiesDistribution(data, entityCharts);})
@@ -234,6 +239,17 @@ function updateChartsOnClick(){
     );
 }
 
+function addNavItem(){
+    var contentNode = document.getElementById("content");
+    clone = contentNode.children[1].cloneNode(true);
+    charts = clone.getElementsByTagName("canvas");
+    createBarChart(charts[0]);
+    for (let i = 0; i < charts.length; i++){
+        chart = charts[i];
+    }
+    contentNode.appendChild(clone);
+    // document.getElementById("content").appendChild(clone)
+}
 
 /**
  * get data with ajax request
@@ -493,24 +509,24 @@ var entityCharts = {
 }
 
 // fetch available parties and update options in party selection
-getData("http://api.prg2021.texttechnologylab.org/parties")
-    .then(
-        (data) => {
-            if (data.success == false){
-                return;
-            }
-            select = document.getElementById('party-options');
-            content = data.result;
-            for (let i = 0; i < content.length; i++){
-                var opt = document.createElement('option');
-                opt.innerHTML = content[i].id;
-                select.appendChild(opt);
-            }
-        });
+// getData("http://api.prg2021.texttechnologylab.org/parties")
+//     .then(
+//         (data) => {
+//             if (data.success == false){
+//                 return;
+//             }
+//             select = document.getElementById('party-options');
+//             content = data.result;
+//             for (let i = 0; i < content.length; i++){
+//                 var opt = document.createElement('option');
+//                 opt.innerHTML = content[i].id;
+//                 select.appendChild(opt);
+//             }
+//         });
 
 // fetch available fractions and update options in fraction selection
 // getData("http://api.prg2021.texttechnologylab.org/fractions")
-getData("http://38.242.210.53:4567/fractions")
+getData("http://localhost:5678/fractions")
     .then(
         (data) => {
             if (data.success == false){

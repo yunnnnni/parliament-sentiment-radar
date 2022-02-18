@@ -28,6 +28,7 @@ public class RESTServices {
     }
 
     public void startServices() {
+        port(5678);
         before("/*", (req, res) -> this.logger.info(req.ip() + ": " + req.uri() + "?" + req.queryString()));
         after((Filter) (req, res) -> {
             res.header("Access-Control-Allow-Origin", "*");
