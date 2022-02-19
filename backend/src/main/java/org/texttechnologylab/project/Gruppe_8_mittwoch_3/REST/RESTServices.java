@@ -310,7 +310,7 @@ public class RESTServices {
             }
         }
         // filter annotations by minimum frequency
-	    if (req.queryParams("minimum") != null){
+	    if (req.queryParams("minimum") != null && req.queryParams("minimum") != ""){
             int minimum = Integer.parseInt(req.queryParams("minimum"));
             frequency = frequency.entrySet().stream()
                     .filter(x -> x.getValue() > minimum)
