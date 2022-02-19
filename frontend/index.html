@@ -78,47 +78,65 @@
 
             <!-- Main Content -->
             <div id="content">
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <!-- input box -->
-                    <div class="input-group">
-                        <!-- Filter speaker id -->
-                        <div class="input-group-prepend">
-                            <span class="input-group-text form-control bg-light small" id="">Speaker</span>
-                        </div>
-                        <input type="text" id="speaker-id" class="form-control bg-light small" placeholder="Type speaker id to search...">
-                        <!-- <input type="text" id="speaker-id" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true"> -->
-                        <!-- End of filter speaker id -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card shadow mb-4">
+                            <div
+                                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h2 class="m-0 font-weight-bold text-primary">Filter</h2>
+                            </div>
+                            <div class="card-body">
+                                <!-- input box -->
+                                <div class="input-group mb-9">
+                                    <!-- Filter speaker id -->
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text form-control bg-light small" id="">Speaker</span>
+                                    </div>
+                                    <input type="text" id="speaker-id" class="form-control bg-light small" placeholder="Type speaker id to search...">
+                                    <!-- <input type="text" id="speaker-id" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true"> -->
+                                    <!-- End of filter speaker id -->
 
-                        <!-- filter fraction id -->
-                        <div class="input-group-prepend">
-                            <span class="input-group-text form-control bg-light small" id="">Fraction</span>
-                        </div>
-                        <input class="form-control bg-light small" list="fraction-options" id="fraction-id" placeholder="Type fraction to search...">
-                        <datalist id="fraction-options">
-                        </datalist>
-                        <!-- End of filter fraction id -->
+                                    <!-- filter fraction id -->
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text form-control bg-light small" id="">Fraction</span>
+                                    </div>
+                                    <input class="form-control bg-light small" list="fraction-options" id="fraction-id" placeholder="Type fraction to search...">
+                                    <datalist id="fraction-options">
+                                    </datalist>
+                                    <!-- End of filter fraction id -->
 
-                        <!-- Filter speaker id -->
-                        <div class="input-group-prepend">
-                            <span class="input-group-text form-control bg-light small" id="">Minimum</span>
-                        </div>
-                        <input type="text" id="minimum-id" class="form-control bg-light small" placeholder="Type minimum of tags to search...">
-                        <!-- <input type="text" id="speaker-id" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true"> -->
-                        <!-- End of filter speaker id -->
+                                    <!-- Filter speaker id -->
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text form-control bg-light small" id="">Minimum</span>
+                                    </div>
+                                    <input type="text" id="minimum-id" class="form-control bg-light small" placeholder="Type minimum of tags to search...">
+                                    <!-- <input type="text" id="speaker-id" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true"> -->
+                                    <!-- End of filter speaker id -->
 
-                        <!-- <input type="text" id="speaker-id" class="form-control bg-light border-0 small" placeholder="Search for speaker id" aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true">
-                        <input type="text" id="fraction-id" class="form-control bg-light border-0 small" placeholder="Search for fraction" aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true">
-                        <input type="text" id="party-id" class="form-control bg-light border-0 small" placeholder="Search for party" aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true"> -->
-                        <div class="input-group-append">
-                            <!-- button to submit query -->
-                            <!-- <button class="btn btn-primary" type="button" onclick=updateChartsOnClick()> -->
-                            <button class="btn btn-primary" type="button" onclick=addNavItem()>
-                                <i class="fas fa-search fa-sm"></i>
-                            </button>
+                                </div>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text form-control bg-light small" id="">Start time</span>
+                                    </div>
+                                    <input id="timeStart" type="datetime-local"  name="time-start" class="form-control bg-light small">
+
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text form-control bg-light small" id="">End time</span>
+                                    </div>
+                                    <input id="timeEnd" type="datetime-local" name="time-end" class="form-control bg-light small">
+
+                                    <div class="input-group-append">
+                                        <!-- button to submit query -->
+                                        <!-- <button class="btn btn-primary" type="button" onclick=updateChartsOnClick()> -->
+                                        <button class="btn btn-primary" type="button" onclick=addNavItem()>
+                                            <i class="fas fa-search fa-sm"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </nav>
-                
+                </div>
 
             </div>
             <!-- End of Main Content -->
@@ -143,7 +161,7 @@
     <div class="container-fluid" id="charts_template" style="display:none">
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h2 class="h3 mb-0 text-gray-800">Dashboard</h2>
+            <h5 class="h3 mb-0 text-gray-800">Dashboard</h5>
 
             <button onClick="checkId(this)" class="btn btn-danger btn-icon-split">
                 <span class="icon text-white-50">
@@ -236,6 +254,53 @@
     </div>
     <!-- End od charts template -->
 
+    <!-- Nav bar on top -->
+        <nav class="navbar navbar-expand navbar-light bg-white static-top shadow" style="display:none">
+            <div class="card-body">
+                        <!-- input box -->
+                        <div class="input-group mb-9">
+                            <!-- Filter speaker id -->
+                            <div class="input-group-prepend">
+                                <span class="input-group-text form-control bg-light small" id="">Speaker</span>
+                            </div>
+                            <input type="text" id="speaker-id" class="form-control bg-light small" placeholder="Type speaker id to search...">
+                            <!-- <input type="text" id="speaker-id" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true"> -->
+                            <!-- End of filter speaker id -->
+
+                            <!-- filter fraction id -->
+                            <div class="input-group-prepend">
+                                <span class="input-group-text form-control bg-light small" id="">Fraction</span>
+                            </div>
+                            <input class="form-control bg-light small" list="fraction-options" id="fraction-id" placeholder="Type fraction to search...">
+                            <datalist id="fraction-options">
+                            </datalist>
+                            <!-- End of filter fraction id -->
+
+                            <!-- Filter speaker id -->
+                            <div class="input-group-prepend">
+                                <span class="input-group-text form-control bg-light small" id="">Minimum</span>
+                            </div>
+                            <input type="text" id="minimum-id" class="form-control bg-light small" placeholder="Type minimum of tags to search...">
+                            <!-- <input type="text" id="speaker-id" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" spellcheck="false" data-ms-editor="true"> -->
+                            <!-- End of filter speaker id -->
+
+                        </div>
+                        <div class="input-group">
+                            <!-- <label for="birthdaytime">Birthday (date and time):</label> -->
+                            <input type="datetime-local" id="birthdaytime" name="birthdaytime" class="form-control bg-light small">
+                            <input type="datetime-local" id="birthdaytime" name="birthdaytime" class="form-control bg-light small">
+                            <div class="input-group-append">
+                                <!-- button to submit query -->
+                                <!-- <button class="btn btn-primary" type="button" onclick=updateChartsOnClick()> -->
+                                <button class="btn btn-primary" type="button" onclick=addNavItem()>
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+        </nav>
+
+    <!-- End of nav bar-->
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>

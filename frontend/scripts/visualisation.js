@@ -44,9 +44,23 @@ function addNavItem(){
     const speakerId = document.getElementById('speaker-id').value;
     const fractionId = document.getElementById('fraction-id').value;
     const minimum = document.getElementById('minimum-id').value;
+    // const startTime = document.querySelector('input[id="timeStart"]').value + ":00.00+02:00";
+    // const endTime = document.querySelector('input[id="timeEnd"]').value + ":00.00+02:00";
+    let startTime = document.querySelector('input[id="timeStart"]').value;
+    let endTime = document.querySelector('input[id="timeEnd"]').value;
+    // dateControl.value = '2017-06-01T08:30';
 
-    const conditions = "user=" + speakerId + "&" + "fraction=" + fractionId + "&" + "minimum=" + minimum;
-    h1 = clone.getElementsByTagName("h2")[0];
+    let conditions = "user=" + speakerId + "&fraction=" + fractionId + "&minimum=" + minimum;
+                        // "time[gte]=" + startTime + "&" + "time[lte]=" + endTime;
+    if (startTime != ""){
+        startTime += ":00.00+02:00";
+        conditions = "&time[gte]=" + encodeURIComponent(startTime);
+    }
+    if (endTime!= ""){
+        endTime += ":00.00+02:00";
+        conditions += "&time[lte]=" + encodeURIComponent(endTime);
+    }
+    h1 = clone.getElementsByTagName("h5")[0];
     h1.innerHTML = conditions;
 
     createTokenChart(charts[0], conditions)

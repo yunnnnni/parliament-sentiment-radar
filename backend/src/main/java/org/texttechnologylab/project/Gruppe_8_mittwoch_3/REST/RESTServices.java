@@ -221,13 +221,15 @@ public class RESTServices {
         // filter speakers by time
         // TODO: consider how to improve this function
         try{
-            String timerange = req.queryParams("time");
-            if (timerange != null){
+            String timeStart = req.queryParams("time[gte]");
+            String timeEnd = req.queryParams("time[lte]");
+            if ((timeStart != "" && timeStart != null) || (timeEnd != "" && timeEnd != null)){
                 List<Speech> speechListFilteredByTime = new ArrayList<>();
-                Document doc = Document.parse(timerange);
+                Date gte = new Date(0); // Default date and time
+                Date lte = new Date(); // Today's date and current time
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-                Date gte = df.parse(doc.getString("gte"));
-                Date lte = df.parse(doc.getString("lte"));
+                if (timeStart != "" && timeStart != null){gte = df.parse(timeStart);}
+                if (timeEnd != "" && timeEnd != null){lte = df.parse(timeEnd);}
                 logger.info("QueryParams: gte: " + gte + ", lte: " + lte);
                 for (Speech speech: speechList){
                     Pair<Integer, Integer> protocolId = speech.getProtocolId();
