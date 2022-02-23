@@ -96,9 +96,6 @@ function createNamedEntityChart(node, query){
 				    }
 			    }],
 		    },
-		    legend: {
-			    display: false
-		    },
 		    tooltips: {
 			    backgroundColor: "rgb(255,255,255)",
 			    bodyFontColor: "#858796",
@@ -119,7 +116,12 @@ function createNamedEntityChart(node, query){
 					    return datasetLabel + ': ' + number_format(tooltipItem.yLabel);
 				    }
 			    }
-		    }
+		    },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
 	    }
     });
 

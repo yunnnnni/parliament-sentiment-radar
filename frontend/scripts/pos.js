@@ -68,9 +68,6 @@ function createPosChart(node, query){
                     }
                 }],
             },
-            legend: {
-                display: false
-            },
             tooltips: {
                 backgroundColor: "rgb(255,255,255)",
                 bodyFontColor: "#858796",
@@ -90,6 +87,11 @@ function createPosChart(node, query){
                         var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
                         return datasetLabel + ': ' + number_format(tooltipItem.yLabel);
                     }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
                 }
             }
         }

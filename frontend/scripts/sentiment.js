@@ -32,9 +32,10 @@ function createSentimentChart(node, query){
                 displayColors: false,
                 caretPadding: 10,
             },
+        },
+        plugins: {
             legend: {
                 display: false
-                // position: 'right',
             }
         }
     });

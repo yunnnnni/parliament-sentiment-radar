@@ -63,14 +63,13 @@ function addNavItem(){
     h1 = clone.getElementsByTagName("h5")[0];
     h1.innerHTML = conditions;
 
-    console.log("visualization.addNavItem()");
-    // createTokenChart(charts[0], conditions)
-    // createPosChart(charts[1], conditions)
-    // createSentimentChart(charts[2], conditions)
-    // createNamedEntityChart(charts[3], conditions)
-    // createSpeakerChart(charts[4], conditions)
-    createTestChart(charts[0], conditions)
-
+    createTokenChart(charts[0], conditions)
+    createPosChart(charts[1], conditions)
+    createSentimentChart(charts[2], conditions)
+    createNamedEntityChart(charts[3], conditions)
+    createSpeakerChart(charts[4], conditions)
+    // createTestChart(charts[0], conditions)
+    
     // contentNode.appendChild(clone);
     insertAfter(clone, contentNode.children[0]);
     // contentNode.insertAfter(clone, contentNode.children[0]);
