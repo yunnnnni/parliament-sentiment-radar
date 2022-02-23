@@ -1,5 +1,6 @@
 .DS_Store
 Daten/
 .idea
+.history
 *.jpg
 *.out
