@@ -28,6 +28,7 @@ public class RESTServices {
     }
 
     public void startServices() {
+        port(5678);
         before("/*", (req, res) -> this.logger.info(req.ip() + ": " + req.uri() + "?" + req.queryString()));
         after((Filter) (req, res) -> {
             res.header("Access-Control-Allow-Origin", "*");
@@ -39,6 +40,22 @@ public class RESTServices {
             this.factory = new ParliamentFactory_Impl();
             this.factory.initFromMongoDB(this.handler);
             return "updated";
+        });
+        get("/protocol", (req, res) -> {
+            res.type("application/json");
+            return this.protocolService(req).toJson();
+        });
+        get("/protocols", (req, res) -> {
+            res.type("application/json");
+            return this.protocolsService(req).toJson();
+        });
+        get("/agendaitem", (req, res) -> {
+            res.type("application/json");
+            return this.agendaItemService(req).toJson();
+        });
+        get("/agendaitems", (req, res) -> {
+            res.type("application/json");
+            return this.agendaItemsService(req).toJson();
         });
         get("/speech", (req, res) -> {
             res.type("application/json");
@@ -84,6 +101,98 @@ public class RESTServices {
             res.type("application/json");
             return this.namedEntitiesService(req).toJson();
         });
+    }
+
+    private Document protocolService(Request req){
+        try{
+            int session = Integer.parseInt(req.queryParams("session"));
+            int term = Integer.parseInt(req.queryParams("term"));
+            PlenaryProtocol protocol = this.factory.getProtocol(session, term);
+            return protocolToDocument(protocol);
+        } catch (Exception e){
+            return new Document();
+        }
+    }
+
+    private Document protocolsService(Request req){
+        try{
+            List<PlenaryProtocol> protocolList = this.factory.getProtocols();
+            List<Document> protocolDocumentList = new ArrayList<>();
+            for (PlenaryProtocol protocol: protocolList){
+                Document protocolDocument = protocolToDocument(protocol);
+                if (!protocolDocument.isEmpty()){
+                    protocolDocumentList.add(protocolDocument);
+                }
+            }
+//            protocolDocumentList.removeAll(Collections.singleton(null));
+            return this.packPayload(protocolDocumentList);
+        } catch (Exception e){
+            List<Document> emptyDocumentList = new ArrayList<>();
+            return this.packPayload(emptyDocumentList);
+        }
+    }
+
+    private Document agendaItemService(Request req){
+        try{
+            int session = Integer.parseInt(req.queryParams("session"));
+            int term = Integer.parseInt(req.queryParams("term"));
+            String agendaItemId = req.queryParams("id");
+            PlenaryProtocol protocol = this.factory.getProtocol(session, term);
+            AgendaItem agendaItem = protocol.getAgendaItem(agendaItemId);
+            return agendaItemToDocument(agendaItem);
+        } catch (Exception e){
+            return new Document();
+        }
+    }
+
+    private Document agendaItemsService(Request req){
+        try{
+            int session = Integer.parseInt(req.queryParams("session"));
+            int term = Integer.parseInt(req.queryParams("term"));
+            PlenaryProtocol protocol = this.factory.getProtocol(session, term);
+            List<Document> agendaItemDocumentList = new ArrayList<>();
+            for (AgendaItem agendaItem: protocol.getAgendaItems()){
+                Document agendaItemDocument = agendaItemToDocument(agendaItem);
+                if (!agendaItemDocument.isEmpty()){
+                    agendaItemDocumentList.add(agendaItemDocument);
+                }
+            }
+            return this.packPayload(agendaItemDocumentList);
+        } catch (Exception e){
+            List<Document> emptyDocumentList = new ArrayList<>();
+            return this.packPayload(emptyDocumentList);
+        }
+    }
+
+    private Document protocolToDocument(PlenaryProtocol protocol){
+        try{
+            Document document = new Document();
+            document.append("date", protocol.getDate());
+            document.append("startTime", protocol.getStartDateTimeStr());
+            document.append("endTime", protocol.getEndDateTimeStr());
+//            document.append("protocolId", protocol.getProtocolId());
+            document.append("session", protocol.getSession());
+            document.append("term", protocol.getTerm());
+            List<String> agendaItemIds = protocol.getAgendaItems().stream().map(a -> a.getId()).collect(Collectors.toList());
+            agendaItemIds.removeAll(Collections.singleton(null));
+            document.append("agendaItemIds", agendaItemIds);
+            return document;
+        } catch (Exception e){
+            return new Document();
+        }
+
+    }
+
+    private Document agendaItemToDocument(AgendaItem agendaItem){
+        try{
+            Document document = new Document();
+            document.append("id", agendaItem.getId());
+            document.append("protocolId", agendaItem.getProtocolId());
+            document.append("speechIds", agendaItem.getSpeechIds());
+            return document;
+        } catch (Exception e){
+            return new Document();
+        }
     }
 
     private Document speechService(Request req) {

@@ -89,6 +89,11 @@ public class AgendaItem_Impl implements AgendaItem {
         }
     }
 
+    @Override
+    public Set<String> getSpeechIds() {
+        return this.speechIdSet;
+    }
+
 //    @Override
 //    public List<Speech> getSpeeches() {
 //        return this.speechList;

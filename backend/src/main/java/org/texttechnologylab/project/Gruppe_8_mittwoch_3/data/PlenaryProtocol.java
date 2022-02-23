@@ -1,6 +1,7 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data;
 
 import org.bson.Document;
+import org.javatuples.Pair;
 
 import java.util.Date;
 import java.util.List;
@@ -19,14 +20,17 @@ public interface PlenaryProtocol {
 
     String getDate();
     Date getStartDateTime();
+    String getStartDateTimeStr();
     Date getEndDateTime();
+    String getEndDateTimeStr();
 
+    Pair<Integer, Integer> getProtocolId();
     /**
      * getter for a target tagesordnungspunkt in this protocol
-     * @param numberIndex index of the tagesordnungspunkt
+     * @param  agendaItemId index of the tagesordnungspunkt
      * @return target tagesordnungspunkt
      */
-    AgendaItem getAgendaItem(String numberIndex);
+    AgendaItem getAgendaItem(String agendaItemId);
 
     List<AgendaItem> getAgendaItems();
 

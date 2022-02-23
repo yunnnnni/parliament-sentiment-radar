@@ -4,6 +4,7 @@ import org.bson.Document;
 import org.javatuples.Pair;
 
 import java.util.List;
+import java.util.Set;
 
 public interface AgendaItem {
     /**
@@ -26,7 +27,7 @@ public interface AgendaItem {
      * getter for attribute Reden
      * @return list of reden in this Tagesordnungspunkt
      */
-//    public abstract List<Speech> getSpeeches();
+    public Set<String> getSpeechIds();
 
     /**
      * convert class instance to BSON Document,

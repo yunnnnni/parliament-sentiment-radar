@@ -178,12 +178,38 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
     }
 
     @Override
+    public String getStartDateTimeStr() {
+        SimpleDateFormat sdf;
+        sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        sdf.setTimeZone(TimeZone.getTimeZone("CET"));
+        return sdf.format(this.startTime);
+    }
+
+    @Override
     public Date getEndDateTime() {
         return this.endTime;
     }
 
     @Override
-    public AgendaItem getAgendaItem(String numberIndex) {
+    public String getEndDateTimeStr() {
+        SimpleDateFormat sdf;
+        sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        sdf.setTimeZone(TimeZone.getTimeZone("CET"));
+        return sdf.format(this.endTime);
+    }
+
+    @Override
+    public Pair<Integer, Integer> getProtocolId() {
+        return new Pair<>(this.session, this.term);
+    }
+
+    @Override
+    public AgendaItem getAgendaItem(String agendaItemId) {
+        for (AgendaItem item: this.agendaItems){
+            if (item.getId().equals(agendaItemId)){
+                return item;
+            }
+        }
         return null;
     }
 
