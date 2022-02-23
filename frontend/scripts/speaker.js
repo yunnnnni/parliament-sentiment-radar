@@ -78,8 +78,8 @@ function createSpeakerChart(node, query){
 			xPadding: 15,
 			yPadding: 15,
 			displayColors: false,
-			intersect: false,
 			mode: 'index',
+			intersect: false,
 			caretPadding: 10,
 			callbacks: {
 				label: function(tooltipItem, chart) {
@@ -87,7 +87,11 @@ function createSpeakerChart(node, query){
 					return datasetLabel + ': ' + number_format(tooltipItem.yLabel);
 				}
 			}
-		}
+		},
+        hover: {
+            mode: 'index',
+            intersect: false
+        }
 	}
     });
 

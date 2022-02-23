@@ -41,7 +41,17 @@ paths:
         description: name of the fraction
         required: false
         type: string
-      - name: time
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
         in: query
         description: time range to filter speeches
         required: false
@@ -70,14 +80,24 @@ paths:
         description: name of the fraction
         required: false
         type: string
-      - name: time
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
         in: query
         description: time range to filter speeches
         required: false
         type: string
       responses:
         200:
-          description: successful operation
+          description: successful operation, return list of speech ids
           schema:
             $ref: '#/definitions/Speeches'
         # 400:
@@ -152,6 +172,32 @@ paths:
     get:
       tags:
       - annotation
+      parameters:
+      - name: user
+        in: query
+        description: id of the speaker
+        required: false
+        type: string
+      - name: fraction
+        in: query
+        description: name of the fraction
+        required: false
+        type: string
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
       responses:
         200:
           description: successful operation
@@ -161,10 +207,75 @@ paths:
         #   description: Invalid username supplied
         # 404:
         #   description: User not found
+  /tokens:
+    get:
+      tags:
+      - annotation
+      parameters:
+      - name: user
+        in: query
+        description: id of the speaker
+        required: false
+        type: string
+      - name: fraction
+        in: query
+        description: name of the fraction
+        required: false
+        type: string
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/tokens'
+        # 400:
+        #   description: Invalid username supplied
+        # 404:
+        #   description: User not found
   /pos:
     get:
       tags:
       - annotation
+      parameters:
+      - name: user
+        in: query
+        description: id of the speaker
+        required: false
+        type: string
+      - name: fraction
+        in: query
+        description: name of the fraction
+        required: false
+        type: string
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
       responses:
         200:
           description: successful operation
@@ -178,6 +289,32 @@ paths:
     get:
       tags:
       - annotation
+      parameters:
+      - name: user
+        in: query
+        description: id of the speaker
+        required: false
+        type: string
+      - name: fraction
+        in: query
+        description: name of the fraction
+        required: false
+        type: string
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
       responses:
         200:
           description: successful operation
@@ -191,6 +328,32 @@ paths:
     get:
       tags:
       - annotation
+      parameters:
+      - name: user
+        in: query
+        description: id of the speaker
+        required: false
+        type: string
+      - name: fraction
+        in: query
+        description: name of the fraction
+        required: false
+        type: string
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
       responses:
         200:
           description: successful operation
@@ -239,7 +402,7 @@ definitions:
             example: https://bilddatenbank.bundestag.de/fotos/file7e1xgdko1bk63jb111l.jpg
           description:
             type: string
-            example: "Dehm, Diether Beschreibung: Dr. Diether Dehm, DIE LINKE., Bundestagsabgeordneter, Abgeordneter, Mitglied des Deutschen Bundestages, MdB, Rede, Deutscher Bundestag, 132. Sitzung, TOP 1, Thema: Europäischer Rat und EU-Reformvertrag, Redner 10.; Rednerpult.\n\rFotograf/in: Lichtblick/Achim Melde"
+            example: "Dehm, Diether Beschreibung: Dr. Diether Dehm, DIE LINKE., Bundestagsabgeordneter, Abgeordneter, Mitglied des Deutschen Bundestages, MdB, Rede, Deutscher Bundestag, 132. Sitzung, TOP 1, Thema: Europ?ischer Rat und EU-Reformvertrag, Redner 10.; Rednerpult.\n\rFotograf/in: Lichtblick/Achim Melde"
       speechIds:
         type: array
         items:
@@ -251,7 +414,8 @@ definitions:
       result:
         type: array
         items:
-          $ref: '#/definitions/Speech'
+          type: string
+          description: speechId
       success:
         type: boolean
   Speech:
@@ -282,7 +446,7 @@ definitions:
             label:
               type: string
           example:   # Sample object
-            id: Sehr geehrter Herr Präsident! Liebe Kolleginnen und Kollegen!
+            id: Sehr geehrter Herr Pr?sident! Liebe Kolleginnen und Kollegen!
             name: J_1
       annotations:
         type: object
@@ -301,7 +465,7 @@ definitions:
             type: array
             items:
               type: string
-              example: Europäische Union
+              example: Europ?ische Union
           tokens:
             type: array
             items:
@@ -311,7 +475,7 @@ definitions:
             type: array
             items:
               type: string
-              example: Die 16 Unterschriften der Länder sind da.
+              example: Die 16 Unterschriften der L?nder sind da.
           POS:
             type: array
             items:
@@ -396,6 +560,20 @@ definitions:
           type: object
           properties:
             pos:
+              type: string
+            count: 
+              type: integer
+      success:
+        type: boolean
+  tokens:
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          type: object
+          properties:
+            token:
               type: string
             count: 
               type: integer
