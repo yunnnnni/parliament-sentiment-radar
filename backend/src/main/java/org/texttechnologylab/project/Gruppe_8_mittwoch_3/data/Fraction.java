@@ -2,6 +2,8 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data;
 
 import org.bson.Document;
 
+import java.util.List;
+
 public interface Fraction {
     /**
      * getter for attribute this.name
@@ -14,6 +16,10 @@ public interface Fraction {
      * @param name name of the fraktion
      */
     void setName(String name);
+
+    void addSpeaker(Speaker speaker);
+
+    List<String> getSpeakerIds();
 
     Document toDocument();
 }

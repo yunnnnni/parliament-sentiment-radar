@@ -36,6 +36,15 @@ public class MongoDBConnectionHandler {
         }
     }
 
+    public void writeDocuments(String collectionName, List<Document> documents){
+        try{
+            MongoCollection<Document> collection = this.getCollection(collectionName);
+            collection.insertMany(documents);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public void writeDocument(String collectionName, Document document){
         try{
             MongoCollection<Document> collection = this.getCollection(collectionName);

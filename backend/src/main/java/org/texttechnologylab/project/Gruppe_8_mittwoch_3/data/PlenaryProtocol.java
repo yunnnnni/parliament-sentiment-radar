@@ -2,22 +2,24 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data;
 
 import org.bson.Document;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public interface PlenaryProtocol {
     /**
      * getter for attribute this.rednerList
      * @return redner list in the protocol
      */
-    List<Speaker> getSpeakerList();
+    Set<String> getSpeakerIdSet();
 
-    List<Speech> getSpeechList();
+    int getSession();
 
-    /**
-     * getter for attribute sitzungsNr
-     * @return sitzungsNr of this protocol
-     */
-    String getPlenaryNr();
+    int getTerm();
+
+    String getDate();
+    Date getStartDateTime();
+    Date getEndDateTime();
 
     /**
      * getter for a target tagesordnungspunkt in this protocol

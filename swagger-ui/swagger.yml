@@ -1,0 +1,637 @@
+swagger: '2.0'
+info:
+  description: |
+    Parliament API - Gruppe_8_mittwoch_3
+  version: 1.0.0
+  title: Swagger Parliament API
+  # termsOfService: http://swagger.io/terms/
+  contact:
+    email: s0425513@stud.uni-frankfurt.de
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+# host: petstore.swagger.io
+# basePath: /v2
+tags:
+- name: speaker
+  description: Return speakers
+- name: speech
+  description: Return speeches
+- name: fraction
+  description: Return fractions
+- name: annotation
+  description: Return annotations
+- name: statistic
+  description: Return statistics for speakers and speeches 
+# schemes:
+# - http
+paths:
+  /speakers:
+    get:
+      tags:
+      - speaker
+      parameters:
+      - name: user
+        in: query
+        description: id of the speaker
+        required: false
+        type: string
+      - name: fraction
+        in: query
+        description: name of the fraction
+        required: false
+        type: string
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Speakers'
+        # 400:
+        #   description: Invalid username supplied
+        # 404:
+        #   description: User not found
+  /speeches:
+    get:
+      tags:
+      - speech
+      parameters:
+      - name: user
+        in: query
+        description: id of the speaker
+        required: false
+        type: string
+      - name: fraction
+        in: query
+        description: name of the fraction
+        required: false
+        type: string
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      responses:
+        200:
+          description: successful operation, return list of speech ids
+          schema:
+            $ref: '#/definitions/Speeches'
+        # 400:
+        #   description: Invalid username supplied
+        # 404:
+        #   description: User not found
+  /speech:
+    get:
+      tags:
+      - speech
+      parameters:
+      - name: id
+        in: query
+        description: The name that needs to be fetched. Use user1 for testing. 
+        required: false
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Speech'
+        # 400:
+        #   description: Invalid username supplied
+        # 404:
+        #   description: User not found
+  /fractions:
+    get:
+      tags:
+      - fraction
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Fractions'
+        # 400:
+        #   description: Invalid username supplied
+        # 404:
+        #   description: User not found
+  /fraction:
+    get:
+      tags:
+      - fraction
+      parameters:
+      - name: name
+        in: query
+        description: Fraction name
+        required: false
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Fraction'
+        # 400:
+        #   description: Invalid username supplied
+        # 404:
+        #   description: User not found
+  /statistic:
+    get:
+      tags:
+      - statistic
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Statistics'
+        # 400:
+        #   description: Invalid username supplied
+        # 404:
+        #   description: User not found
+  /sentiment:
+    get:
+      tags:
+      - annotation
+      parameters:
+      - name: user
+        in: query
+        description: id of the speaker
+        required: false
+        type: string
+      - name: fraction
+        in: query
+        description: name of the fraction
+        required: false
+        type: string
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Sentiments'
+        # 400:
+        #   description: Invalid username supplied
+        # 404:
+        #   description: User not found
+  /tokens:
+    get:
+      tags:
+      - annotation
+      parameters:
+      - name: user
+        in: query
+        description: id of the speaker
+        required: false
+        type: string
+      - name: fraction
+        in: query
+        description: name of the fraction
+        required: false
+        type: string
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/tokens'
+        # 400:
+        #   description: Invalid username supplied
+        # 404:
+        #   description: User not found
+  /pos:
+    get:
+      tags:
+      - annotation
+      parameters:
+      - name: user
+        in: query
+        description: id of the speaker
+        required: false
+        type: string
+      - name: fraction
+        in: query
+        description: name of the fraction
+        required: false
+        type: string
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/POS'
+        # 400:
+        #   description: Invalid username supplied
+        # 404:
+        #   description: User not found
+  /namedEntities:
+    get:
+      tags:
+      - annotation
+      parameters:
+      - name: user
+        in: query
+        description: id of the speaker
+        required: false
+        type: string
+      - name: fraction
+        in: query
+        description: name of the fraction
+        required: false
+        type: string
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/NamedEntities'
+        # 400:
+        #   description: Invalid username supplied
+        # 404:
+        #   description: User not found
+  /dependencies:
+    get:
+      tags:
+      - annotation
+      parameters:
+      - name: user
+        in: query
+        description: id of the speaker
+        required: false
+        type: string
+      - name: fraction
+        in: query
+        description: name of the fraction
+        required: false
+        type: string
+      - name: minimum
+        in: query
+        description: minimum frequency
+        required: false
+        type: integer
+      - name: time[gte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      - name: time[lte]
+        in: query
+        description: time range to filter speeches
+        required: false
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Dependencies'
+        # 400:
+        #   description: Invalid username supplied
+        # 404:
+        #   description: User not found
+definitions:
+  Speakers:
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Speaker'
+      success:
+        type: boolean
+  Speaker:
+    type: object
+    properties:
+      firstname:
+        type: string
+        example: Diether
+      name:
+        type: string
+        example: Dehm
+      id:
+        type: string
+        example: 11000365
+      titel:
+        type: string
+        example: Dr.
+      fraction:
+        type: string
+        example: DIE LINKE
+      role:
+        type: string
+        example: 
+      image:
+        type: object
+        properties:
+          url:
+            type: string
+            example: https://bilddatenbank.bundestag.de/fotos/file7e1xgdko1bk63jb111l.jpg
+          description:
+            type: string
+            example: "Dehm, Diether Beschreibung: Dr. Diether Dehm, DIE LINKE., Bundestagsabgeordneter, Abgeordneter, Mitglied des Deutschen Bundestages, MdB, Rede, Deutscher Bundestag, 132. Sitzung, TOP 1, Thema: Europ?ischer Rat und EU-Reformvertrag, Redner 10.; Rednerpult.\n\rFotograf/in: Lichtblick/Achim Melde"
+      speechIds:
+        type: array
+        items:
+          type: string
+          example: ID1910206100
+  Speeches:
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          type: string
+          description: speechId
+      success:
+        type: boolean
+  Speech:
+    type: object
+    properties:
+      date:
+        type: string
+        example: 15.05.2019
+      protocolId:
+        type: array
+        items:
+          type: integer
+          format: int64
+          example: [1, 19]
+      speaker:
+        type: string
+        example: 11004323
+      id:
+        type: string
+        example: ID1910000100
+      texts:
+        type: array
+        items:
+          type: object
+          properties:
+            text:
+              type: string
+            label:
+              type: string
+          example:   # Sample object
+            id: Sehr geehrter Herr Pr?sident! Liebe Kolleginnen und Kollegen!
+            name: J_1
+      annotations:
+        type: object
+        properties:
+          persons:
+            type: array
+            items:
+              type: string
+              example: Bundesminister Karliczek
+          locations:
+            type: array
+            items:
+              type: string
+              example: Deutschland
+          organisations:
+            type: array
+            items:
+              type: string
+              example: Europ?ische Union
+          tokens:
+            type: array
+            items:
+              type: string
+              example: moderne
+          sentences:
+            type: array
+            items:
+              type: string
+              example: Die 16 Unterschriften der L?nder sind da.
+          POS:
+            type: array
+            items:
+              type: string
+              example: NN
+          dependencies:
+            type: array
+            items:
+              type: string
+              example: moderne
+          sentiments:
+            type: array
+            items:
+              type: number
+              example: 0.7177
+  Fraction:
+    type: object
+    properties:
+      id:
+        type: string
+      members:
+        type: integer
+      memberIds:
+        type: array
+        items:
+          type: string
+  Fractions:
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Fraction'
+      success:
+        type: boolean
+  Statistics:
+    type: object
+    properties:
+      result:
+        type: object
+        properties:
+          speakers:
+            type: array
+            items:
+              type: object
+              properties:
+                count: 
+                  type: integer
+                id:
+                  type: string
+          speeches:
+            type: array
+            items:
+              type: object
+              properties:
+                length: 
+                  type: integer
+                id:
+                  type: string
+      success:
+        type: boolean
+  Sentiments:
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          type: object
+          properties:
+            count: 
+              type: integer
+            sentiment:
+              type: string
+      success:
+        type: boolean
+  POS:
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          type: object
+          properties:
+            pos:
+              type: string
+            count: 
+              type: integer
+      success:
+        type: boolean
+  tokens:
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          type: object
+          properties:
+            token:
+              type: string
+            count: 
+              type: integer
+      success:
+        type: boolean
+  NamedEntities:
+    type: object
+    properties:
+      result:
+        type: object
+        properties:
+          persons:
+            type: array
+            items:
+              type: object
+              properties:
+                element:
+                  type: string
+                count: 
+                  type: integer
+          organisations:
+            type: array
+            items:
+              type: object
+              properties:
+                element:
+                  type: string
+                count: 
+                  type: integer
+          locations:
+            type: array
+            items:
+              type: object
+              properties:
+                element:
+                  type: string
+                count: 
+                  type: integer
+  Dependencies:
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          type: object
+          properties:
+            dependency:
+              type: string
+            count: 
+              type: integer
+      success:
+        type: boolean
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+# Added by API Auto Mocking Plugin
+host: 38.242.210.53:4567
+# basePath: 
+schemes:
+ # - https
+ - http
