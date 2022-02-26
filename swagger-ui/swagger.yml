@@ -13,17 +13,17 @@ info:
 # host: petstore.swagger.io
 # basePath: /v2
 tags:
-- name: protocol
+- name: Protocol
   description: Return protocols
-- name: speaker
+- name: Speaker
   description: Return speakers
-- name: speech
+- name: Speech
   description: Return speeches
-- name: fraction
+- name: Fraction
   description: Return fractions
-- name: annotation
+- name: Annotation
   description: Return annotations
-- name: statistic
+- name: Statistic
   description: Return statistics for speakers and speeches 
 # schemes:
 # - http
@@ -31,7 +31,7 @@ paths:
   /protocol:
     get:
       tags:
-      - protocol
+      - Protocol
       parameters:
       - name: session
         in: query
@@ -51,7 +51,7 @@ paths:
   /protocols:
     get:
       tags:
-      - protocol
+      - Protocol
       responses:
         200:
           description: successful operation
@@ -60,7 +60,7 @@ paths:
   /agendaitem:
     get:
       tags:
-      - protocol
+      - Protocol
       parameters:
       - name: session
         in: query
@@ -85,7 +85,7 @@ paths:
   /agendaitems:
     get:
       tags:
-      - protocol
+      - Protocol
       parameters:
       - name: session
         in: query
@@ -105,7 +105,7 @@ paths:
   /speakers:
     get:
       tags:
-      - speaker
+      - Speaker
       parameters:
       - name: user
         in: query
@@ -144,7 +144,7 @@ paths:
   /speeches:
     get:
       tags:
-      - speech
+      - Speech
       parameters:
       - name: user
         in: query
@@ -183,7 +183,7 @@ paths:
   /speech:
     get:
       tags:
-      - speech
+      - Speech
       parameters:
       - name: id
         in: query
@@ -202,7 +202,7 @@ paths:
   /fractions:
     get:
       tags:
-      - fraction
+      - Fraction
       responses:
         200:
           description: successful operation
@@ -215,7 +215,7 @@ paths:
   /fraction:
     get:
       tags:
-      - fraction
+      - Fraction
       parameters:
       - name: name
         in: query
@@ -234,7 +234,7 @@ paths:
   /statistic:
     get:
       tags:
-      - statistic
+      - Statistic
       responses:
         200:
           description: successful operation
@@ -247,7 +247,7 @@ paths:
   /sentiment:
     get:
       tags:
-      - annotation
+      - Annotation
       parameters:
       - name: user
         in: query
@@ -286,7 +286,7 @@ paths:
   /tokens:
     get:
       tags:
-      - annotation
+      - Annotation
       parameters:
       - name: user
         in: query
@@ -325,7 +325,7 @@ paths:
   /pos:
     get:
       tags:
-      - annotation
+      - Annotation
       parameters:
       - name: user
         in: query
@@ -364,7 +364,7 @@ paths:
   /namedEntities:
     get:
       tags:
-      - annotation
+      - Annotation
       parameters:
       - name: user
         in: query
@@ -403,7 +403,7 @@ paths:
   /dependencies:
     get:
       tags:
-      - annotation
+      - Annotation
       parameters:
       - name: user
         in: query
@@ -478,7 +478,7 @@ definitions:
             example: https://bilddatenbank.bundestag.de/fotos/file7e1xgdko1bk63jb111l.jpg
           description:
             type: string
-            example: "Dehm, Diether Beschreibung: Dr. Diether Dehm, DIE LINKE., Bundestagsabgeordneter, Abgeordneter, Mitglied des Deutschen Bundestages, MdB, Rede, Deutscher Bundestag, 132. Sitzung, TOP 1, Thema: Europ?ischer Rat und EU-Reformvertrag, Redner 10.; Rednerpult.\n\rFotograf/in: Lichtblick/Achim Melde"
+            example: "Dehm, Diether Beschreibung: Dr. Diether Dehm, DIE LINKE., Bundestagsabgeordneter, Abgeordneter, Mitglied des Deutschen Bundestages, MdB, Rede, Deutscher Bundestag, 132. Sitzung, TOP 1, Thema: Europäischer Rat und EU-Reformvertrag, Redner 10.; Rednerpult.\n\rFotograf/in: Lichtblick/Achim Melde"
       speechIds:
         type: array
         items:
@@ -522,7 +522,7 @@ definitions:
             label:
               type: string
           example:   # Sample object
-            id: Sehr geehrter Herr Pr?sident! Liebe Kolleginnen und Kollegen!
+            id: Sehr geehrter Herr Präsident! Liebe Kolleginnen und Kollegen!
             name: J_1
       annotations:
         type: object
@@ -541,7 +541,7 @@ definitions:
             type: array
             items:
               type: string
-              example: Europ?ische Union
+              example: Europäische Union
           tokens:
             type: array
             items:
@@ -551,7 +551,7 @@ definitions:
             type: array
             items:
               type: string
-              example: Die 16 Unterschriften der L?nder sind da.
+              example: Die 16 Unterschriften der Länder sind da.
           POS:
             type: array
             items:
