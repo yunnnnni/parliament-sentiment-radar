@@ -13,6 +13,7 @@ import java.util.*;
 /**
  * class for parliament factory
  * implements interface ParliamentFactory
+ * this class is used to store speech, speaker, fraction and protocol uniquely
  */
 public class ParliamentFactory_Impl implements ParliamentFactory {
     // use TreeMap to ensure data uniqueness and retrieval performance
@@ -29,8 +30,8 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     *
-     * @param protocolDirectory
+     * read xml files from directory, parse and save information into factory
+     * @param protocolDirectory directory with xml files
      */
     @Override
     public void initFromDirectory(String protocolDirectory) {
@@ -47,8 +48,9 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * link to the collections in mongodb
-     * @param handler the object of class MongoDBConnectionHandler
+     * read data from mongodb and init factory
+     * used by RESTservices
+     * @param handler MongoDBConnectionHandler instance
      */
     @Override
     public void initFromMongoDB(MongoDBConnectionHandler handler) {
@@ -61,7 +63,7 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * read protocols from the specified collection protocols in mongodb
+     * sub function to init protocols from mongoDB
      */
     private void initProtocolsFromMongoDB(){
         FindIterable<Document> iterDoc = this.handler.getCollection("protocols").find();
@@ -77,7 +79,7 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * read the members from the specified collection parliament_members in mongodb
+     * sub function to init parliament members from mongoDB
      */
     private void initParliamentMembersFromMongoDB(){
         FindIterable<Document> iterDoc = this.handler.getCollection("parliament_members").find();
@@ -93,7 +95,7 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * read the speakers from the specified collection other_speakers in mongodb
+     * sub function to init other speakers from mongoDB
      */
     private void initOtherSpeakersFromMongoDB(){
         FindIterable<Document> iterDoc = this.handler.getCollection("other_speakers").find();
@@ -109,7 +111,7 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * read the speeches from the specified collection speeches in mongodb
+     * sub function to init speeches from mongoDB
      */
     private void initSpeechesFromMongoDB(){
         FindIterable<Document> iterDoc = this.handler.getCollection("speeches").find();
@@ -125,7 +127,7 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * read the fractions from the specified collection fractions in mongodb
+     * sub function to init fractions from mongoDB
      */
     private void initFractionsFromMongoDB(){
         FindIterable<Document> iterDoc = this.handler.getCollection("fractions").find();
@@ -142,8 +144,8 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
 
 
     /**
-     * get the protocols
-     * @return the list of objects of the PlenaryProtocol class
+     * get all available protocols from factory
+     * @return list of protocols
      */
     @Override
     public List<PlenaryProtocol> getProtocols() {
@@ -155,8 +157,8 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * get the speeches
-     * @return
+     * get all available speeches from factory
+     * @return list of speeches
      */
     @Override
     public List<Speech> getSpeeches() {
@@ -168,9 +170,9 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     *
-     * @param speechIdList
-     * @return
+     * filter speeches with a list of speechIds
+     * @param speechIdList list of speech ids
+     * @return list of speeches that meet the filter conditions
      */
     @Override
     public List<Speech> getSpeeches(Set<String> speechIdList) {
@@ -194,8 +196,8 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     *
-     * @return
+     * get all available speakers
+     * @return list of speakers
      */
     @Override
     public List<Speaker> getSpeakers() {
@@ -207,9 +209,9 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     *
-     * @param fractionName
-     * @return
+     * filter speakers by fractionName
+     * @param fractionName name of the fraction
+     * @return list of speakers belong to this fraction
      */
     @Override
     public List<Speaker> getSpeakersOfFraction(String fractionName) {
@@ -231,8 +233,8 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     *
-     * @return
+     * get all available parliament members
+     * @return list of parliament members
      */
     @Override
     public List<Speaker> getParliamentMembers() {
@@ -244,8 +246,8 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     *
-     * @return
+     * get all available other speakers
+     * @return list of other speakers
      */
     @Override
     public List<Speaker> getOtherSpeakers() {
@@ -257,8 +259,8 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     *
-     * @return
+     * get all available fractions
+     * @return list of fractions
      */
     @Override
     public List<Fraction> getFractions() {
@@ -271,9 +273,9 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
 
     /**
      * get the specified plenary protocol
-     * @param session number of the pleary protocol
-     * @param term wahlpriode
-     * @return plenary protocol
+     * @param session Sitzungsnummer
+     * @param term Wahlperiode
+     * @return target plenary protocol
      */
     @Override
     public PlenaryProtocol getProtocol(int session, int term) {
@@ -285,9 +287,9 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * get the speech based on the id
-     * @param id id of the speech
-     * @return the speech
+     * get single speech by speechId
+     * @param id id of the target speech
+     * @return target speech
      */
     @Override
     public Speech getSpeech(String id) {
@@ -299,9 +301,9 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * get the speaker based on the id
-     * @param id id of the speaker
-     * @return speaker
+     * get single speaker by speakerId
+     * @param id id of the target speaker
+     * @return target speaker
      */
     @Override
     public Speaker getSpeaker(String id) {
@@ -313,9 +315,9 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * get the fraction based on the fraction's name
+     * get single fraction by fractionName
      * @param name name of the fraction
-     * @return fraction
+     * @return target fraction
      */
     @Override
     public Fraction getFraction(String name) {
@@ -327,9 +329,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * add Protocol to protocolMap
-     * @param protocol object of the PlenaryProtocol class
-     * @return
+     * add Protocol to factory
+     * @param protocol protocol to add
+     * @return if protocol to add not exists in factory, return this new protocol
+     *          if protocol already exists in factory, return the existed protocol
      */
     @Override
     public PlenaryProtocol addProtocol(PlenaryProtocol protocol) {
@@ -342,9 +345,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * add speech to speschMap and speaker's id to speakerMap
-     * @param speech object of the Speech class
-     * @return
+     * add speech to factory
+     * @param speech speech to add
+     * @return if speech to add not exists in factory, return this new speech
+     *          if speech already exists in factory, return the existed speech
      */
     @Override
     public Speech addSpeech(Speech speech) {
@@ -361,9 +365,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * add speaker to speakerMap
-     * @param speaker object of the Speaker class
-     * @return
+     * add speaker to factory
+     * @param speaker speaker to add
+     * @return if speaker to add not exists in factory, return this new speaker
+     *          if speaker already exists in factory, return the existed speaker
      */
     @Override
     public Speaker addSpeaker(Speaker speaker) {
@@ -381,9 +386,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * add fraction to fractionMap
-     * @param fraction object of the Fraction class
-     * @return
+     * add fraction to factory
+     * @param fraction fraction to add
+     * @return if fraction to add not exists in factory, return this new fraction
+     *          if fraction already exists in factory, return the existed fraction
      */
     @Override
     public Fraction addFraction(Fraction fraction) {
@@ -396,9 +402,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * create a object of the PlenaryProtocol class from the xml file
-     * @param xmlFile xml file
-     * @return
+     * add protocol to factory
+     * @param xmlFile xml file of this protocol
+     * @return if protocol to add not exists in factory, return this new protocol
+     *          if protocol already exists in factory, return the existed protocol
      */
     @Override
     public PlenaryProtocol addProtocol(File xmlFile) {
@@ -407,9 +414,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * create a object of the Speech class from the speech element
-     * @param speechElement element for speech
-     * @return
+     * add speech to factory
+     * @param speechElement element for this speech
+     * @return if speech to add not exists in factory, return this new speech
+     *          if speech already exists in factory, return the existed speech
      */
     @Override
     public Speech addSpeech(Element speechElement) {
@@ -418,9 +426,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * create a object of the Speaker class from the speaker element
+     * add speaker into factory
      * @param speakerElement element for speaker
-     * @return
+     * @return if speaker to add not exists in factory, return this new speaker
+     *          if speaker already exists in factory, return the existed speaker
      */
     @Override
     public Speaker addSpeaker(Element speakerElement) {
@@ -429,9 +438,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * create a object of the Speaker class from the fraction's name
+     * add fraction into factory
      * @param name the name of fraction
-     * @return
+     * @return if fraction to add not exists in factory, return this new fraction
+     *          if fraction already exists in factory, return the existed fraction
      */
     @Override
     public Fraction addFraction(String name) {
@@ -440,9 +450,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * create the object of the PlenaryProtocol class from mongodb document
+     * add protocol into factory
      * @param protocolDocument document in mongodb that holds the relevant data about plenary protocol
-     * @return
+     * @return if protocol to add not exists in factory, return this new protocol
+     *          if protocol already exists in factory, return the existed protocol
      */
     @Override
     public PlenaryProtocol addProtocol(Document protocolDocument) {
@@ -451,9 +462,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * create the object of the Speech class from mongodb document
+     * add speech into factory
      * @param speechDocument document in mongodb that holds the relevant data about speech
-     * @return
+     * @return if speech to add not exists in factory, return this new speech
+     *          if speech already exists in factory, return the existed speech
      */
     @Override
     public Speech addSpeech(Document speechDocument) {
@@ -462,9 +474,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * create the object of the Speaker class from mongodb document
+     * add speaker into factory
      * @param speakerDocument document in mongodb that holds the relevant data about speaker
-     * @return
+     * @return if speaker to add not exists in factory, return this new speaker
+     *          if speaker already exists in factory, return the existed speaker
      */
     @Override
     public Speaker addSpeaker(Document speakerDocument) {
@@ -473,9 +486,10 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
     }
 
     /**
-     * create the object of the Fraction class from mongodb document
+     * add fraction into factory
      * @param fractionDocument document in mongodb that holds the relevant data about fraction
-     * @return
+     * @return if fraction to add not exists in factory, return this new fraction
+     *          if fraction already exists in factory, return the existed fraction
      */
     @Override
     public Fraction addFraction(Document fractionDocument) {

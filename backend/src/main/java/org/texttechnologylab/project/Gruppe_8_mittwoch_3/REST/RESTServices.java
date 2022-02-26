@@ -35,7 +35,7 @@ public class RESTServices {
      * set routes to start REST services
      */
     public void startServices() {
-        port(5678);
+//        port(5678);
         // debug output
         before("/*", (req, res) -> this.logger.info(req.ip() + ": " + req.uri() + "?" + req.queryString()));
         // allow cross origin request
