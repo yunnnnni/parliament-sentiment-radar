@@ -19,6 +19,11 @@ import java.util.List;
 
 public class ProtocolFileReader {
 
+    /**
+     * Main function
+     * get protocol directory
+     * @param args arg unused
+     */
     public static void main(String[] args) {
         String protocolDirectory = "backend/Daten/test/";
         List<PlenaryProtocol> protocolList = readProtocols(protocolDirectory);

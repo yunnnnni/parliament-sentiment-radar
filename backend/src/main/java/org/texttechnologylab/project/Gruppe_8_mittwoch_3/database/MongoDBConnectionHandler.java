@@ -14,12 +14,18 @@ import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-
+/**
+ *  link mongodb and implement related operations
+ */
 public class MongoDBConnectionHandler {
     private MongoDBConfig config;
     private MongoDatabase database;
     private Map<String, MongoCollection<Document>> collections = new HashMap<>();
 
+    /**
+     * use the data stored in the config file and use it to link to mongodb
+     * @param configPath path of the config file
+     */
     public MongoDBConnectionHandler(String configPath){
         // Properties config = this.readConfig("Daten/config.json");
         try {
@@ -36,6 +42,11 @@ public class MongoDBConnectionHandler {
         }
     }
 
+    /**
+     * write documents to the specified collection in mongodb
+     * @param collectionName collection name
+     * @param documents documents
+     */
     public void writeDocuments(String collectionName, List<Document> documents){
         try{
             MongoCollection<Document> collection = this.getCollection(collectionName);
@@ -45,6 +56,11 @@ public class MongoDBConnectionHandler {
         }
     }
 
+    /**
+     * write a document to the specified collection in mongodb
+     * @param collectionName the specified collection name, which collection to write to
+     * @param document document
+     */
     public void writeDocument(String collectionName, Document document){
         try{
             MongoCollection<Document> collection = this.getCollection(collectionName);
@@ -54,6 +70,12 @@ public class MongoDBConnectionHandler {
         }
     }
 
+    /**
+     * by calling this method, you can get the document form the collection specified in mongodb
+     * @param collectionName the specified collection name
+     * @param query
+     * @return document
+     */
     public Document getDocument(String collectionName, Bson query){
         try{
             MongoCollection<Document> collection = this.getCollection(collectionName);
@@ -67,6 +89,13 @@ public class MongoDBConnectionHandler {
         }
     }
 
+    /**
+     * update the document stored in the specified collection in mongodb.
+     * @param collectionName the specified collection name
+     * @param query
+     * @param newDocument the new document
+     * @return result, does the update succeed
+     */
     public boolean updataDocument(String collectionName, Bson query, Document newDocument){
         MongoCollection<Document> collection = this.getCollection(collectionName);
         try{
@@ -86,6 +115,12 @@ public class MongoDBConnectionHandler {
         return false;
     }
 
+    /**
+     * delete the specified document in the specified collection in mongodb
+     * @param collectionName the specified collection name
+     * @param query
+     * @return result, does the delete succeed
+     */
     public Boolean deleteDocument(String collectionName, Bson query){
         try {
             MongoCollection<Document> collection = this.getCollection(collectionName);
@@ -99,6 +134,11 @@ public class MongoDBConnectionHandler {
         }
     }
 
+    /**
+     * link to the specified collection in mongodb
+     * @param collectionName the specified collection name
+     * @return collection
+     */
     public MongoCollection<Document> getCollection(String collectionName) {
         try {
             return this.collections.get(collectionName);
@@ -111,6 +151,12 @@ public class MongoDBConnectionHandler {
         }
     }
 
+    /**
+     * read the data stored in the config file
+     * @param path path of the config file
+     * @return
+     * @throws IOException
+     */
     private MongoDBConfig readConfig(String path) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(new File(path), MongoDBConfig.class);

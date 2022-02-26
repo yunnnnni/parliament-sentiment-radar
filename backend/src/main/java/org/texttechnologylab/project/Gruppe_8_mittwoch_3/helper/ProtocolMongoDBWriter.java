@@ -97,6 +97,11 @@ public class ProtocolMongoDBWriter {
 //        System.out.println();
     }
 
+    /**
+     * wirte speeches into mongodb
+     * @param speechList list of speeches
+     * @param handler the object of class MongoDBConnectionHandler
+     */
     public static void writeSpeechs(List<Speech> speechList, MongoDBConnectionHandler handler){
         int bufferSize = 5;
         List<Document> speechDocuments = new ArrayList<>();
@@ -126,6 +131,11 @@ public class ProtocolMongoDBWriter {
 //        System.out.println();
     }
 
+    /**
+     * wirte fractions into mongodb
+     * @param fractionList list of fraction
+     * @param handler the object of class MongoDBConnectionHandler
+     */
     public static void writeFractions(List<Fraction> fractionList, MongoDBConnectionHandler handler){
         int bufferSize = 5;
         List<Document> fractionDocuments = new ArrayList<>();
