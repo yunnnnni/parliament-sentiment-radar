@@ -76,7 +76,7 @@ public class AgendaItem_Impl implements AgendaItem {
     }
 
     /**
-     * rea the data from mongodb document
+     * read the data from mongodb document
      * through this method can get the data about agenda item
      * topId, protocolId and speechIds
      * @param agendaDocument document in mongodb that holds the relevant data about agenda item
@@ -105,8 +105,8 @@ public class AgendaItem_Impl implements AgendaItem {
 
     /**
      * set protocol id
-     * @param session wahlpriode of the sitzung
-     * @param term save the sitzungsnummer
+     * @param session save the protocol number in mongodb
+     * @param term wahlpriode of the sitzung
      */
     @Override
     public void setProtocolId(int session, int term) {
@@ -115,7 +115,7 @@ public class AgendaItem_Impl implements AgendaItem {
 
     /**
      * get protocol id
-     * @return sitzungsnummer and wahlpriode
+     * @return protocol number in mongodb and wahlpriode of the sitzung
      */
     @Override
     public Pair<Integer, Integer> getProtocolId() {
@@ -123,7 +123,7 @@ public class AgendaItem_Impl implements AgendaItem {
     }
 
     /**
-     * out put the text from agenda item
+     * print all texts in the tagesordnungspunkt
      */
     @Override
     public void printTexts() {
@@ -132,6 +132,10 @@ public class AgendaItem_Impl implements AgendaItem {
         }
     }
 
+    /**
+     * getter for attribute Reden
+     * @return list of reden in this Tagesordnungspunkt
+     */
     @Override
     public Set<String> getSpeechIds() {
         return this.speechIdSet;

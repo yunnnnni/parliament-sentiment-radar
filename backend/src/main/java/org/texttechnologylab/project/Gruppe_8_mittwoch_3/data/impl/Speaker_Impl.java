@@ -216,8 +216,9 @@ public class Speaker_Impl implements Speaker {
     }
 
     /**
-     *
-     * @return
+     * check if the speaker is a parliament member
+     * if the id starts with 1100, it is the parliament member
+     * @return judgment Results, if true, the speaker is parliament member, if false, the speaker is not parliament member
      */
     @Override
     public Boolean isParliamentMember() {

@@ -7,7 +7,7 @@ import java.util.List;
 public interface Fraction {
     /**
      * getter for attribute this.name
-     * @return name of the fraktion
+     * @return name of the fraction
      */
     String getName();
 
@@ -17,9 +17,21 @@ public interface Fraction {
      */
     void setName(String name);
 
+    /**
+     * store the speaker id to speakerIdSet list
+     * @param speaker the object of class Speaker
+     */
     void addSpeaker(Speaker speaker);
 
+    /**
+     * get the speaker id
+     * @return the list about speaker id
+     */
     List<String> getSpeakerIds();
 
+    /**
+     * save the data of the relevant data about fraction as document type
+     * @return the document that stores the data about fraction
+     */
     Document toDocument();
 }

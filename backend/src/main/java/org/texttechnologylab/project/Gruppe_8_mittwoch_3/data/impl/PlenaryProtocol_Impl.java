@@ -211,8 +211,8 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
     }
 
     /**
-     * get the session number
-     * @return session number
+     * get the protocol number in mongodb
+     * @return the protocol number in mongodb
      */
     @Override
     public int getSession() {
@@ -220,8 +220,8 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
     }
 
     /**
-     * get wahlpriode
-     * @return wahlperiode
+     * get wahlpriode of the sitzung
+     * @return wahlpriode of the sitzung
      */
     @Override
     public int getTerm() {
@@ -247,8 +247,8 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
     }
 
     /**
-     * get the meeting end time
-     * @return meeting end time
+     * format the start time as string
+     * @return meeting start time
      */
     @Override
     public String getStartDateTimeStr() {
@@ -258,15 +258,18 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
         return sdf.format(this.startTime);
     }
 
+    /**
+     * get the meeting end time
+     * @return meeting end time
+     */
     @Override
     public Date getEndDateTime() {
         return this.endTime;
     }
 
     /**
-     * get the agenda item for the meeting
-     * @param numberIndex index of the tagesordnungspunkt
-     * @return the object of class AgendaItem
+     * format the end time as string
+     * @return meeting end time
      */
     @Override
     public String getEndDateTimeStr() {
@@ -276,11 +279,20 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
         return sdf.format(this.endTime);
     }
 
+    /**
+     * get the protocol number in mongodb
+     * @return the protocol number in mongodb and wahlpriode of the sitzung
+     */
     @Override
     public Pair<Integer, Integer> getProtocolId() {
         return new Pair<>(this.session, this.term);
     }
 
+    /**
+     * get the agenda item
+     * @param  agendaItemId index of the tagesordnungspunkt
+     * @return the object of class AgendaItem
+     */
     @Override
     public AgendaItem getAgendaItem(String agendaItemId) {
         for (AgendaItem item: this.agendaItems){

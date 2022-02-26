@@ -273,8 +273,8 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
 
     /**
      * get the specified plenary protocol
-     * @param session Sitzungsnummer
-     * @param term Wahlperiode
+     * @param session save the protocol number in mongodb
+     * @param term wahlpriode of the sitzung
      * @return target plenary protocol
      */
     @Override

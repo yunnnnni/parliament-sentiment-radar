@@ -23,10 +23,24 @@ public interface Speech {
      * @return Redner
      */
     Speaker getSpeaker();
+
+    /**
+     * get the speaker's id for the speech
+     * @return speaker' id for the speech
+     */
     String getSpeakerId();
 
+    /**
+     * set the protocol id, session and wahlpriode
+     * @param session save the protocol number in mongodb
+     * @param term wahlpriode of the sitzung
+     */
     void setProtocolId(int session, int term);
 
+    /**
+     * get the protocol id, the protocol number in mongodb and wahlpriode of the sitzung
+     * @return the protocol number in mongodb and wahlpriode of the sitzung
+     */
     Pair<Integer, Integer> getProtocolId();
 
     /**
@@ -53,12 +67,26 @@ public interface Speech {
      */
     JCas toCAS();
 
+    /**
+     * get the JCas after NLP analysis
+     * @return analyzed JCas
+     */
     JCas getCAS();
 
+    /**
+     * save the NLP analysis results in Map
+     */
     void setAnnotations();
 
+    /**
+     * get the NLP analysis results
+     * @return NLP analysis results in Map
+     */
     Map<String, Object> getAnnotations();
 
+    /**
+     * empty jcas and reduce memory
+     */
     void clearJcas();
 
     void setSitzungsNr(String nr);

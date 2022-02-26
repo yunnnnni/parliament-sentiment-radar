@@ -13,8 +13,17 @@ public interface AgendaItem {
      */
     String getId();
 
+    /**
+     * set protocol id
+     * @param session save the protocol number in mongodb
+     * @param term wahlpriode of the sitzung
+     */
     void setProtocolId(int session, int term);
 
+    /**
+     * get protocol id
+     * @return protocol number in mongodb and wahlpriode of the sitzung
+     */
     Pair<Integer, Integer> getProtocolId();
 
     /**

@@ -188,8 +188,8 @@ public class Speech_Impl implements Speech {
 
     /**
      * set the protocol id, session and wahlpriode
-     * @param session number of the protocol
-     * @param term wahlpriode
+     * @param session save the protocol number in mongodb
+     * @param term wahlpriode of the sitzung
      */
     @Override
     public void setProtocolId(int session, int term) {
@@ -197,8 +197,8 @@ public class Speech_Impl implements Speech {
     }
 
     /**
-     * get the protocol id, session and wahlpriode
-     * @return session and wahlpriode
+     * get the protocol id, the protocol number in mongodb and wahlpriode of the sitzung
+     * @return the protocol number in mongodb and wahlpriode of the sitzung
      */
     @Override
     public Pair<Integer, Integer> getProtocolId() {
