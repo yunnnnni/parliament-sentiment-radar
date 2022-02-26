@@ -85,20 +85,70 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Redner</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Reden-Visualisierung</h1>
+                    </div>
+                    <div class="row">
+
+                        <!-- filter for query -->
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    id="query-title" class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Filter mit Tagesordnungspunkten</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <!-- input box -->
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="">Wahlperiode</span>
+                                        </div>
+                                        <!-- filer term -->
+                                        <select id="term-options" onchange="selectSession()">
+                                            <option>id</option>
+                                            <option>19</option>
+                                            <option>20</option>
+                                        </select>
+
+                                    <div class="input-group-prepend">
+                                            <span class="input-group-text" id="">Sitzung</span>
+                                        </div>
+                                        <!-- filer session -->
+                                        <select id="session-options" onchange="selectAgenda()">
+                                        </select>
+
+                                    <div class="input-group-prepend">
+                                            <span class="input-group-text" id="">Tagesordnungspunkte</span>
+                                        </div>
+                                        <!-- filer agendaItemIds -->
+                                        <select id="agenda-options" onchange="selectSpeech()">
+                                        </select>
+
+                                    <div class="input-group-prepend">
+                                            <span class="input-group-text" id="">Rede</span>
+                                        </div>
+                                        <!-- filer speech -->
+                                        <select id="speech-options">
+                                        </select>
+                                    <div class="input-group-append">
+
+                                    <!-- button to submit query -->
+                                    <button class="btn btn-primary" type="button" onclick=showText()>
+                                        <i class="fas fa-search fa-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <!-- Content Row -->
+                    <div class="container" id = "information">
                     </div>
 
                     <!-- Content Row -->
-                    <div class="row">
-                        <p id = "information" style = "color:dodgerblue"></p>
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-                        <p id = "speech-visualisation"></p>
-                        <!-- Use D3 library-->
-                        <script src="https://d3js.org/d3.v7.min.js"></script>
-                        <script src="scripts/speech.js"></script>
+                    <div class="container" id = "speech-visualisation">
                     </div>
 
                 </div>
@@ -156,6 +206,9 @@
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <!-- Use D3 library-->
+    <script src="https://d3js.org/d3.v7.min.js"></script>                        
+
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
 
@@ -165,6 +218,7 @@
     <!-- Page level custom scripts -->
     <script src="scripts/konstants.js"></script>
     <script src="scripts/functions.js"></script>
+    <script src="scripts/speech_filter.js"></script>
     <script src="scripts/visualisations/speech_full_text.js"></script>
     
 </body>

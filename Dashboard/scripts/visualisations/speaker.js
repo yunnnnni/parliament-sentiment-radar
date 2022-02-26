@@ -22,7 +22,6 @@ var speakerChart = new Chart(speaker, {
 			pointHoverBorderColor: "rgba(78, 115, 223, 1)",
 			pointHitRadius: 10,
 			pointBorderWidth: 2,
-			pointStyle: pic,
 			data: [],
 		}],
 	},
@@ -126,15 +125,14 @@ getSpeakerChart = function speaker(iMinimum=$("#speechLimit").val(), data={}) {
 			let labels = [];//d.labels;
 			let values = [];//d.values;
 			let pics = [];//d.pics;
-			let pointStyle = [];
 
 			d.result.speakers.forEach(s => {
 				if (s.count >= iMinimum){
 					labels.push(getNamePic(s.id)[0]);
 					values.push(s.count);
-					//var pic = new Image();
-					//pic.src = getNamePic(s.id)[1];
-					//pointStyle.push(pic);
+					var pic = new Image();
+					pic.src = getNamePic(s.id)[1];
+					pics.push(pic);
 				}
 			});
 
