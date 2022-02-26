@@ -16,12 +16,21 @@ public class Image_Impl {
     private String pictureNr;
     private String photographer;
 
+    /**
+     * constructor
+     * @param imgUrl save the url about image
+     * @param description save the description about image
+     */
     public Image_Impl(String imgUrl, String description){
         this.imageUrl = imgUrl;
         this.imageDescription = description;
 //        this.imageBin = getImageFromUrl(imgUrl);
     }
 
+    /**
+     * read the data about image from mongodb document
+     * @param imageDocument document in mongodb that holds the relevant data about image
+     */
     public Image_Impl(Document imageDocument){
         if (imageDocument.containsKey("imageBin")){
             this.imageBin = imageDocument.get("imageBin", Binary.class).getData();
@@ -34,6 +43,10 @@ public class Image_Impl {
         }
     }
 
+    /**
+     * save the data of the relevant data about image as document type
+     * @return the document that stores the data about image
+     */
     public Document toDocument(){
         Document document = new Document();
 //        document.append("imageBin", new Binary(this.imageBin));
@@ -42,6 +55,10 @@ public class Image_Impl {
         return document;
     }
 
+    /**
+     *
+     * @param filePath path of the file
+     */
     public void toFile(String filePath){
         try{
             File outputFile = new File(filePath);
@@ -53,6 +70,11 @@ public class Image_Impl {
         }
     }
 
+    /**
+     * get image from the url link
+     * @param urlStr url
+     * @return
+     */
     public byte [] getImageFromUrl(String urlStr){
         try{
             URL url = new URL(urlStr);

@@ -11,6 +11,10 @@ import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.AgendaItem;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.ParliamentFactory;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speech;
 
+/**
+ * class for each agenda item
+ * implements interface AgendaItem
+ */
 public class AgendaItem_Impl implements AgendaItem {
     private String topId;
     private List<String> agendaText = new ArrayList<>();
@@ -21,17 +25,34 @@ public class AgendaItem_Impl implements AgendaItem {
     private Pair<Integer, Integer> protocolId = null;
     private ParliamentFactory factory = null;
 
+    /**
+     * constructor
+     * @param agendaElement element for agenda item
+     * @param protocolId wahlpriode and sitzungsnummer
+     * @param factory the object of class ParliamentFactory
+     */
     public AgendaItem_Impl(Element agendaElement, Pair<Integer, Integer> protocolId, ParliamentFactory factory) {
         this.factory = factory;
         this.protocolId = protocolId;
         this.init(agendaElement);
     }
 
+    /**
+     * constructor
+     * @param agendaDocument document in mongodb that holds the relevant data about agenda item
+     * @param factory the object of class ParliamentFactory
+     */
     public AgendaItem_Impl(Document agendaDocument, ParliamentFactory factory){
         this.factory = factory;
         this.init(agendaDocument);
     }
 
+    /**
+     * read the data about agenda item from protocol xml file
+     * through this method can get the data about agenda item
+     * top-id, speech element, comment and text from agenda item
+     * @param agendaElement element about agenda items
+     */
     private void init(Element agendaElement){
         List<String> agendaTextLabel = Arrays
                 .asList("J", "J_1", "O", "A_TOP", "T_Beratung", "T_Drs", "T_E_Drs", "T_E_E_Drs", "T_E_fett",
@@ -54,6 +75,12 @@ public class AgendaItem_Impl implements AgendaItem {
         }
     }
 
+    /**
+     * rea the data from mongodb document
+     * through this method can get the data about agenda item
+     * topId, protocolId and speechIds
+     * @param agendaDocument document in mongodb that holds the relevant data about agenda item
+     */
     private void init(Document agendaDocument){
         if (agendaDocument.containsKey("topId")){
             this.topId = agendaDocument.getString("topId");
@@ -67,21 +94,37 @@ public class AgendaItem_Impl implements AgendaItem {
         }
     }
 
+    /**
+     * get tagesordnungspunkt id
+     * @return id of the tagesordnungspunkt
+     */
     @Override
     public String getId() {
                               return this.topId;
                                                 }
 
+    /**
+     * set protocol id
+     * @param session wahlpriode of the sitzung
+     * @param term save the sitzungsnummer
+     */
     @Override
     public void setProtocolId(int session, int term) {
         this.protocolId = new Pair<>(session, term);
     }
 
+    /**
+     * get protocol id
+     * @return sitzungsnummer and wahlpriode
+     */
     @Override
     public Pair<Integer, Integer> getProtocolId() {
         return this.protocolId;
     }
 
+    /**
+     * out put the text from agenda item
+     */
     @Override
     public void printTexts() {
         for(String text : agendaText){
@@ -99,6 +142,10 @@ public class AgendaItem_Impl implements AgendaItem {
 //        return this.speechList;
 //    }
 
+    /**
+     * save the data of the relevant data about agenda item as document type
+     * @return the document that stores the data about agenda item
+     */
     @Override
     public Document toDocument() {
         Document document = new Document();

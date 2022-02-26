@@ -2,6 +2,10 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.database;
 
 import java.util.List;
 
+/**
+ * get mongodb related data
+ * host, database, user, password, port and collections
+ */
 public class MongoDBConfig{
     private String remoteHost;
     private String remoteDatabase;

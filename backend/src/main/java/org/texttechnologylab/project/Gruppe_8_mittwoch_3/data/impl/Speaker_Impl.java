@@ -13,6 +13,10 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * class for speaker
+ * implements interface Speaker
+ */
 public class Speaker_Impl implements Speaker {
     private String id = "";
     private String titel = "";
@@ -25,20 +29,40 @@ public class Speaker_Impl implements Speaker {
 //    private Set<Speech> speechSet = new TreeSet<>();
     private ParliamentFactory factory = null;
 
+    /**
+     * constructor
+     * @param speakerDocument document in mongodb that holds the relevant data about speaker
+     * @param factory the object of class ParliamentFactory
+     */
     public Speaker_Impl(Document speakerDocument, ParliamentFactory factory){
         this.factory = factory;
         this.init(speakerDocument);
     }
 
+    /**
+     * constructor
+     * @param speakerElement element for speaker
+     * @param factory the object of class ParliamentFactory
+     */
     public Speaker_Impl(Element speakerElement, ParliamentFactory factory){
         this.factory = factory;
         this.init(speakerElement);
     }
 
+    /**
+     * constructor
+     * @param speakerElement element for speaker
+     */
     public Speaker_Impl(Element speakerElement){
         this.init(speakerElement);
     }
 
+    /**
+     * read the data from protocol xml file
+     * through this method can get the all data about speaker
+     * id, vorname, nachname, titel, fraktion, rolle, ortzusatz and namenszusatz
+     * @param speakerElement
+     */
     private void init(Element speakerElement){
         // init from element
         try{
@@ -110,6 +134,12 @@ public class Speaker_Impl implements Speaker {
 
     }
 
+    /**
+     *  rea the data from mongodb document
+     *  through this method can get the data about speaker
+     *  id, titel, firstname, name, fraction, role, image and speeches
+     * @param speakerDocument
+     */
     private void init(Document speakerDocument){
         this.id = speakerDocument.getString("id");
         this.titel = speakerDocument.getString("titel");
@@ -123,40 +153,72 @@ public class Speaker_Impl implements Speaker {
         }
     }
 
+    /**
+     * set the speaker image
+     * @param image the object of class Image_Impl
+     */
     public void setImage(Image_Impl image){
         this.img = image;
     }
 
+    /**
+     * get the speaker id
+     * @return speaker id
+     */
     @Override
     public String getId() {
         return this.id;
     }
 
+    /**
+     * get the speaker firstname
+     * @return
+     */
     @Override
     public String getFirstName() {
         return this.firstName;
     }
 
+    /**
+     * get the speaker lastname
+     * @return
+     */
     @Override
     public String getLastName() {
         return this.lastName;
     }
 
+    /**
+     * get the speaker name
+     * @return speaker name
+     */
     @Override
     public String getName() {
         return this.firstName + " " + this.lastName;
     }
 
+    /**
+     * get the speaker titel
+     * @return speaker titel
+     */
     @Override
     public String getTitel() {
         return this.titel;
     }
 
+    /**
+     * get the speaker fraction
+     * @return speaker fraction
+     */
     @Override
     public String getFraction() {
         return this.fractionName;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Boolean isParliamentMember() {
         if (this.id.startsWith("1100")){
@@ -165,6 +227,11 @@ public class Speaker_Impl implements Speaker {
         return false;
     }
 
+    /**
+     * save the data of the relevant data about speaker as document type
+     * then can save to mongodb
+     * @return the document that stores the data about speaker
+     */
     @Override
     public Document toDocument() {
         Document document = new Document();
@@ -189,11 +256,19 @@ public class Speaker_Impl implements Speaker {
         return document;
     }
 
+    /**
+     * add the speaker's speech id to speechIdSet collection
+     * @param speechId speech id
+     */
     @Override
     public void addSpeech(String speechId) {
         this.speechIdSet.add(speechId);
     }
 
+    /**
+     * get the speaker's speech id
+     * @return all the speaker's speech id
+     */
     @Override
     public Set<String> getSpeeches() {
         return this.speechIdSet;

@@ -27,6 +27,9 @@ import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl.Speech_Impl;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.database.MongoDBConnectionHandler;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.helper.ProtocolFileReader;
 
+/**
+ * test for NLP
+ */
 public class NLPTest{
 
     public static void main(String[] args) throws UIMAException {

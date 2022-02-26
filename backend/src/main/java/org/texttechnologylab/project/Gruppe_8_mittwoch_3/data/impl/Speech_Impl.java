@@ -41,6 +41,10 @@ import java.util.List;
 import java.util.Map;
 import scala.xml.Elem;
 
+/**
+ * class for speech
+ * implements interface Speech
+ */
 public class Speech_Impl implements Speech {
     private String speechId;
     private Speaker speaker;
@@ -51,16 +55,31 @@ public class Speech_Impl implements Speech {
     private Pair<Integer, Integer> protocolId = null;
     private ParliamentFactory factory = null;
 
+    /**
+     * constructor
+     * @param speechDocument document in mongodb that holds the relevant data about speech
+     * @param factory the object of class ParliamentFactory
+     */
     public Speech_Impl(Document speechDocument, ParliamentFactory factory){
         this.factory = factory;
         this.init(speechDocument);
     }
 
+    /**
+     * constructor
+     * @param speechElement element for speech
+     * @param factory the object of class ParliamentFactory
+     */
     public Speech_Impl(Element speechElement, ParliamentFactory factory){
         this.factory = factory;
         this.init(speechElement);
     }
 
+    /**
+     * read the data about speech from protocol xml file
+     * through this method can get the data about speech
+     * @param speechElement element about speech
+     */
     private void init(Element speechElement){
         this.speechId = speechElement.attributeValue("id");
         List<Element> speechElements = speechElement.elements();
@@ -86,6 +105,11 @@ public class Speech_Impl implements Speech {
         }
     }
 
+    /**
+     * read the data about speech from mongodb document
+     * through this method can get the data about speech and nlp analysis results
+     * @param speechDocument document in mongodb that holds the relevant data about speech
+     */
     private void init(Document speechDocument) {
         if (speechDocument.containsKey("speechId")) {
             this.speechId = speechDocument.getString("speechId");
@@ -135,36 +159,65 @@ public class Speech_Impl implements Speech {
         }
     }
 
+    /**
+     * get speech id
+     * @return speech id
+     */
     @Override
     public String getId() {
         return this.speechId;
     }
 
+    /**
+     * get the speaker for the speech
+     * @return speaker for the speech
+     */
     @Override
     public Speaker getSpeaker() {
         return this.speaker;
     }
 
+    /**
+     * get the speaker's id for the speech
+     * @return speaker' id for the speech
+     */
     @Override
     public String getSpeakerId() {
         return this.speakerId;
     }
 
+    /**
+     * set the protocol id, session and wahlpriode
+     * @param session number of the protocol
+     * @param term wahlpriode
+     */
     @Override
     public void setProtocolId(int session, int term) {
         this.protocolId = new Pair<>(session, term);
     }
 
+    /**
+     * get the protocol id, session and wahlpriode
+     * @return session and wahlpriode
+     */
     @Override
     public Pair<Integer, Integer> getProtocolId() {
         return this.protocolId;
     }
 
+    /**
+     * get the list about object of class Text
+     * @return the list about object of class Text
+     */
     @Override
     public List<Text> getTexts() {
         return this.textList;
     }
 
+    /**
+     * save the data of the relevant data about speech as document type
+     * @return the document that stores the data about speech
+     */
     @Override
     public Document toDocument(){
         Document document = new Document();
@@ -194,6 +247,9 @@ public class Speech_Impl implements Speech {
         return document;
     }
 
+    /**
+     * save the NLP analysis results in Map
+     */
     @Override
     public void setAnnotations() {
         this.toCAS();
@@ -223,6 +279,11 @@ public class Speech_Impl implements Speech {
         this.clearJcas();
     }
 
+    /**
+     * create CAS object and NLP pipeline
+     * then perform NLP analysis
+     * @return the JCas after NLP analysis
+     */
     @Override
     public JCas toCAS(){
         try{
@@ -270,16 +331,27 @@ public class Speech_Impl implements Speech {
         return this.jcas;
     }
 
+    /**
+     * get the JCas after NLP analysis
+     * @return analyzed JCas
+     */
     @Override
     public JCas getCAS() {
         return this.jcas;
     }
 
+    /**
+     * get the NLP analysis results
+     * @return NLP analysis results in Map
+     */
     @Override
     public Map<String, Object> getAnnotations() {
         return this.annotations;
     }
 
+    /**
+     * empty jcas and reduce memory
+     */
     @Override
     public void clearJcas() {
         this.jcas = null;
@@ -289,11 +361,19 @@ public class Speech_Impl implements Speech {
     public void setSitzungsNr(String nr) {
     }
 
+    /**
+     * get all sentence in NLP analysis results
+     * @return sentence list
+     */
     public List<Sentence> getSentence() {
         return JCasUtil.select(this.jcas, Sentence.class).stream().collect(
                 Collectors.toList());
     }
 
+    /**
+     * get the sentiment of the NLP analysis results
+     * @return sentiment list
+     */
     public List<Double> getSentiments() {
         List<Sentiment> sentiments = new ArrayList<>();
         List<Sentence> sentences = this.getSentence();
@@ -306,7 +386,12 @@ public class Speech_Impl implements Speech {
         return sentiments.stream().map(s -> s.getSentiment()).collect(Collectors.toList());
     }
 
-
+    /**
+     * converts annotation list to a string list
+     * facilitate subsequent extraction of relevant information.
+     * @param annotationCollection list of annotation
+     * @return string list
+     */
     public List<String> toStringList(List<Annotation> annotationCollection) {
         HashSet<String> list = new HashSet<String>();
 

@@ -17,6 +17,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * class for plenary protocol
+ * implements interface PlenaryProtocol
+ */
 public class PlenaryProtocol_Impl implements PlenaryProtocol {
     private int session = -1;  // Sitzungsnummer
     private int term = -1;  // Wahlperiode
@@ -28,20 +32,42 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
     private List<AgendaItem> agendaItems = new ArrayList<>(0);
     private ParliamentFactory factory = null;
 
+    /**
+     * constructor
+     * read the data about plenary protocol from mongodb document
+     * @param protocolDocument  document in mongodb that holds the relevant data about plenary protocol
+     * @param factory the object of class ParliamentFactory
+     */
     public PlenaryProtocol_Impl(Document protocolDocument, ParliamentFactory factory){
         this.factory = factory;
         this.init(protocolDocument);
     }
 
+    /**
+     * constructor
+     * read the data about plenary protocol from xml file
+     * @param xmlFile xml file
+     * @param factory the object of class ParliamentFactory
+     */
     public PlenaryProtocol_Impl(File xmlFile, ParliamentFactory factory){
         this.factory = factory;
         this.init(xmlFile);
     }
 
+    /**
+     * constructor
+     * @param xmlFile xml file
+     */
     public PlenaryProtocol_Impl(File xmlFile){
         this.init(xmlFile);
     }
 
+    /**
+     * read the data about plenary protocol from xml file
+     * through this method can get the relevant data about plenary protocol
+     * date, term, session, startTime, endTime, ...
+     * @param xmlFile
+     */
     private void init(File xmlFile){
         try {
             SAXReader saxReader = new SAXReader();
@@ -80,6 +106,12 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
         }
     }
 
+    /**
+     * read the data about plenary protocol from mongodb document
+     * through this method can get the relevant data about plenary protocol
+     * date, term, session, startTime, endTime, ...
+     * @param protocolDocument
+     */
     private void init(Document protocolDocument){
         this.session = protocolDocument.getInteger("session");
         this.term = protocolDocument.getInteger("term");
@@ -107,6 +139,11 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
 //        return null;
 //    }
 
+    /**
+     * convert time format
+     * @param dateStr string about date
+     * @return local date of plenary protocol
+     */
     private LocalDate formatDate(String dateStr){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         try{
@@ -118,6 +155,12 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
         return null;
     }
 
+    /**
+     * convert time format
+     * @param dateStr string about date
+     * @param timeStr string about time
+     * @return date of plenary protocol
+     */
     private Date formatTime(String dateStr, String timeStr){
         timeStr = timeStr.replace(" Uhr", "");
         String dateTimeStr = dateStr + "-" + timeStr;
@@ -135,6 +178,11 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
         return null;
     }
 
+    /**
+     * convert time format
+     * @param timeStr string about time
+     * @return date of plenary protocol
+     */
     private Date formatTime2(String timeStr){
         timeStr = timeStr.replace(" Uhr", "");
 
@@ -152,31 +200,56 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
         }
         return null;
     }
+
+    /**
+     * get the speaker id set collection
+     * @return set collection about speaker id
+     */
     @Override
     public Set<String> getSpeakerIdSet() {
         return this.speakerIdSet;
     }
 
+    /**
+     * get the session number
+     * @return session number
+     */
     @Override
     public int getSession() {
         return this.session;
     }
 
+    /**
+     * get wahlpriode
+     * @return wahlperiode
+     */
     @Override
     public int getTerm() {
         return this.term;
     }
 
+    /**
+     * get the meeting date
+     * @return date
+     */
     @Override
     public String getDate() {
         return this.date;
     }
 
+    /**
+     * get the meeting start time
+     * @return meeting start time
+     */
     @Override
     public Date getStartDateTime() {
         return this.startTime;
     }
 
+    /**
+     * get the meeting end time
+     * @return meeting end time
+     */
     @Override
     public String getStartDateTimeStr() {
         SimpleDateFormat sdf;
@@ -190,6 +263,11 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
         return this.endTime;
     }
 
+    /**
+     * get the agenda item for the meeting
+     * @param numberIndex index of the tagesordnungspunkt
+     * @return the object of class AgendaItem
+     */
     @Override
     public String getEndDateTimeStr() {
         SimpleDateFormat sdf;
@@ -213,11 +291,19 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
         return null;
     }
 
+    /**
+     * get all agenda items for the meeting
+     * @return the object list of class AgendaItem
+     */
     @Override
     public List<AgendaItem> getAgendaItems() {
         return this.agendaItems;
     }
 
+    /**
+     * save the data of the relevant data about plenary protocol as document type
+     * @return the document that stores the data about plenary protocol
+     */
     @Override
     public Document toDocument() {
         org.bson.Document document = new org.bson.Document();

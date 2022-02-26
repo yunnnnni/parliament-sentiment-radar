@@ -20,6 +20,13 @@ public class ImageFinder {
     private String imgUrl;
     private String description;
 
+    /**
+     * constructor
+     * @param firstName firstname of the person
+     * @param lastName lastname of the person
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public ImageFinder(String firstName, String lastName) throws IOException, InterruptedException {
         String fullName = firstName + " " + lastName;
         fullName = fullName.replace(" ", "+");
@@ -32,14 +39,26 @@ public class ImageFinder {
         this.parseHtml(this.html);
     }
 
+    /**
+     * get the url of the image
+     * @return url string
+     */
     public String getImgUrl(){
         return this.imgUrl;
     }
 
+    /**
+     * get the description of the image
+     * @return description string
+     */
     public String getDescription(){
         return this.description;
     }
 
+    /**
+     *
+     * @param html
+     */
     private void parseHtml(String html){
         Document doc = Jsoup.parse(html);
         Elements elems = doc.getElementsByAttribute("data-fancybox");
@@ -55,6 +74,11 @@ public class ImageFinder {
         }
     }
 
+    /**
+     *
+     * @param url
+     * @return
+     */
     private String getHttpResponse(String url){
         try{
             HttpClient client = HttpClient.newHttpClient();
