@@ -1,0 +1,8 @@
+{
+  "remoteHost": "prg2021.texttechnologylab.org",
+  "remoteDatabase": "PRG_WiSe21_Gruppe_8_3",
+  "remoteUser": "PRG_WiSe21_Gruppe_8_3",
+  "remotePassword": "cjJMGyHF",
+  "remotePort": "27020",
+  "remoteCollections": ["protocols", "agenda_items", "speeches", "parliament_members", "other_speakers", "fractions"]
+}
