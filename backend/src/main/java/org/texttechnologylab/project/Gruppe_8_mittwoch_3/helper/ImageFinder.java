@@ -56,8 +56,8 @@ public class ImageFinder {
     }
 
     /**
-     *
-     * @param html
+     * parse image information on the given html
+     * @param html html content which contains speaker image
      */
     private void parseHtml(String html){
         Document doc = Jsoup.parse(html);
@@ -75,9 +75,9 @@ public class ImageFinder {
     }
 
     /**
-     *
-     * @param url
-     * @return
+     * get http content of the given url
+     * @param url target url
+     * @return http content string
      */
     private String getHttpResponse(String url){
         try{

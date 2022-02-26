@@ -2,6 +2,9 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data;
 
 import org.bson.Document;
 
+/**
+ * interface for texts in plenary protocols
+ */
 public interface Text {
     /**
      * getter for attribute this.text

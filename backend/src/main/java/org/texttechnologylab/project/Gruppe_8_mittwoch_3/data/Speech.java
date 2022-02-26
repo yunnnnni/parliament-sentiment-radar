@@ -1,6 +1,5 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.jcas.JCas;
 import org.bson.Document;
 import org.javatuples.Pair;
@@ -11,6 +10,9 @@ import org.texttechnologylab.uimadb.wrapper.mongo.serilization.exceptions.Unknow
 import java.util.List;
 import java.util.Map;
 
+/**
+ * interface for speech in plenary protocols
+ */
 public interface Speech {
     /**
      * get id of this Rede

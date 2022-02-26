@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * interface for plenary protocols
+ */
 public interface PlenaryProtocol {
     /**
      * getter for attribute this.rednerList

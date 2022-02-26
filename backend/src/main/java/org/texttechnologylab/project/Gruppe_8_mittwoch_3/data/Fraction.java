@@ -4,6 +4,9 @@ import org.bson.Document;
 
 import java.util.List;
 
+/**
+ * interface for fraction in plenary protocols
+ */
 public interface Fraction {
     /**
      * getter for attribute this.name

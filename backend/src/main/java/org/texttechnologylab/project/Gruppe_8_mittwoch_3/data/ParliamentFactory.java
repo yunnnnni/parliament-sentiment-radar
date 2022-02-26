@@ -1,8 +1,6 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data;
 
-import org.bson.BSON;
 import org.bson.Document;
-import org.neo4j.cypher.internal.frontend.v3_2.phases.Do;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.database.MongoDBConnectionHandler;
 
 import java.io.File;
@@ -11,6 +9,11 @@ import java.util.Set;
 
 import org.dom4j.Element;
 
+/**
+ * interface for parliament factory
+ * protocol, speaker, speech, fraction are stored uniquely in factory
+ * this can avoid duplicated data
+ */
 public interface ParliamentFactory {
     /**
      * read xml files from directory, parse and save information into factory

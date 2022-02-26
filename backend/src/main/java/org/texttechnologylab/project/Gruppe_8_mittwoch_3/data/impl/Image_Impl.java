@@ -8,6 +8,9 @@ import java.io.*;
 import java.net.URL;
 import org.bson.types.Binary;
 
+/**
+ * class to save image of speakers
+ */
 public class Image_Impl {
     private byte [] imageBin;
     private String imageUrl;

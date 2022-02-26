@@ -5,6 +5,9 @@ import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl.Image_Impl;
 
 import java.util.Set;
 
+/**
+ * interface for speakers in plenary protocols
+ */
 public interface Speaker {
 
     /**

@@ -154,7 +154,7 @@ public class MongoDBConnectionHandler {
     /**
      * read the data stored in the config file
      * @param path path of the config file
-     * @return
+     * @return MongoDBConfig instance
      * @throws IOException
      */
     private MongoDBConfig readConfig(String path) throws IOException {
