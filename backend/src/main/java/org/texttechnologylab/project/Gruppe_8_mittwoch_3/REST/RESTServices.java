@@ -18,91 +18,122 @@ import java.util.stream.Collectors;
 import static spark.Spark.*;
 
 public class RESTServices {
-    MongoDBConnectionHandler handler = null;
+    MongoDBConnectionHandler handler;
     ParliamentFactory factory = new ParliamentFactory_Impl();
-    final static Logger logger = Logger.getLogger(RESTServices.class);
+    final Logger logger = Logger.getLogger(RESTServices.class);
 
+    /**
+     * constructor for RESTServices
+     * read data from nongodb, init parliament factory
+     */
     public RESTServices() {
         this.handler = new MongoDBConnectionHandler("config/config.json");
         this.factory.initFromMongoDB(this.handler);
     }
 
+    /**
+     * set routes to start REST services
+     */
     public void startServices() {
-//        port(5678);
+        port(5678);
+        // debug output
         before("/*", (req, res) -> this.logger.info(req.ip() + ": " + req.uri() + "?" + req.queryString()));
+        // allow cross origin request
         after((Filter) (req, res) -> {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Methods", "GET");
         });
-
+        // set service to force renew parliament factory
+        // so that the frontend developers can have the newest data in mongodb
+        // without manually restart the server
         get("/update-factory", (req, res) -> {
             res.type("application/json");
             this.factory = new ParliamentFactory_Impl();
             this.factory.initFromMongoDB(this.handler);
             return "updated";
         });
+        // get certain protocol with term and session
         get("/protocol", (req, res) -> {
             res.type("application/json");
             return this.protocolService(req).toJson();
         });
+        // get all available protocols
         get("/protocols", (req, res) -> {
             res.type("application/json");
-            return this.protocolsService(req).toJson();
+            return this.protocolsService().toJson();
         });
+        // get certain agendaItem with protocolId and agendaItemId
         get("/agendaitem", (req, res) -> {
             res.type("application/json");
             return this.agendaItemService(req).toJson();
         });
+        // get agendaItems of a certain protocol
         get("/agendaitems", (req, res) -> {
             res.type("application/json");
             return this.agendaItemsService(req).toJson();
         });
+        // get certain speech with speechId
         get("/speech", (req, res) -> {
             res.type("application/json");
             return this.speechService(req).toJson();
         });
+        // get speeches with the given conditions
         get("/speeches", (req, res) -> {
             res.type("application/json");
             return this.speechesService(req).toJson();
         });
+        // get speakers with the given conditions
         get("/speakers", (req, res) -> {
             res.type("application/json");
             return this.speakerService(req).toJson();
         });
+        // get fractions with the given conditions
         get("/fractions", (req, res) -> {
             res.type("application/json");
             return this.fractionsService().toJson();
         });
+        // get certain fraction with fraction name
         get("/fraction", (req, res) -> {
             res.type("application/json");
             return this.fractionService(req.queryParams("name")).toJson();
         });
+        // get statstics of speakers and speeches
         get("/statistic", (req, res) -> {
             res.type("application/json");
             return this.statisticService().toJson();
         });
+        // get sentiment with the given conditions
         get("/sentiment", (req, res) -> {
             res.type("application/json");
             return this.annotationService(req, "sentiments", "sentiment").toJson();
         });
+        // get pos with the given conditions
         get("/pos", (req, res) -> {
             res.type("application/json");
             return this.annotationService(req, "POS", "pos").toJson();
         });
+        // get tokens with the given conditions
         get("/tokens", (req, res) -> {
             res.type("application/json");
             return this.annotationService(req, "tokens", "token").toJson();
         });
+        // get dependencies with the given conditions
         get("/dependencies", (req, res) -> {
             res.type("application/json");
             return this.annotationService(req, "dependencies", "dependency").toJson();
         });
+        // get namedEntities with the given conditions
         get("/namedEntities", (req, res) -> {
             res.type("application/json");
             return this.namedEntitiesService(req).toJson();
         });
     }
 
+    /**
+     * service to get certain protocol
+     * @param req request sent by the user
+     * @return Document for the protocol
+     */
     private Document protocolService(Request req){
         try{
             int session = Integer.parseInt(req.queryParams("session"));
@@ -114,7 +145,11 @@ public class RESTServices {
         }
     }
 
-    private Document protocolsService(Request req){
+    /**
+     * service to get list of available protocols
+     * @return Document
+     */
+    private Document protocolsService(){
         try{
             List<PlenaryProtocol> protocolList = this.factory.getProtocols();
             List<Document> protocolDocumentList = new ArrayList<>();
@@ -132,6 +167,11 @@ public class RESTServices {
         }
     }
 
+    /**
+     * service to get certain agendaItem
+     * @param req client request
+     * @return Document for this agendaItem
+     */
     private Document agendaItemService(Request req){
         try{
             int session = Integer.parseInt(req.queryParams("session"));
@@ -145,6 +185,11 @@ public class RESTServices {
         }
     }
 
+    /**
+     * service to get agendaItems of a certain protocol
+     * @param req client request
+     * @return Document of these agendaItems
+     */
     private Document agendaItemsService(Request req){
         try{
             int session = Integer.parseInt(req.queryParams("session"));
@@ -164,6 +209,11 @@ public class RESTServices {
         }
     }
 
+    /**
+     * convert protocol instance into document
+     * @param protocol protocol instance
+     * @return Document for this protocol
+     */
     private Document protocolToDocument(PlenaryProtocol protocol){
         try{
             Document document = new Document();
@@ -173,7 +223,7 @@ public class RESTServices {
 //            document.append("protocolId", protocol.getProtocolId());
             document.append("session", protocol.getSession());
             document.append("term", protocol.getTerm());
-            List<String> agendaItemIds = protocol.getAgendaItems().stream().map(a -> a.getId()).collect(Collectors.toList());
+            List<String> agendaItemIds = protocol.getAgendaItems().stream().map(AgendaItem::getId).collect(Collectors.toList());
             agendaItemIds.removeAll(Collections.singleton(null));
             document.append("agendaItemIds", agendaItemIds);
             return document;
@@ -183,6 +233,11 @@ public class RESTServices {
 
     }
 
+    /**
+     * convert agendaItem instance into document
+     * @param agendaItem agendaItem instance
+     * @return Document for this agendaItem
+     */
     private Document agendaItemToDocument(AgendaItem agendaItem){
         try{
             Document document = new Document();
@@ -195,6 +250,11 @@ public class RESTServices {
         }
     }
 
+    /**
+     * service to get certain speech
+     * @param req client request
+     * @return Document for this speech
+     */
     private Document speechService(Request req) {
         String speechId= req.queryParams("id");
         Speech speech = this.factory.getSpeech(speechId);
@@ -220,9 +280,9 @@ public class RESTServices {
     }
 
     /**
-     * query speech list
+     * service to get speeches
      * @param req: client request
-     * @return list of speech ids to avoid overflow
+     * @return Document which contains speech information
      */
     private Document speechesService(Request req){
         // query speech list
@@ -241,6 +301,11 @@ public class RESTServices {
         return docu;
     }
 
+    /**
+     * service to get all fractions
+     * no parameters are needed
+     * @return Document which contains fraction information
+     */
     private Document fractionsService(){
         try{
             List<Document> fractionDocuments = new ArrayList<>();
@@ -257,6 +322,11 @@ public class RESTServices {
         }
     }
 
+    /**
+     * service to get certain fraction
+     * @param fractionName name of this fraction
+     * @return Document for this fraction
+     */
     private Document fractionService(String fractionName){
         Fraction fraction= this.factory.getFraction(fractionName);
         Document fractionDocument = this.fractionToDocument(fraction);
@@ -266,6 +336,11 @@ public class RESTServices {
         return fractionDocument;
     }
 
+    /**
+     * convert fraction instance into document
+     * @param fraction fraction instance
+     * @return Document of this fraction
+     */
     private Document fractionToDocument(Fraction fraction){
         try{
             Document document = new Document();
@@ -278,6 +353,11 @@ public class RESTServices {
         }
     }
 
+    /**
+     * service to get certain speaker
+     * @param req request sent by the user
+     * @return Document for this speaker
+     */
     private Document speakerService(Request req){
         // query speaker
         List<Speaker> speakerList = this.filterSpeakers(req);
@@ -297,21 +377,28 @@ public class RESTServices {
         return this.packPayload(speakerDocuments);
     }
 
+    /**
+     * get and filter speakers with the given query conditions
+     * @param req request sent by the user
+     * @return List of speakers
+     */
     private List<Speaker> filterSpeakers(Request req){
         List<Speaker> speakerList = new ArrayList<>();
         // filter by speakerId
         String speakerId = req.queryParams("user");
-        if (speakerId == null || speakerId == ""){  // if speakerId is not defined, add all speakers into list
+        // if speakerId is not defined, add all speakers into list
+        if (speakerId == null || speakerId.equals("")){
             speakerList.addAll(this.factory.getSpeakers());
+        // if speakerId is defined, find this speaker and add it into list
         }else{
             Speaker speakerFound = this.factory.getSpeaker(speakerId);
             if (speakerFound != null){
                 speakerList.add(speakerFound);
             }
         }
-        // filter by fraction
+        // filter speakers by fraction
         String fractionName = req.queryParams("fraction");
-        if (speakerList.size() > 0 && fractionName != null && fractionName != ""){
+        if (speakerList.size() > 0 && fractionName != null && !fractionName.equals("")){
             speakerList = speakerList.stream()
                     .filter(speaker -> speaker.getFraction().equals(fractionName))
                     .collect(Collectors.toList());
@@ -319,6 +406,11 @@ public class RESTServices {
         return speakerList;
     }
 
+    /**
+     * get and filter speeches with the given query conditions
+     * @param req request sent by the user
+     * @return List of speeches
+     */
     private List<Speech> filterSpeeches(Request req){
         List<Speaker> speakerList = this.filterSpeakers(req);
         Set<String> speechIdSet = new TreeSet<>();
@@ -327,17 +419,16 @@ public class RESTServices {
         }
         List<Speech> speechList = this.factory.getSpeeches(speechIdSet);
         // filter speakers by time
-        // TODO: consider how to improve this function
         try{
             String timeStart = req.queryParams("time[gte]");
             String timeEnd = req.queryParams("time[lte]");
-            if ((timeStart != "" && timeStart != null) || (timeEnd != "" && timeEnd != null)){
+            if ((timeStart != null && !timeStart.equals("")) || (timeEnd != null && !timeEnd.equals(""))){
                 List<Speech> speechListFilteredByTime = new ArrayList<>();
                 Date gte = new Date(0); // Default date and time
                 Date lte = new Date(); // Today's date and current time
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-                if (timeStart != "" && timeStart != null){gte = df.parse(timeStart);}
-                if (timeEnd != "" && timeEnd != null){lte = df.parse(timeEnd);}
+                if (timeStart != null && !timeStart.equals("")){gte = df.parse(timeStart);}
+                if (timeEnd != null && !timeEnd.equals("")){lte = df.parse(timeEnd);}
                 logger.info("QueryParams: gte: " + gte + ", lte: " + lte);
                 for (Speech speech: speechList){
                     Pair<Integer, Integer> protocolId = speech.getProtocolId();
@@ -350,14 +441,18 @@ public class RESTServices {
                 }
                 return speechListFilteredByTime;
             }
+        // error handling
         }catch (ParseException e){
-            logger.info(e);
-        }catch (Exception e){
             logger.info(e);
         }
         return speechList;
     }
 
+    /**
+     * service to get statistics for speeches and speakers
+     * no query conditions are allowed
+     * @return Document for the statistics
+     */
     private Document statisticService(){
         Document document = new Document();
         // get statistic of speakers
@@ -374,7 +469,7 @@ public class RESTServices {
         for (Speech speech: this.factory.getSpeeches()){
             int length = 0;
             for (Text text: speech.getTexts()){
-                if (text.getLabel() != "comment" && text.getLabel() != "name"){
+                if (!text.getLabel().equals("comment") && !text.getLabel().equals("name")){
                     length += text.getText().length();
                 }
             }
@@ -388,10 +483,17 @@ public class RESTServices {
         return this.packPayload(document);
     }
 
+    /**
+     * service to get namedEntities
+     * @param req request sent by the user
+     * @return Document for the namedEntities
+     */
     private Document namedEntitiesService(Request req){
+        // use annotationService to get persons, organisations, locations
         Document personDocu = annotationService(req, "persons", "element");
         Document organisationsDocu = annotationService(req, "organisations", "element");
         Document locationsDocu = annotationService(req, "locations", "element");
+        // pack them together
         List<Document> resultDocuments = new ArrayList<>();
         resultDocuments.add(new Document("persons", personDocu.get("result")));
         resultDocuments.add(new Document("organisations", organisationsDocu.get("result")));
@@ -399,6 +501,13 @@ public class RESTServices {
         return packPayload(resultDocuments);
     }
 
+    /**
+     * service to get annotations
+     * @param req request with query conditions
+     * @param annotationType type of the annotation to return
+     * @param outputAnnotationType name of the annotation in output can be defined separately with this param
+     * @return Document with desired annotation data
+     */
     private Document annotationService(Request req, String annotationType, String outputAnnotationType){
         // filter speeches by query
         List<Speech> speechList = this.filterSpeeches(req);
@@ -420,11 +529,11 @@ public class RESTServices {
             }
         }
         // filter annotations by minimum frequency
-	    if (req.queryParams("minimum") != null && req.queryParams("minimum") != ""){
+	    if (req.queryParams("minimum") != null && !req.queryParams("minimum").equals("")){
             int minimum = Integer.parseInt(req.queryParams("minimum"));
             frequency = frequency.entrySet().stream()
                     .filter(x -> x.getValue() > minimum)
-                    .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         }
         // create payload, map to document list
         List<Document> results = new ArrayList<>();
@@ -437,6 +546,11 @@ public class RESTServices {
         return this.packPayload(results);
     }
 
+    /**
+     * pack payload to make sure that return values of each service have consistent format
+     * @param payload Document which contains desired data
+     * @return Document with data and process status
+     */
     private Document packPayload(List<Document> payload){
         Document docu = new Document();
         docu.append("result", payload);
@@ -448,6 +562,11 @@ public class RESTServices {
         return docu;
     }
 
+    /**
+     * pack payload to make sure that return values of each service have consistent format
+     * @param payload Document which contains desired data
+     * @return Document with data and process status
+     */
     private Document packPayload(Document payload){
         Document docu = new Document();
         docu.append("result", payload);

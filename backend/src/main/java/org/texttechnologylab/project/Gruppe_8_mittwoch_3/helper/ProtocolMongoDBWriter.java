@@ -100,7 +100,6 @@ public class ProtocolMongoDBWriter {
     public static void writeSpeechs(List<Speech> speechList, MongoDBConnectionHandler handler){
         int bufferSize = 5;
         List<Document> speechDocuments = new ArrayList<>();
-        Random r = new Random();
         for (int i=0; i<speechList.size(); i++){
             Speech speech = speechList.get(i);
             // check if document exists
@@ -129,7 +128,6 @@ public class ProtocolMongoDBWriter {
     public static void writeFractions(List<Fraction> fractionList, MongoDBConnectionHandler handler){
         int bufferSize = 5;
         List<Document> fractionDocuments = new ArrayList<>();
-        Random r = new Random();
         for (int i=0; i<fractionList.size(); i++){
             Fraction fraction = fractionList.get(i);
             // check if document exists
