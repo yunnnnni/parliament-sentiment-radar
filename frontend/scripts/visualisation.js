@@ -1,3 +1,6 @@
+/**
+ * @author Lu.Yunni, 6563468, s0425513@stud.uni-frankfurt.de
+ */
 
 var globalURL = "http://localhost:5678"
 
@@ -79,7 +82,25 @@ function insertAfter(newNode, existingNode) {
     existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
 }
 
-getData("http://localhost:5678/fractions")
+/**
+ * funciton to send ajax request
+ * use promise to bind callback function
+ * @param {String} url 
+ * @returns 
+ */
+function getData(url) {
+    return new Promise(function(res,rej){
+        $.ajax({
+            type: "GET",
+            url: url,
+            async: true,
+            success: (data) => res(data),
+            error: (data) => rej(data)
+        });
+    })
+}
+
+getData(globalURL + "/fractions")
     .then(
         (data) => {
             if (data.success == false){

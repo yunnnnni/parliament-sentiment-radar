@@ -2,6 +2,7 @@
  * @author Yunni Lu
  */
 
+var globalURL = "http://localhost:5678"
 const getOrCreateTooltip = (chart) => {
   let tooltipEl = chart.canvas.parentNode.querySelector('div');
 
@@ -154,7 +155,6 @@ function setTooltipPosition(tooltipEl, tooltip, chart){
     tooltipEl.style.padding = tooltip.options.padding + 'px ' + tooltip.options.padding + 'px';
 }
 
-var speakerUrl = "http://localhost:5678/speakers?"
 function createSpeakerChart(node, query){
     // create chart
     var speakerChart = new Chart(node, {
@@ -203,7 +203,7 @@ function createSpeakerChart(node, query){
         },
     });
 
-    let url = speakerUrl + query;
+    let url = globalURL + "/speakers?" + query;
 	$.ajax({
 		url: url,
 		method: 'GET',

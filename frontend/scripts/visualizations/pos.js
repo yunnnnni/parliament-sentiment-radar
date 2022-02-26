@@ -37,37 +37,6 @@ function createPosChart(node, query){
                     bottom: 0
                 }
             },
-            scales: {
-                xAxes: [{
-                    time: {
-                        unit: 'date'
-                    },
-                    gridLines: {
-                        display: false,
-                        drawBorder: false
-                    },
-                    ticks: {
-                        maxTicksLimit: 7
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        maxTicksLimit: 5,
-                        padding: 10,
-                        // Include a dollar sign in the ticks
-                        callback: function(value, index, values) {
-                            return '' + number_format(value);
-                        }
-                    },
-                    gridLines: {
-                        color: "rgb(234, 236, 244)",
-                        zeroLineColor: "rgb(234, 236, 244)",
-                        drawBorder: false,
-                        borderDash: [2],
-                        zeroLineBorderDash: [2]
-                    }
-                }],
-            },
             tooltips: {
                 backgroundColor: "rgb(255,255,255)",
                 bodyFontColor: "#858796",
