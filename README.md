@@ -26,13 +26,13 @@ Run following commands in project directory:
 - Start REST service, default port = 4567
 
     ```shell
-    docker run -it -p 4567:4567 --name AB-Backend -v $PWD/backend:/usr/src/backend -w /usr/src/backend maven:3.8.4-openjdk-17 mvn exec:java -D"exec.mainClass"="org.texttechnologylab.project.Gruppe_8_mittwoch_3.REST.RESTStarter"
+    docker run -d -p 4567:4567 --name AB-Backend -v $PWD/backend:/usr/src/backend -w /usr/src/backend maven:3.8.4-openjdk-17 mvn exec:java -D"exec.mainClass"="org.texttechnologylab.project.Gruppe_8_mittwoch_3.REST.RESTStarter"
     ```
 
 - Run Swagger UI with docker
 
     ```shell
-    docker run -p 8088:8080 --name swagger-ui -e SWAGGER_JSON=/swagger-ui/swagger.yml -v $PWD/swagger-ui:/swagger-ui swaggerapi/swagger-ui
+    docker run -d -p 8088:8080 --name swagger-ui -e SWAGGER_JSON=/swagger-ui/swagger.yml -v $PWD/swagger-ui:/swagger-ui swaggerapi/swagger-ui
     ```
 
     Enter http://localhost:8088/ to get access to the swagger-ui and see all available services
