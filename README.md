@@ -13,13 +13,12 @@
 
 ## Server
 
-Run following commands in project directory. Make sure that `maven` and `java` are installed on the local machine. Adapt `./backend/pom.xml` to the local setup.
+Run following commands in project directory:
 
 - Read 19. and 20. plenary protocols from https://www.bundestag.de/services/opendata into mongodb
 
     ```shell
-    $ cd ./backend
-    $ mvn compile exec:java -Dexec.mainClass="org.texttechnologylab.project.Gruppe_8_mittwoch_3.helper.ProtocolMongoDBWriter"
+    docker run -it -p 4567:4567 --name AB-Backend -v $PWD/backend:/usr/src/backend -w /usr/src/backend maven:3.8.4-openjdk-17 mvn exec:java -D"exec.mainClass"="org.texttechnologylab.project.Gruppe_8_mittwoch_3.helper.ProtocolMongoDBWriter"
     ```
 
     - MongoDB config is defined in `./backend/config/config.json`
@@ -27,14 +26,13 @@ Run following commands in project directory. Make sure that `maven` and `java` a
 - Start REST service, default port = 4567
 
     ```shell
-    $ cd ./backend
-    mvn compile exec:java -Dexec.mainClass="org.texttechnologylab.project.Gruppe_8_mittwoch_3.REST.RESTStarter"
+    docker run -it -p 4567:4567 --name AB-Backend -v $PWD/backend:/usr/src/backend -w /usr/src/backend maven:3.8.4-openjdk-17 mvn exec:java -D"exec.mainClass"="org.texttechnologylab.project.Gruppe_8_mittwoch_3.REST.RESTStarter"
     ```
 
 - Run Swagger UI with docker
 
     ```shell
-    docker run -p 80:8080 -e SWAGGER_JSON=/swagger-ui/swagger.yml -v $PWD/swagger-ui:/swagger-ui swaggerapi/swagger-ui
+    docker run -p 8088:8080 --name swagger-ui -e SWAGGER_JSON=/swagger-ui/swagger.yml -v $PWD/swagger-ui:/swagger-ui swaggerapi/swagger-ui
     ```
 
     Enter http://localhost:8088/ to get access to the swagger-ui and see all available services
