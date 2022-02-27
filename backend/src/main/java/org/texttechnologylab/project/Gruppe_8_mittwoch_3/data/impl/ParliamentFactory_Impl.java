@@ -41,7 +41,7 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
      * source urls are defined in side of this function, not configurable
      */
     public void initOnline(){
-        // these 2 urls can be found on bundestag website:
+        // these 2 urls can be found on bundestag website, which contains protocol urls
         // https://www.bundestag.de/services/opendata
         String[] baseUrls = {
                 "https://www.bundestag.de/ajax/filterlist/de/services/opendata/543410-543410",

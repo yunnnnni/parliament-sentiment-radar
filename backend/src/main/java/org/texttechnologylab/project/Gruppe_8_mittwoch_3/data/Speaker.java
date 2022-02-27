@@ -11,12 +11,6 @@ import java.util.Set;
 public interface Speaker {
 
     /**
-     * set the speaker image
-     * @param image the object of class Image_Impl
-     */
-    void setImage(Image_Impl image);
-
-    /**
      * return id of the redner
      * @return id String of the redner
      */

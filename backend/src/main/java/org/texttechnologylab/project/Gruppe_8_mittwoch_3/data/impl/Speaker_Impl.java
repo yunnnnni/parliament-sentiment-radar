@@ -1,15 +1,12 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 
-import org.apache.uima.ruta.type.html.I;
 import org.bson.Document;
 import org.dom4j.Element;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Fraction;
+import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Image;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.ParliamentFactory;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speech;
-import org.texttechnologylab.project.Gruppe_8_mittwoch_3.helper.ImageFinder;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -24,7 +21,7 @@ public class Speaker_Impl implements Speaker {
     private String lastName = "";
     private String fractionName = "";
     private String role = "";
-    private Image_Impl img = null;
+    private Image img = null;
     private Set<String> speechIdSet = new TreeSet<>();
 //    private Set<Speech> speechSet = new TreeSet<>();
     private ParliamentFactory factory = null;
@@ -99,7 +96,6 @@ public class Speaker_Impl implements Speaker {
                             Fraction fraction = this.factory.addFraction(fractionName);
                             fraction.addSpeaker(this);
                             this.fractionName = fraction.getName();
-
                             continue;
                         case "rolle":
                             try {
@@ -151,14 +147,6 @@ public class Speaker_Impl implements Speaker {
         if (speakerDocument.containsKey("speechIds")){
             this.speechIdSet.addAll(speakerDocument.getList("speechIds", String.class));
         }
-    }
-
-    /**
-     * set the speaker image
-     * @param image the object of class Image_Impl
-     */
-    public void setImage(Image_Impl image){
-        this.img = image;
     }
 
     /**
@@ -242,15 +230,10 @@ public class Speaker_Impl implements Speaker {
         document.append("titel", this.titel);
         document.append("fraction", this.fractionName);
         document.append("role", this.role);
+        // find image when writing to mongodb
+        // this can help reduce debugging time
         if (this.img == null){
-            try {
-                ImageFinder finder = new ImageFinder(this.firstName, this.lastName);
-                this.img = new Image_Impl(finder.getImgUrl(), finder.getDescription());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            this.img = new Image_Impl(this.firstName, this.lastName);
         }
         document.append("image", this.img.toDocument());
         document.append("speechIds", this.speechIdSet);
