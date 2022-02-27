@@ -3,12 +3,19 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 import com.mongodb.client.FindIterable;
 import org.bson.Document;
 import org.javatuples.Pair;
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.database.MongoDBConnectionHandler;
 import org.dom4j.Element;
 
 import java.io.File;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * class for parliament factory
@@ -27,6 +34,75 @@ public class ParliamentFactory_Impl implements ParliamentFactory {
 
     public ParliamentFactory_Impl(){
 
+    }
+
+    /**
+     * read xml files online, parse and save information into factory
+     * source urls are defined in side of this function, not configurable
+     */
+    public void initOnline(){
+        // these 2 urls can be found on bundestag website:
+        // https://www.bundestag.de/services/opendata
+        String[] baseUrls = {
+                "https://www.bundestag.de/ajax/filterlist/de/services/opendata/543410-543410",
+                "https://www.bundestag.de/ajax/filterlist/de/services/opendata/866354-866354"
+        };
+        List<String> protocolUrls = Arrays.stream(baseUrls)
+                .map(url -> this.parseProtocolUrls(url, 0))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+        for (String protocolUrl: protocolUrls){
+            System.out.println("Read protocol from: " + protocolUrl);
+            PlenaryProtocol protocol = new PlenaryProtocol_Impl(protocolUrl, this);
+            this.addProtocol(protocol);
+        }
+    }
+
+    /**
+     * read data from data table url
+     * parse html content to get list of protocol urls
+     * @param dataTableUrl url of the website which contains protocol xml file url
+     * @param offset we can only get 10 protocol urls on one page, set offset to get more
+     * @return list of protocol urls
+     */
+    private List<String> parseProtocolUrls(String dataTableUrl, int offset){
+        org.jsoup.nodes.Document doc = Jsoup.parse(getHttpResponse(dataTableUrl + "?limit=10&offset=" + offset));
+        org.jsoup.nodes.Element elem = doc.getElementsByClass("meta-slider").get(0);
+        int totalCount = Integer.parseInt(elem.attr("data-hits"));  // total number of available protocols
+        int nextOffset = Integer.parseInt(elem.attr("data-nextoffset"));  // next available offset
+        Elements elements = doc.getElementsByClass("bt-link-dokument");
+        List<String> protocolUrls = elements.stream()
+                .map(e -> "https://www.bundestag.de" + e.attr("href"))
+                .collect(Collectors.toList());
+        // if totalCount > nextOffset, we have more protocols to read
+        if (totalCount > nextOffset){
+            // call this function recursively to read protocols start from the nextOffset
+            // combine results together into procolUrls
+            protocolUrls.addAll(parseProtocolUrls(dataTableUrl, nextOffset));
+        }
+        return protocolUrls;
+    }
+
+    /**
+     * get http content of the given url
+     * @param url target url
+     * @return http content string
+     */
+    private String getHttpResponse(String url){
+        try{
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .GET() // GET is default
+                    .build();
+
+            HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString());
+
+            return response.body();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

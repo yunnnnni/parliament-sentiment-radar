@@ -16,13 +16,13 @@ import static com.mongodb.client.model.Filters.eq;
 public class ProtocolMongoDBWriter {
     public static void main(String[] args) {
         MongoDBConnectionHandler handler = new MongoDBConnectionHandler("config/config.json");
-        String protocolDirectory = "Daten/20. Wahlperiode";
         ParliamentFactory factory = new ParliamentFactory_Impl();
-        factory.initFromDirectory(protocolDirectory);
-//        writeProtocols(factory.getProtocols(), handler);
-        writeSpeakers(factory.getParliamentMembers(), handler);
-//        writeSpeechs(factory.getSpeeches(), handler);
-//        writeFractions(factory.getFractions(), handler);
+        factory.initOnline();  // init factory with online data
+        writeProtocols(factory.getProtocols(), handler);
+        writeSpeakers(factory.getParliamentMembers(), handler, "parliament_members");
+        writeSpeakers(factory.getOtherSpeakers(), handler, "other_speakers");
+        writeSpeechs(factory.getSpeeches(), handler);
+        writeFractions(factory.getFractions(), handler);
     }
 
     /**
@@ -64,14 +64,14 @@ public class ProtocolMongoDBWriter {
      * write speakers into mongodb
      * @param speakerList list of speakers
      */
-    public static void writeSpeakers(List<Speaker> speakerList, MongoDBConnectionHandler handler){
+    public static void writeSpeakers(List<Speaker> speakerList, MongoDBConnectionHandler handler, String collectionName){
         int bufferSize = 20;
         List<Document> speakerDocuments = new ArrayList<>();
         Random r = new Random();
         for (int i=0; i<speakerList.size(); i++){
             Speaker speaker = speakerList.get(i);
             // check if document exists
-            Document rDocument = handler.getCollection("parliament_members").
+            Document rDocument = handler.getCollection(collectionName).
                     find(eq("id", speaker.getId())).first();
             // if not, build document, add to buffer
             if (rDocument == null){
@@ -86,13 +86,13 @@ public class ProtocolMongoDBWriter {
             // if buffer full, write documents in buffer to mongodb
             if (speakerDocuments.size() >= bufferSize){
                 System.out.println("Write buffer into mongodb");
-                handler.writeDocuments("parliament_members", speakerDocuments);
+                handler.writeDocuments(collectionName, speakerDocuments);
                 speakerDocuments.clear();  // clear buffer after writing
             }
         }
         // write rest documents in buffer
         if (speakerDocuments.size() > 0){
-            handler.writeDocuments("parliament_members", speakerDocuments);
+            handler.writeDocuments(collectionName, speakerDocuments);
         }
 //        System.out.println();
     }
