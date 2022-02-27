@@ -21,7 +21,7 @@ public class ProtocolMongoDBWriter {
         writeProtocols(factory.getProtocols(), handler);
         writeSpeakers(factory.getParliamentMembers(), handler, "parliament_members");
         writeSpeakers(factory.getOtherSpeakers(), handler, "other_speakers");
-        writeSpeechs(factory.getSpeeches(), handler);
+        writeSpeeches(factory.getSpeeches(), handler);
         writeFractions(factory.getFractions(), handler);
     }
 
@@ -98,11 +98,11 @@ public class ProtocolMongoDBWriter {
     }
 
     /**
-     * wirte speeches into mongodb
+     * write speeches into mongodb
      * @param speechList list of speeches
      * @param handler the object of class MongoDBConnectionHandler
      */
-    public static void writeSpeechs(List<Speech> speechList, MongoDBConnectionHandler handler){
+    public static void writeSpeeches(List<Speech> speechList, MongoDBConnectionHandler handler){
         int bufferSize = 5;
         List<Document> speechDocuments = new ArrayList<>();
         for (int i=0; i<speechList.size(); i++){
@@ -163,18 +163,4 @@ public class ProtocolMongoDBWriter {
 //        System.out.println();
     }
 
-    /**
-     * write speeches into mongodb
-     * @param protocolList list of protocols
-     * @param handler mongodb handler
-     */
-    public static void writeSpeeches(List<PlenaryProtocol> protocolList, MongoDBConnectionHandler handler){
-//        for(PlenaryProtocol protocol: protocolList) {
-//            for (AgendaItem agendaItem: protocol.getAgendaItems()){
-//                for (Speech speech: agendaItem.getSpeeches()){
-//                    handler.writeDocument("speech", speech.toDocument());
-//                }
-//            }
-//        }
-    }
 }
