@@ -1,4 +1,9 @@
-var tokenUrl = "http://localhost:5678/tokens?"
+/**
+ * @author Tinghuan Song
+ * @modified Yunni Lu
+ */
+
+var tokenUrl = "http://localhost:4567/tokens?"
 
 function createTokenChart(node, query){
     // create chart

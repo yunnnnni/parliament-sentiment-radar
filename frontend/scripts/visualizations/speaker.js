@@ -2,7 +2,7 @@
  * @author Yunni Lu
  */
 
-var globalURL = "http://localhost:5678"
+var globalURL = "http://localhost:4567"
 const getOrCreateTooltip = (chart) => {
   let tooltipEl = chart.canvas.parentNode.querySelector('div');
 

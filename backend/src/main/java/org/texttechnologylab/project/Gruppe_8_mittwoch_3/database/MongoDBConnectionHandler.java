@@ -15,7 +15,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 /**
- *  link mongodb and implement related operations
+ * link mongodb and implement related operations
  * @author Yunni Lu
  */
 public class MongoDBConnectionHandler {

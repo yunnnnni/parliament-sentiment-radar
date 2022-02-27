@@ -3,7 +3,7 @@
  */
 // Select HTML-Element
 
-var POSUrl = "http://localhost:5678/pos?"
+var POSUrl = "http://localhost:4567/pos?"
 
 // create chart
 function createPosChart(node, query){

@@ -2,7 +2,7 @@
  * @author Lu.Yunni, 6563468, s0425513@stud.uni-frankfurt.de
  */
 
-var globalURL = "http://localhost:5678"
+var globalURL = "http://localhost:4567"
 
 /**
  * Method for formatting numbers

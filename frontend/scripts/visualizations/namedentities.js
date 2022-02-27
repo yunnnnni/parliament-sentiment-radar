@@ -1,5 +1,9 @@
+/**
+ * @author Tinghuan Song
+ */
+
 // Select HTML-Element
-var namedEntitiesUrl = "http://localhost:5678/namedEntities?"
+var namedEntitiesUrl = "http://localhost:4567/namedEntities?"
 
 function createNamedEntityChart(node, query){
     // create chart

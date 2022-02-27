@@ -6,7 +6,6 @@ import org.javatuples.Pair;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * interface for agenda items in plenary protocols
  * @author Chufan Zhang

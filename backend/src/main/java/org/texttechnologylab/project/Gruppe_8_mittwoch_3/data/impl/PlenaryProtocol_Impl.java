@@ -1,11 +1,8 @@
 package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.impl;
 
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
-import org.apache.uima.ruta.type.html.P;
 import org.bson.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.elasticsearch.action.ingest.IngestActionForwarder;
 import org.javatuples.Pair;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
 import org.xml.sax.InputSource;
@@ -22,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * class for plenary protocol
  * implements interface PlenaryProtocol
- * @author Yunni Lu
+ * @author Chufan Zhang
  */
 public class PlenaryProtocol_Impl implements PlenaryProtocol {
     private int session = -1;  // Sitzungsnummer

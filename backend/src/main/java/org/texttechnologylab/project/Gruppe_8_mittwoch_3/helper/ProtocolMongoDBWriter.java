@@ -14,6 +14,7 @@ import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 /**
+ * init fraction, write data into mongodb
  * @author Yunni Lu
  */
 public class ProtocolMongoDBWriter {

@@ -3,7 +3,7 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.REST;
 import java.io.IOException;
 
 /**
- * test for image
+ * main entry to start rest services
  * @author Yunni Lu
  */
 public class RESTStarter {

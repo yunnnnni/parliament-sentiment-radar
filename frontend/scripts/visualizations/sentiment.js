@@ -2,7 +2,7 @@
  * @author Tinghuan Song
  */
 
-var sentimentUrl = "http://localhost:5678/sentiment?"
+var sentimentUrl = "http://localhost:4567/sentiment?"
 
 function createSentimentChart(node, query){
     var sentimentChart = new Chart(node, {

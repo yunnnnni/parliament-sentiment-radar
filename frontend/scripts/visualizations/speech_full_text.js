@@ -3,7 +3,7 @@
  * Shows the full text of a single speech.
  */
 
-var globalURL = "http://localhost:5678"
+var globalURL = "http://localhost:4567"
 
 /**
  * @param id

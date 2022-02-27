@@ -3,7 +3,7 @@
  * @author Tinghuan Song
  */
 
-var globalURL = "http://localhost:5678"
+var globalURL = "http://localhost:4567"
 /**
  * Get all terms, sessions and agenda item ids.
  * @returns list of terms and agenda item ids.
