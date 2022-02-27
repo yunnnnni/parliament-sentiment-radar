@@ -8,8 +8,10 @@ import org.dom4j.io.SAXReader;
 import org.elasticsearch.action.ingest.IngestActionForwarder;
 import org.javatuples.Pair;
 import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.*;
+import org.xml.sax.InputSource;
 
 import java.io.File;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -34,6 +36,35 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
 
     /**
      * constructor
+     * read protocol xml data from url
+     * @param url url of the xml file
+     * @param factory the object of class ParliamentFactory
+     */
+    public PlenaryProtocol_Impl(String url, ParliamentFactory factory){
+        this.factory = factory;
+        try{
+            SAXReader saxReader = new SAXReader();
+            saxReader.setEntityResolver((publicId, systemId) -> {
+                // dtd file can not be read correctly online
+                // we have to set its url manually
+                URL url_ = new URL("https://www.bundestag.de/resource/blob/575720" +
+                                "/70d7f2af6e4bebd9a550d9dc4bc03900/dbtplenarprotokoll-data.dtd");
+                InputSource xml = new InputSource(url_.openStream());
+                xml.setPublicId(publicId);
+                xml.setSystemId(systemId);
+                return xml;
+            });
+
+            org.dom4j.Document document = saxReader.read(url);
+            this.init(document);
+            System.out.format("Finish reading protocol, session: %s, term: %s\n", this.session, this.term);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * constructor
      * read the data about plenary protocol from mongodb document
      * @param protocolDocument  document in mongodb that holds the relevant data about plenary protocol
      * @param factory the object of class ParliamentFactory
@@ -51,7 +82,14 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
      */
     public PlenaryProtocol_Impl(File xmlFile, ParliamentFactory factory){
         this.factory = factory;
-        this.init(xmlFile);
+        try{
+            SAXReader saxReader = new SAXReader();
+            org.dom4j.Document document = saxReader.read(xmlFile);
+            this.init(document);
+            System.out.format("Finish reading %s\n", xmlFile);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -59,20 +97,24 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
      * @param xmlFile xml file
      */
     public PlenaryProtocol_Impl(File xmlFile){
-        this.init(xmlFile);
+        try{
+            SAXReader saxReader = new SAXReader();
+            org.dom4j.Document document = saxReader.read(xmlFile);
+            this.init(document);
+            System.out.format("Finish reading %s\n", xmlFile);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
      * read the data about plenary protocol from xml file
      * through this method can get the relevant data about plenary protocol
      * date, term, session, startTime, endTime, ...
-     * @param xmlFile
+     * @param document dom4j document
      */
-    private void init(File xmlFile){
+    private void init(org.dom4j.Document document){
         try {
-            SAXReader saxReader = new SAXReader();
-            org.dom4j.Document document = saxReader.read(xmlFile);
-
             Element root = document.getRootElement();
             Element sitzungsverlauf = root.element("sitzungsverlauf");
 
@@ -98,8 +140,6 @@ public class PlenaryProtocol_Impl implements PlenaryProtocol {
                 AgendaItem item = new AgendaItem_Impl(tagesordnungspunktElement, protocolId, this.factory);
                 this.agendaItems.add(item);
             }
-
-            System.out.format("Finish reading %s\n", xmlFile);
 
         } catch (Exception e) {
             e.printStackTrace();

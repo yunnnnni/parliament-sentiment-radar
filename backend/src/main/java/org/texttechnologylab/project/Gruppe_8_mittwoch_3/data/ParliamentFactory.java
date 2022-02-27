@@ -15,6 +15,13 @@ import org.dom4j.Element;
  * this can avoid duplicated data
  */
 public interface ParliamentFactory {
+
+    /**
+     * read xml files online, parse and save information into factory
+     * source urls are defined in side of this function, not configurable
+     */
+    void initOnline();
+
     /**
      * read xml files from directory, parse and save information into factory
      * @param protocolDirectory directory with xml files
