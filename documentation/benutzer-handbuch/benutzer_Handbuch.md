@@ -142,7 +142,7 @@ $\textcolor{green}{Organisation}$
 ## Backend
 
 Flussdiagramm für Backend:
-![flussdiagramm](asset/flussdiagramm.png)
+![flussdiagramm](https://cdn.discordapp.com/attachments/779484677126881304/947483394118389780/flussdiagramm.png)
 
 Zuerst lesen die XML File ein. Dann verwendet Factory, um die Daten in unsere eigene Datenstruktur zu speichern. Dann schreiben die Daten in MongoDB ein. Verwendet wieder die Fabrik, um Daten aus MongoDB zu lesen. Und implementiert Restful -Schnittstelle. Auf diese Weise kann der Frontend über diese Restful-Schnittstelle visualisiert werden.
 
@@ -315,8 +315,8 @@ Wenn die Dokument erfolgreich gelöscht wird, geben ture aus.
 Wenn die XML File eingelesen und NLP analysiert werden, werden durch ParliamentFactory in MongoDB eingeschriben. Aber das Frontend kann jedoch keine Daten direkt von MongoDB für die Visualisierung abrufen. Deshalb verwenden wir hier RESTful Schnittstelle.
 
 Hier ist unsere Swagger.
-![swagger](asset/swagger_1.png)
-![swagger](asset/swagger_2.png)
+![swagger](https://cdn.discordapp.com/attachments/779484677126881304/947483912593096704/swagger_1.png)
+![swagger](https://cdn.discordapp.com/attachments/779484677126881304/947483922097377334/swagger_2.png)
 
 #### Return protocols
 
@@ -324,37 +324,37 @@ Hier ist unsere Swagger.
 
 Sollt man hier zwei Parameters *session* und *term* eingeben.
 Nach Eingabe der Parameter klicken Sie auf die Schaltfläche *Try it out*:
-![protocol_1](asset/protocol_1.png)
+![protocol_1](https://cdn.discordapp.com/attachments/779484677126881304/947484477351919686/protocol_1.png)
 
 Struktur der Ergebnisse:
-![protocol_2](asset/protocol_2.png)
+![protocol_2](https://cdn.discordapp.com/attachments/779484677126881304/947484478312419328/protocol_2.png)
 
 *Get protocols:*
 
 Hier müssen keine Parameter eingegeben werden.
 Klicken Sie auf die Schaltfläche *Try it out*:
-![protocols_1](asset/protocols_1.png)
+![protocols_1](https://cdn.discordapp.com/attachments/779484677126881304/947484653214916648/protocols_1.png)
 
 Struktur der Ergebnisse:
-![protocols_2](asset/protocols_2.png)
+![protocols_2](https://cdn.discordapp.com/attachments/779484677126881304/947484658461974558/protocols_2.png)
 
 *Get agendaitem:*
 
 Sollt man hier drei Parameters *session*, *term* und *id* eingeben.
 Nach Eingabe der Parameter klicken Sie auf die Schaltfläche *Try it out*:
-![agendaitem_1](asset/agendaitem_1.png)
+![agendaitem_1](https://cdn.discordapp.com/attachments/779484677126881304/947484919498698822/agendaitem_1.png)
 
 Struktur der Ergebnisse:
-![agendaitem_2](asset/agendaitem_2.png)
+![agendaitem_2](https://cdn.discordapp.com/attachments/779484677126881304/947484929334321192/agendaitem_2.png)
 
 *Get agendaitems:*
 
 Sollt man hier zwei Parameters *session* und *term* eingeben.
 Nach Eingabe der Parameter klicken Sie auf die Schaltfläche *Try it out*:
-![agendaitems_1](asset/agendaitems_1.png)
+![agendaitems_1](https://cdn.discordapp.com/attachments/779484677126881304/947485090466902036/agendaitems_1.png)
 
 Struktur der Ergebnisse:
-![agendaitems_2](asset/agendaitems_2.png)
+![agendaitems_2](https://cdn.discordapp.com/attachments/779484677126881304/947485097127469096/agendaitems_2.png)
 
 #### Return speakers
 
@@ -362,10 +362,10 @@ Struktur der Ergebnisse:
 
 Sollt man hier fünf Parameters *user*, *fraction*, *minimum*, *time* and *time* eingeben.
 Nach Eingabe der Parameter klicken Sie auf die Schaltfläche *Try it out*:
-![speakers_1](asset/speakers_1.png)
+![speakers_1](https://cdn.discordapp.com/attachments/779484677126881304/947485264513736704/speakers_1.png)
 
 Struktur der Ergebnisse:
-![speakers_2](asset/speakers_2.png)
+![speakers_2](https://cdn.discordapp.com/attachments/779484677126881304/947485265776246815/speakers_2.png)
 
 #### Return speeches
 
@@ -373,19 +373,19 @@ Struktur der Ergebnisse:
 
 Sollt man hier fünf Parameters *user*, *fraction*, *minimum*, *time* and *time* eingeben.
 Nach Eingabe der Parameter klicken Sie auf die Schaltfläche *Try it out*:
-![speeches_1](asset/speeches_1.png)
+![speeches_1](https://cdn.discordapp.com/attachments/779484677126881304/947485588926386206/speeches_1.png)
 
 Struktur der Ergebnisse:
-![speeches_2](asset/speeches_2.png)
+![speeches_2](https://cdn.discordapp.com/attachments/779484677126881304/947485594471256115/speeches_2.png)
 
 *Get speech:*
 
 Sollt man hier ein Parameter *id* eingeben.
 Nach Eingabe der Parameter klicken Sie auf die Schaltfläche *Try it out*:
-![speech_1](asset/speech_1.png)
+![speech_1](https://cdn.discordapp.com/attachments/779484677126881304/947485426762002542/speech_1.png)
 
 Struktur der Ergebnisse:
-![speech_2](asset/speech_2.png)
+![speech_2](https://cdn.discordapp.com/attachments/779484677126881304/947485436815740958/speech_2.png)
 
 #### Return fractions
 
@@ -393,19 +393,19 @@ Struktur der Ergebnisse:
 
 Hier müssen keine Parameter eingegeben werden.
 Klicken Sie auf die Schaltfläche *Try it out*:
-![fractions_1](asset/fractions_1.png)
+![fractions_1](https://cdn.discordapp.com/attachments/779484677126881304/947485756606259210/fractions_1.png)
 
 Struktur der Ergebnisse:
-![fractions_2](asset/fractions_2.png)
+![fractions_2](https://cdn.discordapp.com/attachments/779484677126881304/947485784074768474/fractions_2.png)
 
 *Get fraction:*
 
 Sollt man hier ein Parameter *name* eingeben.
 Nach Eingabe der Parameter klicken Sie auf die Schaltfläche *Try it out*:
-![fraction_1](asset/fraction_1.png)
+![fraction_1](https://cdn.discordapp.com/attachments/779484677126881304/947485944586592316/fraction_1.png)
 
 Struktur der Ergebnisse:
-![fraction_2](asset/fraction_2.png)
+![fraction_2](https://cdn.discordapp.com/attachments/779484677126881304/947485963947507722/fraction_2.png)
 
 #### Return annotations
 
@@ -413,46 +413,46 @@ Struktur der Ergebnisse:
 
 Sollt man hier fünf Parameters *user*, *fraction*, *minimum*, *time* and *time* eingeben.
 Nach Eingabe der Parameter klicken Sie auf die Schaltfläche *Try it out*:
-![sentiment_1](asset/sentiment_1.png)
+![sentiment_1](https://cdn.discordapp.com/attachments/779484677126881304/947486073456586802/sentiment_1.png)
 
 Struktur der Ergebnisse:
-![sentiment_2](asset/sentiment_2.png)
+![sentiment_2](https://cdn.discordapp.com/attachments/779484677126881304/947486080867893278/sentiment_2.png)
 
 *Get tokens:*
 
 Sollt man hier fünf Parameters *user*, *fraction*, *minimum*, *time* and *time* eingeben.
 Nach Eingabe der Parameter klicken Sie auf die Schaltfläche *Try it out*:
-![tokens_1](asset/tokens_1.png)
+![tokens_1](https://cdn.discordapp.com/attachments/779484677126881304/947486288796323840/tokens_1.png)
 
 Struktur der Ergebnisse:
-![tokens_2](asset/tokens_2.png)
+![tokens_2](https://cdn.discordapp.com/attachments/779484677126881304/947486295117156362/tokens_2.png)
 
 *Get pos:*
 
 Sollt man hier fünf Parameters *user*, *fraction*, *minimum*, *time* and *time* eingeben.
 Nach Eingabe der Parameter klicken Sie auf die Schaltfläche *Try it out*:
-![pos_1](asset/pos_1.png)
+![pos_1](https://cdn.discordapp.com/attachments/779484677126881304/947486442324635668/pos_1.png)
 
 Struktur der Ergebnisse:
-![pos_2](asset/pos_2.png)
+![pos_2](https://cdn.discordapp.com/attachments/779484677126881304/947486447915659344/pos_2.png)
 
 *Get namedEntities:*
 
 Sollt man hier fünf Parameters *user*, *fraction*, *minimum*, *time* and *time* eingeben.
 Nach Eingabe der Parameter klicken Sie auf die Schaltfläche *Try it out*:
-![namedEntities_1](asset/namedEntities_1.png)
+![namedEntities_1](https://cdn.discordapp.com/attachments/779484677126881304/947486588940746752/namedEntities_1.png)
 
 Struktur der Ergebnisse:
-![namedEntities_2](asset/namedEntities_2.png)
+![namedEntities_2](https://cdn.discordapp.com/attachments/779484677126881304/947486597421613126/namedEntities_2.png)
 
 *Get dependencies:*
 
 Sollt man hier fünf Parameters *user*, *fraction*, *minimum*, *time* and *time* eingeben.
 Nach Eingabe der Parameter klicken Sie auf die Schaltfläche *Try it out*:
-![dependencies_1](asset/dependencies_1.png)
+![dependencies_1](https://cdn.discordapp.com/attachments/779484677126881304/947486710210633748/dependencies_1.png)
 
 Struktur der Ergebnisse:
-![dependencies_2](asset/dependencies_2.png)
+![dependencies_2](https://cdn.discordapp.com/attachments/779484677126881304/947486714711121930/dependencies_2.png)
 
 #### Return statistics for speakers and speeches
 
@@ -460,7 +460,7 @@ Struktur der Ergebnisse:
 
 Hier müssen keine Parameter eingegeben werden.
 Klicken Sie auf die Schaltfläche *Try it out*:
-![statistic_1](asset/statistic_1.png)
+![statistic_1](https://cdn.discordapp.com/attachments/779484677126881304/947486818398515230/statistic_1.png)
 
 Struktur der Ergebnisse:
-![statistic_2](asset/statistic_2.png)
+![statistic_2](https://cdn.discordapp.com/attachments/779484677126881304/947486828976537660/statistic_2.png)
