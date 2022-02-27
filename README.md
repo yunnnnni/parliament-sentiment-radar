@@ -41,7 +41,7 @@ Run following commands in project directory:
 
 ## Client
 
-Open `./frontend/index.html` to open client dashboard
+Open `./frontend/index.html` to open client dashboard, make sure that REST service is available on local machine! (See Server - start REST service)
 
 ### Overview
 
