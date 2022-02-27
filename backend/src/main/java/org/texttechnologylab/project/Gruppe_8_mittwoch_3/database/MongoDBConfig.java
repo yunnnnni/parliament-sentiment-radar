@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * get mongodb related data
  * host, database, user, password, port and collections
+ * @author Yunni Lu
  */
 public class MongoDBConfig{
     private String remoteHost;

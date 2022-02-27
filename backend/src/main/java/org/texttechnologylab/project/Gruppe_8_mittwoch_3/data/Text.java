@@ -4,6 +4,7 @@ import org.bson.Document;
 
 /**
  * interface for texts in plenary protocols
+ * @author Chufan Zhang
  */
 public interface Text {
     /**

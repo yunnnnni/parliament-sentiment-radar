@@ -13,6 +13,9 @@ import java.util.Random;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
+/**
+ * @author Yunni Lu
+ */
 public class ProtocolMongoDBWriter {
     public static void main(String[] args) {
         MongoDBConnectionHandler handler = new MongoDBConnectionHandler("config/config.json");

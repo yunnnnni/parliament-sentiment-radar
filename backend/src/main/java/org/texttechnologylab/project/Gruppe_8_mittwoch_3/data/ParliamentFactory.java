@@ -13,6 +13,7 @@ import org.dom4j.Element;
  * interface for parliament factory
  * protocol, speaker, speech, fraction are stored uniquely in factory
  * this can avoid duplicated data
+ * @author Yunni Lu
  */
 public interface ParliamentFactory {
 

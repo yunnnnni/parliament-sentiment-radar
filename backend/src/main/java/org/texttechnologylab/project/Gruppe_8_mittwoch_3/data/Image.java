@@ -2,6 +2,10 @@ package org.texttechnologylab.project.Gruppe_8_mittwoch_3.data;
 
 import org.bson.Document;
 
+/**
+ * interface for image in plenary protocols
+ * @author Yunni Lu
+ */
 public interface Image {
     /**
      * get url of this image

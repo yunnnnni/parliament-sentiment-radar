@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * interface for fraction in plenary protocols
+ * @author Yunni Lu
  */
 public interface Fraction {
     /**

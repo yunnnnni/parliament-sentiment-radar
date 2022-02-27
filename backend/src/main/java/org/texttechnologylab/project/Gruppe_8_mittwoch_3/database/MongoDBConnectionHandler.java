@@ -16,6 +16,7 @@ import org.bson.conversions.Bson;
 
 /**
  *  link mongodb and implement related operations
+ * @author Yunni Lu
  */
 public class MongoDBConnectionHandler {
     private MongoDBConfig config;

@@ -44,6 +44,7 @@ import scala.xml.Elem;
 /**
  * class for speech
  * implements interface Speech
+ * @author Chufan Zhang
  */
 public class Speech_Impl implements Speech {
     private String speechId;

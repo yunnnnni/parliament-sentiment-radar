@@ -7,6 +7,7 @@ import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Text;
 /**
  * class for text
  * implements interface Text
+ * @author Chufan Zhang
  */
 public class Text_Impl implements Text {
     private String text;

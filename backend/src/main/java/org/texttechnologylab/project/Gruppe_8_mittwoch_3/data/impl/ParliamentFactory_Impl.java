@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
  * class for parliament factory
  * implements interface ParliamentFactory
  * this class is used to store speech, speaker, fraction and protocol uniquely
+ * @author Yunni Lu
  */
 public class ParliamentFactory_Impl implements ParliamentFactory {
     // use TreeMap to ensure data uniqueness and retrieval performance

@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 
 import static spark.Spark.*;
 
+/**
+ * @author Yunni Lu
+ */
 public class RESTServices {
     MongoDBConnectionHandler handler;
     ParliamentFactory factory = new ParliamentFactory_Impl();

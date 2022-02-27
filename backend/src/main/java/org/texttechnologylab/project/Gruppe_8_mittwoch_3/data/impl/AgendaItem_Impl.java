@@ -14,6 +14,7 @@ import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speech;
 /**
  * class for each agenda item
  * implements interface AgendaItem
+ * @author Chufan Zhang
  */
 public class AgendaItem_Impl implements AgendaItem {
     private String topId;

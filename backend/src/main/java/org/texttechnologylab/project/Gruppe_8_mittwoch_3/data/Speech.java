@@ -13,6 +13,7 @@ import java.util.Map;
 
 /**
  * interface for speech in plenary protocols
+ * @author Chufan Zhang
  */
 public interface Speech {
     /**

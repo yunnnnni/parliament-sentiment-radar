@@ -14,6 +14,7 @@ import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Image;
 
 /**
  * class to save image of speakers
+ * @author Yunni Lu
  */
 public class Image_Impl implements Image {
     private String imageUrl;

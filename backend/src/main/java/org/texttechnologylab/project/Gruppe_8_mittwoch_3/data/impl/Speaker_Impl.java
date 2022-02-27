@@ -13,6 +13,7 @@ import java.util.TreeSet;
 /**
  * class for speaker
  * implements interface Speaker
+ * @author Yunni Lu
  */
 public class Speaker_Impl implements Speaker {
     private String id = "";

@@ -7,6 +7,11 @@ import org.texttechnologylab.project.Gruppe_8_mittwoch_3.data.Speaker;
 
 import java.util.*;
 
+/**
+ * class for fraction
+ * implements interface Fraction
+ * @author Yunni Lu
+ */
 public class Fraction_Impl implements Fraction {
     private String name;
     private Set<String> speakerIdSet = new TreeSet<>();

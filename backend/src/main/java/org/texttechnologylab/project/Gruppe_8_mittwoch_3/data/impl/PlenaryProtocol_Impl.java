@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 /**
  * class for plenary protocol
  * implements interface PlenaryProtocol
+ * @author Yunni Lu
  */
 public class PlenaryProtocol_Impl implements PlenaryProtocol {
     private int session = -1;  // Sitzungsnummer

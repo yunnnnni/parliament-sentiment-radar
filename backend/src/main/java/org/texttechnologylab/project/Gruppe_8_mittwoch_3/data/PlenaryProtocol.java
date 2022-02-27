@@ -9,6 +9,7 @@ import java.util.Set;
 
 /**
  * interface for plenary protocols
+ * @author Yunni Lu
  */
 public interface PlenaryProtocol {
     /**

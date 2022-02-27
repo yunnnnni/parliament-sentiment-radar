@@ -7,6 +7,7 @@ import java.util.Set;
 
 /**
  * interface for speakers in plenary protocols
+ * @author Yunni Lu
  */
 public interface Speaker {
 

@@ -9,6 +9,7 @@ import java.util.Set;
 
 /**
  * interface for agenda items in plenary protocols
+ * @author Chufan Zhang
  */
 public interface AgendaItem {
     /**
