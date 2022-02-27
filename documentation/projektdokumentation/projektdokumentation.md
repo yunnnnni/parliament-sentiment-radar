@@ -1,59 +1,19 @@
-# Projektdokumentation & Projektverlauf
+# Projektdokumentation
 
-![ganttdiagramm](https://cdn.discordapp.com/attachments/901421365373042699/947062626544910366/ab_board_2022-02-26_10.27am.png)
+## Aufgabenverteilung
 
-Aus technischen Gründen wird das Datum bis 02.03.2022 gezeigt, aber alle Aufgaben waren bis 27.02.2022 schon erledigt.
+Wir haben dieses Abschlussprojekt in einer agilen Entwicklungsweise mit Hilfe von Jira durchgeführt. Zu Beginn des Projekts wurden einige User Stories entsprechend der Aufgabenbeschreibung erstellt. Jede User Story entspricht grundsätzlich einem kleinen Punkt in der Aufgabenbeschreibung und kann nach Epic (Backend, Frontend, Dokumentation) unterteilt werden. Der Zeit-/Schwierigkeitsaufwand für jede User Story wird durch Story Points bestimmt und wurde durch eine Abstimmung in der Gruppe bewertet. Auf diese Weise können wir die Arbeitsbelastung jedes Einzelnen leicht einschätzen und den Entwicklungsfortschritt des Projekts im Auge behalten.
 
-## Backend
+Alle User Stories und die dazugehörigen Metadaten sind in der folgenden Tabelle aufgeführt.
 
-Zuständigerinnen: ChuFan Zhang, Yunni Lu
+![test](projektdokumentation.assets/user-stories.png)
 
--Für die Aufstellung der MongoDB und das MetaDaten & Photos der  Abgeordneten - Importieren ist Yunni Lu zuständig. 
--Set REST-API für Backend und Frontend-Teil mit Java Spark zur Website [__swagger.io__](http://38.242.210.53/).
-```
-Aufgabe 2b) c) d) f)
-```
 
--ChuFan Zhang hat die Daten in der eigene Datenstruktur implementiert und beschäftigt sich hauptsächlich mit Reden bzw.NLP-Methoden unter UIMA-Pipeline-Architektur.
 
-```
-Aufgabe 2a) e) 
-```
+## Projektablauf
 
-## Frontend
+![Gantt](projektdokumentation.assets/Gantt.png)
 
-Zuständigerinnen: TingHuan Song, Yi-Ling Chan, Yunni Lu
+Unser Abschlussprojekt begann am 26.01.2022 und endete am 27.02.2022. Das gesamte Projekt besteht aus 5 Sprints. Da wir insgesamt nur einen Monat Zeit hatten, wurde der Sprint auf eine Woche verkürzt. Der Projektablauf wird klar auf dem Gantt-Diagramm dargestellt.
 
--TingHuan Song hat die Daten je nach Aufgabestellung in verschiedenen Chart-Visualisierungsfunktionen erzeugt und das Subwebsite - "Reden" mit einem Filter-Funktion und Volltext-Visualisierung erstellt
-```
-Aufgabe 3a) b) e)
-```
-
--Yi-Ling Chan hat eine generische Such- bzw. Filterfunktion mit einem Sub-Dashboard, die Daten in Chart-Visualisierungsfunktionen, je nach Suchanfrage, implementiert.
-```
-Aufgabe 3d)
-```
-
--Yunni Lu hat in der Filter-Funktion einen zeitbezogenen Filter hinzugefügt
-```
-Aufgabe 3c)
-```
-
-# Dokumentation
-
-## Use-case Diagramm:
-- für Server-Komponente: ChuFan Zhang
-- für Client-Komponente: Yi-Ling Chan
-  
-## Package- und Klassendiagramm für Server-Komponente
-- Yunni Lu
-
-## Mock-Up für Client-Komponente
-- TingHuan Song
-
-## Benutzer-Handbuch
-- Chufan Zhang
-- Yi-Ling Chan
-
-## Projektdokumentation
-- Yi-Ling Chan
+Im Allgemeinen erledigen wir diese Aufgaben in der Reihenfolge Backend-Frontend-Dokumentation, da das Frontend auf den REST-Services und die vom Backend gelesenen Protokolldaten angewiesen ist. 
