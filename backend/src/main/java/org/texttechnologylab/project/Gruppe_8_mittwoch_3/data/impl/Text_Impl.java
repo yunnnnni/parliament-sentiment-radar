@@ -65,7 +65,7 @@ public class Text_Impl implements Text {
 
     @Override
     public String getLabel() {
-        return null;
+        return this.label;
     }
 
     /**

@@ -32,7 +32,7 @@ Run following commands in project directory:
 - Run Swagger UI with docker
 
     ```shell
-    docker run -d -p 8088:8080 --name swagger-ui -e SWAGGER_JSON=/swagger-ui/swagger.yml -v $PWD/swagger-ui:/swagger-ui swaggerapi/swagger-ui
+    docker run -d -p 8088:8080 --name swagger-ui -e SWAGGER_JSON=/swagger-ui/swagger.yml -v $PWD/swagger-ui/:/swagger-ui swaggerapi/swagger-ui
     ```
 
     Enter http://localhost:8088/ to get access to the swagger-ui and see all available services

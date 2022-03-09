@@ -472,7 +472,7 @@ public class RESTServices {
         for (Speech speech: this.factory.getSpeeches()){
             int length = 0;
             for (Text text: speech.getTexts()){
-                if (!text.getLabel().equals("comment") && !text.getLabel().equals("name")){
+                if (text != null && !text.getLabel().equals("comment") && !text.getLabel().equals("name")){
                     length += text.getText().length();
                 }
             }
